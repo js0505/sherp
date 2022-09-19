@@ -5,10 +5,11 @@ import { useEffect, useState } from "react"
 function Home() {
 	const [isLoading, setIsLoading] = useState(true)
 	const router = useRouter()
+
 	useEffect(() => {
 		getSession().then((session) => {
 			if (!session) {
-				router.replace("/auth")
+				router.replace(`${window.location.origin}/auth`)
 			} else {
 				setIsLoading(false)
 			}

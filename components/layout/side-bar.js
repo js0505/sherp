@@ -118,7 +118,7 @@ function SideBar(props) {
 			return
 		} else {
 			signOut({
-				callbackUrl: "/auth",
+				callbackUrl: `${window.location.origin}/auth`,
 			})
 		}
 	}

@@ -35,7 +35,7 @@ function CompanyRegisterForm() {
 	}
 
 	return (
-		<section className="container lg:w-3/4">
+		<section className="container lg:w-3/6">
 			<form className="grid gap-4" onSubmit={submitHandler}>
 				<div>
 					<label className="input-label">제조사명</label>

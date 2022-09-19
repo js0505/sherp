@@ -19,7 +19,7 @@ function RepairList(props) {
 	}, [state])
 
 	return (
-		<section className="container lg:w-3/4 ">
+		<section className="container lg:w-3/5 ">
 			<div className="overflow-auto sm:h-[35rem]">
 				{repairList &&
 					repairList.map((item) => (

@@ -81,7 +81,7 @@ function RepairRegisterForm(props) {
 		setSelectedBrand(item.brand)
 	}
 	return (
-		<section className="container lg:w-3/4">
+		<section className="container sm:w-3/5">
 			<form onSubmit={submitHandler} className="grid grid-cols-4 gap-4">
 				<div className="col-span-4">
 					<label className="input-label" htmlFor="date">
@@ -182,6 +182,7 @@ function RepairRegisterForm(props) {
 						maxLength={200}
 						rows={3}
 						ref={noteInputRef}
+						placeholder={"내용과 수리처를 남겨주세요 "}
 					></textarea>
 				</div>
 				<div className="col-span-4">

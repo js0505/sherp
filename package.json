@@ -6,7 +6,8 @@
 		"dev": "next dev",
 		"build": "cross-env next build",
 		"start": "next start",
-		"lint": "next lint"
+		"pm2dev": "pm2 start npm --name `sherp` -- run dev",
+		"pm2prod": "pm2 start npm --name `sherp` -- start"
 	},
 	"dependencies": {
 		"@next-auth/mongodb-adapter": "^1.0.4",

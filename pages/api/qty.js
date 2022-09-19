@@ -32,6 +32,7 @@ handler.patch(async function (req, res) {
 				res
 					.status(200)
 					.json({ message: "재고수량 업데이트 성공", success: true })
+				return
 			case "minus":
 				if (product.qty - qty < 0) {
 					res
@@ -53,6 +54,7 @@ handler.patch(async function (req, res) {
 					res
 						.status(200)
 						.json({ message: "재고수량 업데이트 성공", success: true })
+					return
 				}
 		}
 	} catch (e) {

@@ -45,7 +45,10 @@ function AuthForm() {
 					password: enteredPassword,
 					callbackUrl: "/",
 				})
-				if (!result.error) {
+
+				if (!result.ok) {
+					alert("로그인 에러")
+				} else {
 					router.replace("/")
 				}
 			} catch (e) {

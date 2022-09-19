@@ -17,7 +17,8 @@ export default NextAuth({
 					const user = await User.findOne({ email: credentials.email })
 
 					if (!user) {
-						throw new Error("이메일이 존재하지 않습니다.")
+						// throw new Error("이메일이 존재하지 않습니다.")
+						return null
 					}
 
 					const isPasswordValid = await verifyPassword(
@@ -26,7 +27,8 @@ export default NextAuth({
 					)
 
 					if (!isPasswordValid) {
-						throw new Error("비밀번호가 틀렸습니다.")
+						// throw new Error("비밀번호가 틀렸습니다.")
+						return null
 					}
 
 					return {

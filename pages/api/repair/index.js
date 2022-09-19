@@ -2,6 +2,7 @@ import nextConnect from "next-connect"
 import Product from "../../../models/Product"
 import ProductLog from "../../../models/ProductLog"
 import Repair from "../../../models/Repair"
+import dbConnect from "../../../lib/mongoose/dbConnect"
 
 const handler = nextConnect()
 

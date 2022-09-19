@@ -19,16 +19,58 @@ function RepairList(props) {
 	}, [state])
 
 	return (
-		<section className="container lg:w-3/4">
-			<div>
+		<section className="container lg:w-3/4 ">
+			<div className="overflow-auto sm:h-[35rem]">
 				{repairList &&
 					repairList.map((item) => (
 						<div key={item._id}>
-							<RepairCardItem
-								state={state}
-								replaceListHandler={getRepairProductListByState}
-								item={item}
-							/>
+							<>
+								<RepairCardItem
+									state={state}
+									replaceListHandler={getRepairProductListByState}
+									item={item}
+								/>
+								<RepairCardItem
+									state={state}
+									replaceListHandler={getRepairProductListByState}
+									item={item}
+								/>
+								<RepairCardItem
+									state={state}
+									replaceListHandler={getRepairProductListByState}
+									item={item}
+								/>
+								<RepairCardItem
+									state={state}
+									replaceListHandler={getRepairProductListByState}
+									item={item}
+								/>
+								<RepairCardItem
+									state={state}
+									replaceListHandler={getRepairProductListByState}
+									item={item}
+								/>
+								<RepairCardItem
+									state={state}
+									replaceListHandler={getRepairProductListByState}
+									item={item}
+								/>
+								<RepairCardItem
+									state={state}
+									replaceListHandler={getRepairProductListByState}
+									item={item}
+								/>
+								<RepairCardItem
+									state={state}
+									replaceListHandler={getRepairProductListByState}
+									item={item}
+								/>
+								<RepairCardItem
+									state={state}
+									replaceListHandler={getRepairProductListByState}
+									item={item}
+								/>
+							</>
 						</div>
 					))}
 			</div>

@@ -5,6 +5,7 @@ import User from "../../../models/User"
 import dbConnect from "../../../lib/mongoose/dbConnect"
 
 // next-auth에서 몽구스 연결이 어려워서 다른 분의 아이디어를 얻어서 이렇게 일단 연결.
+
 dbConnect()
 
 export default NextAuth({

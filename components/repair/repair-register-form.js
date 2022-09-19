@@ -75,7 +75,6 @@ function RepairRegisterForm(props) {
 	}
 
 	function dataListSelectHandler(item) {
-		console.log(item)
 		setSelectedProductId(item.id)
 		setSelectedProductCompany(item.companyId)
 		setSelectedCompanyName(item.company)

@@ -43,24 +43,36 @@ function AuthForm() {
 					redirect: false,
 					email: enteredEmail,
 					password: enteredPassword,
+					callbackUrl: "/",
 				})
 				if (!result.error) {
 					router.replace("/")
 				}
 			} catch (e) {
-				console.log("this")
 				console.log(e)
 			}
 		} else {
 			try {
-				const result = await createUserFetch(
-					enteredEmail,
-					enteredName,
-					enteredPassword,
-				)
-				console.log(result)
+				const accept = confirm("계정을 생성 하시겠습니까?")
+
+				if (!accept) {
+					return
+				} else {
+					const result = await createUserFetch(
+						enteredEmail,
+						enteredName,
+						enteredPassword,
+					)
+					if (result.success) {
+						alert(`${enteredEmail} 계정 생성완료`)
+						emailInputRef.current.value = ""
+						passwordInputRef.current.value = ""
+						nameInputRef.current.value = ""
+						switchAuthModeHandler((prevState) => !prevState)
+					}
+				}
 			} catch (e) {
-				console.log("error")
+				alert("회원가입 실패.")
 				console.log(e)
 			}
 		}

@@ -34,6 +34,7 @@ const sidebarData = [
 		iconOpened: <UpChevronIcon />,
 		subNav: [
 			{ title: "장비 등록", path: "/product/register", icon: "" },
+			{ title: "장비 입/출고", path: "/product/qty", icon: "" },
 			{ title: "장비 리스트", path: "/product/list", icon: "" },
 		],
 	},
@@ -116,7 +117,9 @@ function SideBar(props) {
 		if (!accept) {
 			return
 		} else {
-			signOut()
+			signOut({
+				callbackUrl: "/auth",
+			})
 		}
 	}
 
@@ -127,8 +130,9 @@ function SideBar(props) {
 		<>
 			{session && (
 				<div
-					className={`absolute z-30 sm:static sm:block sm:h-screen text-white bg-primary h-full  transition-width duration-200 ease-in-out ${
-						props.showSideBar ? "w-2/4 sm:w-1/6" : "w-0 sm:w-1/6"
+					className={` z-10 absolute sm:relative pt-10 h-full sm:h-full sm:basis-1/6 text-white 
+					bg-primary transition-width duration-200 ease-in-out ${
+						props.showSideBar ? "w-2/4 sm:w-1/6" : "w-0 sm:w-full"
 					}`}
 				>
 					<div className={`${!props.showSideBar ? "hidden md:block" : ""}`}>

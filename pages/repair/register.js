@@ -1,38 +1,18 @@
 import { useEffect, useState } from "react"
 import RepairRegisterForm from "../../components/repair/repair-register-form"
 import PageTitle from "../../components/ui/page-title"
-import { fetchHelperFunction } from "../../lib/fetch/json-fetch-data"
+import { getAllProducts } from "../../lib/util/product-util"
 
 function RepairRegisterPage() {
 	const [productList, setProductList] = useState()
 
-	async function getAllProducts() {
-		const { products, message } = await fetchHelperFunction(
-			"GET",
-			"/api/product",
-		)
-		console.log(message)
-		let editedProductList = []
-		if (products) {
-			products.map((item) =>
-				editedProductList.push({
-					id: item._id,
-					brand: item.brand,
-					company: item.productCompany.name,
-					companyId: item.productCompany._id,
-					value:
-						item.brand.name === "없음"
-							? item.name
-							: `${item.brand.name} ${item.name}`,
-				}),
-			)
-		}
-
-		setProductList(editedProductList)
+	async function getAllProductsToUtil() {
+		const products = await getAllProducts()
+		setProductList(products)
 	}
 
 	useEffect(() => {
-		getAllProducts()
+		getAllProductsToUtil()
 	}, [])
 	return (
 		<>

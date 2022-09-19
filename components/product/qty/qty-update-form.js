@@ -4,17 +4,20 @@ import DatalistInput from "react-datalist-input"
 import { fetchHelperFunction } from "../../../lib/fetch/json-fetch-data"
 
 function QtyUpdateForm(props) {
-	const { qtyUpdate, productList } = props
+	const { productList } = props
 	const { data: session } = useSession()
 
 	const [selectedProductId, setSelectedProductId] = useState()
+	const [selectedProductQty, setSelectedProductQty] = useState()
 	const [selectedCalcValue, setSelectedCalcValue] = useState("plus")
 
 	const qtyInputRef = useRef()
 	const noteInputRef = useRef()
+	const dataListRef = useRef()
 
 	function dataListSelectHandler(item) {
 		setSelectedProductId(item.id)
+		setSelectedProductQty(item.qty)
 	}
 
 	async function submitHandler(e) {
@@ -28,7 +31,17 @@ function QtyUpdateForm(props) {
 
 		const body = { user: userId, productId, calc, note, qty: Number(qty) }
 
-		const accept = confirm("재고를 변경 하시겠습니까?")
+		let confirmQty
+		if (calc === "plus") {
+			confirmQty = selectedProductQty + Number(qty)
+		} else {
+			confirmQty = selectedProductQty - Number(qty)
+			if (confirmQty < 0) {
+				alert("기존 재고보다 출고 수량이 많습니다.")
+				return
+			}
+		}
+		const accept = confirm(`재고를 ${confirmQty}개로 수정 하시겠습니까?`)
 
 		if (!accept) {
 			return
@@ -41,8 +54,9 @@ function QtyUpdateForm(props) {
 				alert(response.message)
 				noteInputRef.current.value = ""
 				qtyInputRef.current.value = ""
+				dataListRef.current.value = ""
 				setSelectedProductId("")
-				setSelectedCalcValue("")
+				setSelectedCalcValue("plus")
 			}
 		}
 	}
@@ -50,12 +64,13 @@ function QtyUpdateForm(props) {
 	return (
 		<section className="container lg:w-3/5 pt-3 ">
 			<form onSubmit={submitHandler} className="grid grid-cols-4 gap-4">
-				<div className="col-span-4 sm:col-span-4">
+				<div className="col-span-4 sm:col-span-2">
 					<DatalistInput
 						className="relative"
 						label={<div className="input-label">제품선택</div>}
 						onSelect={(item) => dataListSelectHandler(item)}
 						items={productList}
+						ref={dataListRef}
 						required
 						inputProps={{ className: " input-text " }}
 						listboxOptionProps={{
@@ -65,6 +80,7 @@ function QtyUpdateForm(props) {
 						isExpandedClassName="absolute border border-gray-300 rounded-md   bg-white w-full max-h-40 overflow-auto "
 					/>
 				</div>
+
 				<div className="col-span-4 sm:col-span-2">
 					<label className="input-label " htmlFor="calc">
 						입/출고
@@ -107,9 +123,21 @@ function QtyUpdateForm(props) {
 						</label>
 					</div>
 				</div>
-				<div className="col-span-4 sm:col-span-2">
+				<div className="col-span-2 sm:col-span-2">
 					<label className="input-label" htmlFor="qty">
-						수량
+						기존 재고수량
+					</label>
+					<input
+						className="input-text"
+						id="qty"
+						type="text"
+						value={selectedProductQty === undefined ? "" : selectedProductQty}
+						disabled
+					/>
+				</div>
+				<div className="col-span-2 sm:col-span-2">
+					<label className="input-label" htmlFor="qty">
+						조정 수량
 					</label>
 					<input
 						className="input-text"

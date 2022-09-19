@@ -30,46 +30,6 @@ function RepairList(props) {
 									replaceListHandler={getRepairProductListByState}
 									item={item}
 								/>
-								<RepairCardItem
-									state={state}
-									replaceListHandler={getRepairProductListByState}
-									item={item}
-								/>
-								<RepairCardItem
-									state={state}
-									replaceListHandler={getRepairProductListByState}
-									item={item}
-								/>
-								<RepairCardItem
-									state={state}
-									replaceListHandler={getRepairProductListByState}
-									item={item}
-								/>
-								<RepairCardItem
-									state={state}
-									replaceListHandler={getRepairProductListByState}
-									item={item}
-								/>
-								<RepairCardItem
-									state={state}
-									replaceListHandler={getRepairProductListByState}
-									item={item}
-								/>
-								<RepairCardItem
-									state={state}
-									replaceListHandler={getRepairProductListByState}
-									item={item}
-								/>
-								<RepairCardItem
-									state={state}
-									replaceListHandler={getRepairProductListByState}
-									item={item}
-								/>
-								<RepairCardItem
-									state={state}
-									replaceListHandler={getRepairProductListByState}
-									item={item}
-								/>
 							</>
 						</div>
 					))}

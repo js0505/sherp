@@ -7,6 +7,7 @@ import dbConnect from "../../../lib/mongoose/dbConnect"
 const handler = nextConnect()
 
 handler.get(async function (req, res) {
+	await dbConnect()
 	try {
 		const findRepairListByState = await Repair.find({ state: req.query.state })
 			.populate("product")
@@ -20,6 +21,7 @@ handler.get(async function (req, res) {
 })
 
 handler.post(async function (req, res) {
+	await dbConnect()
 	const data = req.body
 
 	try {
@@ -69,6 +71,7 @@ handler.post(async function (req, res) {
 })
 
 handler.patch(async function (req, res) {
+	await dbConnect()
 	const { state, id, product, qty, user } = req.body
 
 	// 수리완료 처리

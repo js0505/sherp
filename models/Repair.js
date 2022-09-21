@@ -45,6 +45,13 @@ export const RepairSchema = new Schema(
 			default: "수리접수",
 			// 수리접수, 수리완료, 원복완료, 재고입고
 		},
+		reply: [
+			{
+				writerName: { type: String },
+				date: { type: String },
+				note: { type: String },
+			},
+		],
 	},
 	{ timestamps: true },
 )

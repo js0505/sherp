@@ -19,7 +19,7 @@ function RepairItemDetail(props) {
 	})
 
 	return (
-		<div className="divide-y divide-gray-300/25 w-full sm:w-[32rem]">
+		<div className="divide-y divide-gray-300/25 w-full lg:w-[32rem]">
 			<div className="px-4 py-2">
 				<div className="text-xl font-medium">{item.storeName}</div>
 				<div className="text-gray-300">{`${item.product.name} / ${item.user.name}`}</div>
@@ -63,11 +63,11 @@ function RepairItemDetail(props) {
 
 function DetailListItem(props) {
 	return (
-		<div className="px-4 py-2 sm:flex sm:h-18 ">
-			<div className="text-gray-700 font-normal mb-2 sm:mb-1 text-sm sm:basis-1/3 sm:h-full sm:pl-3 ">
+		<div className="px-4 py-2 lg:flex lg:h-18 ">
+			<div className="text-gray-700 font-normal mb-2 lg:mb-1 text-lg lg:basis-1/3 lg:h-full lg:pl-3 ">
 				{props.title}
 			</div>
-			<div className="sm:w-full sm:h-full text-sm">{props.desc}</div>
+			<div className="lg:w-full lg:h-full text-lg">{props.desc}</div>
 		</div>
 	)
 }

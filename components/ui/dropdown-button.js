@@ -53,7 +53,7 @@ function DropDownButton(props) {
 					<div className="w-full">
 						<button
 							onBlur={() => setToggle(false)}
-							className=" px-4 h-12 mt-1 block w-full text-left  rounded-md border border-gray-300 shadow-sm text-sm sm:text-md focus:border-primary focus:ring-2  focus:ring-primary focus:outline-none"
+							className=" px-4 h-12 mt-1 block w-full text-left  rounded-md border border-gray-300 shadow-lg text-lg lg:text-md focus:border-primary focus:ring-2  focus:ring-primary focus:outline-none"
 							onClick={!disabled ? dropdownToggleHandler : disabledHandler}
 						>
 							<div className="flex justify-between ">
@@ -80,7 +80,7 @@ function DropDownButton(props) {
 											<li
 												key={item._id}
 												onClick={() => optionSelectHandler(item)}
-												className="hover:bg-primary  hover:text-white border-b border-b-gray-transparent rounded-sm h-12 text-sm sm:text-md px-3 pt-3"
+												className="hover:bg-primary  hover:text-white border-b border-b-gray-transparent rounded-lg h-12 text-lg lg:text-md px-3 pt-3"
 											>
 												{item.name}
 											</li>

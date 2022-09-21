@@ -38,7 +38,7 @@ function ProductListTable(props) {
 	}
 
 	return (
-		<div className="h-96 mt-10 sm:h-5/6 w-full sm:w-4/6 container ">
+		<div className="h-96 mt-10 lg:h-5/6 w-full lg:w-4/6 container ">
 			<div className="ag-theme-alpine w-full h-full">
 				<AgGridReact
 					defaultColDef={{

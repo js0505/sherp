@@ -23,19 +23,18 @@ function RepairCardItem(props) {
 				</Modal>
 			)}
 			<div
-				className=" mt-5 h-20 p-2 cursor-pointer rounded-md shadow-lg hover:bg-gray-300 hover:bg-opacity-10"
+				className=" cursor-pointer h-16 pt-3 lg:py-2 px-2 mb-3 border border-gray-transparent 
+				rounded-md shadow-lg hover:bg-gray-300 hover:bg-opacity-10"
 				onClick={modalHandler}
 			>
-				<div className=" w-full text-md sm:text-lg flex mb-1 mt-1 font-medium">
-					<span className="mr-2">{item.storeName} </span>
+				<div className=" w-full text-lg lg:text-base flex font-medium">
+					<div className="mr-2">{item.storeName} </div>
 					<span className="mr-2">{item.product.name} </span>
 					<span>{item.qty}대</span>
 				</div>
-				<div className="text-gray-300 text-md ">
-					<span className="mr-2">{item.user.name}</span>
-					<span className="mr-2">/</span>
-					<span>{item.date}</span>
-					<span></span>
+				<div className="text-gray-300 text-xs lg:text-base  flex lg:justify-end w-full p-0 ">
+					<div className="mr-2">{item.user.name}</div>
+					<div>{item.date}</div>
 				</div>
 			</div>
 		</>

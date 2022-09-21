@@ -85,7 +85,7 @@ function RepairRegisterForm(props) {
 		setSelectedBrand(item.brand)
 	}
 	return (
-		<section className="container sm:w-3/5">
+		<section className="container lg:w-3/5">
 			<form onSubmit={submitHandler} className="grid grid-cols-4 gap-4">
 				<div className="col-span-4">
 					<label className="input-label" htmlFor="date">
@@ -100,7 +100,7 @@ function RepairRegisterForm(props) {
 						required
 					/>
 				</div>
-				<div className="col-span-4 sm:col-span-2">
+				<div className="col-span-4 lg:col-span-2">
 					<DatalistInput
 						className="relative"
 						label={<div className="input-label">제품선택</div>}
@@ -115,7 +115,7 @@ function RepairRegisterForm(props) {
 						isExpandedClassName="absolute border border-gray-300 rounded-md   bg-white w-full max-h-40 overflow-auto "
 					/>
 				</div>
-				<div className="col-span-2 sm:col-span-1">
+				<div className="col-span-2 lg:col-span-1">
 					<label className="input-label" htmlFor="qty">
 						수량
 					</label>
@@ -127,7 +127,7 @@ function RepairRegisterForm(props) {
 						required
 					/>
 				</div>
-				<div className="col-span-2 sm:col-span-1">
+				<div className="col-span-2 lg:col-span-1">
 					<label className="input-label" htmlFor="company">
 						제조사
 					</label>

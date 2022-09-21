@@ -15,7 +15,9 @@ function RepairListPage() {
 	return (
 		<>
 			<PageTitle title={title} />
-			<RepairList state={state} />
+			<div className="">
+				<RepairList state={state} />
+			</div>
 		</>
 	)
 }

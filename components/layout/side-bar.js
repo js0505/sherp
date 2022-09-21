@@ -130,9 +130,9 @@ function SideBar(props) {
 		<>
 			{session && (
 				<div
-					className={` z-10 absolute sm:relative pt-10 h-full sm:h-full sm:basis-1/6 text-white 
+					className={` z-10 absolute lg:relative pt-10 h-full lg:h-full lg:basis-1/6 text-white 
 					bg-primary transition-width duration-200 ease-in-out ${
-						props.showSideBar ? "w-2/4 sm:w-1/6" : "w-0 sm:w-full"
+						props.showSideBar ? "w-2/4 lg:w-1/6" : "w-0 lg:w-full"
 					}`}
 				>
 					<div className={`${!props.showSideBar ? "hidden md:block" : ""}`}>

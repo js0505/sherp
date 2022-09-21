@@ -64,7 +64,7 @@ function QtyUpdateForm(props) {
 	return (
 		<section className="container lg:w-3/5 pt-3 ">
 			<form onSubmit={submitHandler} className="grid grid-cols-4 gap-4">
-				<div className="col-span-4 sm:col-span-2">
+				<div className="col-span-4 lg:col-span-2">
 					<DatalistInput
 						className="relative"
 						label={<div className="input-label">제품선택</div>}
@@ -81,7 +81,7 @@ function QtyUpdateForm(props) {
 					/>
 				</div>
 
-				<div className="col-span-4 sm:col-span-2">
+				<div className="col-span-4 lg:col-span-2">
 					<label className="input-label " htmlFor="calc">
 						입/출고
 					</label>
@@ -123,7 +123,7 @@ function QtyUpdateForm(props) {
 						</label>
 					</div>
 				</div>
-				<div className="col-span-2 sm:col-span-2">
+				<div className="col-span-2 lg:col-span-2">
 					<label className="input-label" htmlFor="qty">
 						기존 재고수량
 					</label>
@@ -135,7 +135,7 @@ function QtyUpdateForm(props) {
 						disabled
 					/>
 				</div>
-				<div className="col-span-2 sm:col-span-2">
+				<div className="col-span-2 lg:col-span-2">
 					<label className="input-label" htmlFor="qty">
 						조정 수량
 					</label>

@@ -9,7 +9,6 @@ function RepairCardItem(props) {
 	function modalHandler() {
 		setShowModal(!showModal)
 	}
-	
 
 	function checkDateFunction() {
 		const today = new Date().now()
@@ -30,7 +29,7 @@ function RepairCardItem(props) {
 				className=" mt-5 h-20 p-2 cursor-pointer rounded-md shadow-lg hover:bg-gray-300 hover:bg-opacity-10"
 				onClick={modalHandler}
 			>
-				<div className=" w-full text-md flex mb-1 mt-1">
+				<div className=" w-full text-lg flex mb-1 mt-1 font-medium">
 					<span className="mr-2">{item.storeName} </span>
 					<span className="mr-2">{item.product.name} </span>
 					<span>{item.qty}대</span>

@@ -24,7 +24,6 @@ handler.post(async function (req, res) {
 				},
 			},
 		)
-		console.log(reply)
 		res.status(200).json({ success: true })
 	} catch (e) {
 		res

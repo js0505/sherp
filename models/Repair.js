@@ -30,6 +30,9 @@ export const RepairSchema = new Schema(
 		note: {
 			type: String,
 		},
+		symptom: {
+			type: String,
+		},
 		date: {
 			type: String,
 		},

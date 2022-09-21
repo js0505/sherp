@@ -26,13 +26,14 @@ function RepairItemDetail(props) {
 			</div>
 
 			<DetailListItem title="날짜" desc={item.date} />
-			<DetailListItem title="메모" desc={item.note} />
+			<DetailListItem title="고장증상" desc={item.symptom || ""} />
 			<DetailListItem title="수량" desc={`${item.qty}대`} />
 			<DetailListItem title="제품번호" desc={`${item.productNum}`} />
 			<DetailListItem
 				title="송장번호"
 				desc={item.invoiceNum ? item.invoiceNum : "없음"}
 			/>
+			<DetailListItem title="메모" desc={item.note} />
 			<div className="w-full flex p-2">
 				<button
 					onClick={

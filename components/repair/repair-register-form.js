@@ -26,6 +26,7 @@ function RepairRegisterForm(props) {
 	const productNumInputRef = useRef()
 	const invoiceNumInputRef = useRef()
 	const noteInputRef = useRef()
+	const symptomInputRef = useRef()
 
 	async function submitHandler(e) {
 		e.preventDefault()
@@ -34,6 +35,7 @@ function RepairRegisterForm(props) {
 		const storeNameRefValue = storeNameInputRef.current.value
 		const productNumRefValue = productNumInputRef.current.value
 		const invoiceNumRefValue = invoiceNumInputRef.current.value || ""
+		const symptomRefValue = symptomInputRef.current.value
 		const noteRefValue = noteInputRef.current.value
 		const userId = session.user.image._id
 
@@ -47,6 +49,7 @@ function RepairRegisterForm(props) {
 		const invoiceNum = invoiceNumRefValue
 		const note = noteRefValue
 		const brand = selectedBrand
+		const symptom = symptomRefValue
 
 		const body = {
 			date,
@@ -58,6 +61,7 @@ function RepairRegisterForm(props) {
 			productNum,
 			invoiceNum,
 			note,
+			symptom,
 			brand,
 		}
 		const accept = confirm("등록 하시겠습니까?")
@@ -171,6 +175,18 @@ function RepairRegisterForm(props) {
 						type="text"
 						ref={invoiceNumInputRef}
 					/>
+				</div>
+				<div className="col-span-4">
+					<label className="input-label" htmlFor="symptom">
+						고장증상
+					</label>
+					<textarea
+						className="input-textarea"
+						id="symptom"
+						maxLength={50}
+						rows={1}
+						ref={symptomInputRef}
+					></textarea>
 				</div>
 				<div className="col-span-4">
 					<label className="input-label" htmlFor="note">

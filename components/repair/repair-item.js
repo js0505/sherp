@@ -24,7 +24,7 @@ function RepairCardItem(props) {
 			)}
 			<div
 				className=" cursor-pointer h-16 pt-3 lg:py-2 px-2 mb-3 border border-gray-transparent 
-				rounded-md shadow-lg hover:bg-gray-300 hover:bg-opacity-10"
+				rounded-md shadow-md hover:bg-gray-300 hover:bg-opacity-10"
 				onClick={modalHandler}
 			>
 				<div className=" w-full text-lg lg:text-base flex font-medium">

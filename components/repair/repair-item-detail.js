@@ -92,7 +92,7 @@ function RepairItemDetail(props) {
 						<input
 							type="text"
 							ref={replyInputRef}
-							className="px-4 h-9 mt-3 block w-full  rounded-md border border-gray-300 
+							className="px-4 h-9 my-1 block w-full  rounded-md border border-gray-300 
 								shadow-lg lg:text-sm focus:border-primary focus:ring-2  
 								focus:ring-primary focus:outline-none"
 						/>

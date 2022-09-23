@@ -7,7 +7,6 @@ import AdminIcon from "../icons/admin-icon"
 import DownChevronIcon from "../icons/down-chevron"
 import UpChevronIcon from "../icons/up-chevron"
 import UserIcon from "../icons/user-icon"
-import { useRouter } from "next/router"
 
 const sidebarData = [
 	{
@@ -103,7 +102,6 @@ function SubMenu(props) {
 function SideBar(props) {
 	const { sideBarHandler } = props
 	const { data: session } = useSession()
-	const router = useRouter()
 
 	const userData = {
 		title: `${session ? session.user.name : ""}`,

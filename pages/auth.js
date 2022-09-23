@@ -1,25 +1,21 @@
 import { getSession } from "next-auth/react"
+import { useRouter } from "next/router"
+import { useEffect } from "react"
 import AuthForm from "../components/auth/auth-form"
 
 function AuthPage() {
+	const router = useRouter()
+
+	useEffect(() => {
+		getSession().then((session) => {
+			if (!session) {
+				router.replace(`${window.location.origin}/auth`)
+			} else {
+				router.replace(`${window.location.origin}/`)
+			}
+		})
+	}, [router])
 	return <AuthForm />
 }
-export async function getServerSideProps(context) {
-	const session = await getSession({ req: context.req })
 
-	if (session) {
-		return {
-			redirect: {
-				destination: `${window.location.origin}/auth`,
-				permanent: false,
-			},
-		}
-	}
-
-	return {
-		props: {
-			session,
-		},
-	}
-}
 export default AuthPage

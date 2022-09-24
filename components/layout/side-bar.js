@@ -23,6 +23,11 @@ const sidebarData = [
 				path: "/repair/list?state=수리완료",
 				icon: "",
 			},
+			{
+				title: "완료된 수리 내역",
+				path: "/repair/log",
+				icon: "",
+			},
 		],
 	},
 	{

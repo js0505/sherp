@@ -72,7 +72,7 @@ handler.post(async function (req, res) {
 
 handler.patch(async function (req, res) {
 	await dbConnect()
-	const { state, id, product, qty, user } = req.body
+	const { state, id, product, qty, completeUser, completeDate } = req.body
 
 	// 수리완료 처리
 	if (state === "수리완료") {
@@ -87,7 +87,11 @@ handler.patch(async function (req, res) {
 	} else {
 		// 원복, 재고입고 : 재고 수량 조정
 		await Repair.findByIdAndUpdate(id, {
-			$set: { state: state },
+			$set: {
+				state: state,
+				completeUser: completeUser,
+				completeDate: completeDate,
+			},
 		})
 
 		Product.findById(product).exec((err, result) => {
@@ -97,7 +101,7 @@ handler.patch(async function (req, res) {
 
 			// 수량변경 로그 데이터
 			const logBody = {
-				user: user,
+				user: completeUser,
 				product: product,
 				calc: "plus",
 				quantity: Number(qty),

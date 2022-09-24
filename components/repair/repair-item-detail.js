@@ -143,12 +143,15 @@ async function repairStateUpdateFunction(item, value, modalHandler, userId) {
 	if (!accept) {
 		return
 	} else {
+		const today = new Date()
+		const formattedToday = format(today, "yyyy-MM-dd")
 		const body = {
 			id: item._id,
 			state: value,
 			product: item.product._id,
 			qty: item.qty,
-			user: userId,
+			completeUser: userId,
+			completeDate: formattedToday,
 		}
 		const response = await fetchHelperFunction("PATCH", "/api/repair", body)
 		alert(response.message)

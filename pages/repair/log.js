@@ -62,6 +62,7 @@ function RepairLogPage() {
 					<CompleteRepairTable data={repairs} replaceListHandler={getData} />
 				)}
 				<PageNation
+					page={page}
 					totalPosts={totalPosts}
 					maxPosts={maxPosts}
 					pageHandleFunction={pageHandleFunction}

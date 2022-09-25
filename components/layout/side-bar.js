@@ -38,8 +38,9 @@ const sidebarData = [
 		iconOpened: <UpChevronIcon />,
 		subNav: [
 			{ title: "장비 등록", path: "/product/register", icon: "" },
-			{ title: "장비 입/출고", path: "/product/qty", icon: "" },
 			{ title: "장비 리스트", path: "/product/list", icon: "" },
+			{ title: "입고, 출고 등록", path: "/product/qty", icon: "" },
+			{ title: "입고, 출고 내역", path: "/product/log", icon: "" },
 		],
 	},
 	{

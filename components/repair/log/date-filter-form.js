@@ -1,6 +1,6 @@
 import { useState } from "react"
 
-function RepairLogDateFilterForm(props) {
+function LogDateFilterForm(props) {
 	const { dateHandler, clearDateHandler } = props
 	const [startDateValue, setStartDateValue] = useState("")
 	const [endDateValue, setEndDateValue] = useState("")
@@ -61,4 +61,4 @@ function RepairLogDateFilterForm(props) {
 	)
 }
 
-export default RepairLogDateFilterForm
+export default LogDateFilterForm

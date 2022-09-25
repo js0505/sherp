@@ -20,6 +20,9 @@ export const productLogSchema = new Schema(
 		note: {
 			type: String,
 		},
+		date: {
+			type: String,
+		},
 	},
 	{ timestamps: true },
 )

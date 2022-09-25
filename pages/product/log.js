@@ -1,12 +1,13 @@
 import { useCallback, useEffect, useState } from "react"
 import PageTitle from "../../components/ui/page-title"
-import CompleteRepairTable from "../../components/repair/log/log-table"
+import Pagenation from "../../components/ui/pagenation"
 import { fetchHelperFunction } from "../../lib/fetch/json-fetch-data"
+
+import ProductLogTable from "../../components/product/log/log-table"
 import LogDateFilterForm from "../../components/repair/log/date-filter-form"
-import PageNation from "../../components/ui/pagenation"
-function RepairLogPage() {
+function ProductLogPage() {
 	const [totalPosts, setTotalPosts] = useState(null) // 모든 데이터의 갯수
-	const [repairs, setRepairs] = useState() // 현재 페이지에 나타날 데이터
+	const [logs, setLogs] = useState() // 현재 페이지에 나타날 데이터
 	const [startDate, setStartDate] = useState(null) // 현재 페이지에 나타날 데이터
 	const [endDate, setEndDate] = useState(null) // 현재 페이지에 나타날 데이터
 	const [page, setPage] = useState(1) // 현재 페이지네이션 번호
@@ -35,13 +36,14 @@ function RepairLogPage() {
 		async (page) => {
 			const response = await fetchHelperFunction(
 				"GET",
-				`/api/repair/log?page=${page}&maxPosts=${maxPosts}&start=${startDate}&end=${endDate}`,
+				`/api/product/log?page=${page}&maxPosts=${maxPosts}&start=${startDate}&end=${endDate}`,
 			)
+
 			if (response.totalPosts) {
 				// 최초 페이지 접속 시 총 데이터 갯수를 받아와 페이지네이션 넘버링에 사용
 				setTotalPosts(response.totalPosts)
 			}
-			setRepairs(response.repairs)
+			setLogs(response.productLogs)
 		},
 		[startDate, endDate],
 	)
@@ -52,16 +54,14 @@ function RepairLogPage() {
 
 	return (
 		<div>
-			<PageTitle title="처리 완료된 수리 내역" />
+			<PageTitle title="입고, 출고 내역" />
 			<div className=" w-5/6  container ">
 				<LogDateFilterForm
 					clearDateHandler={initFilterDateFunction}
 					dateHandler={updateFilterDateFunction}
 				/>
-				{repairs && (
-					<CompleteRepairTable data={repairs} replaceListHandler={getData} />
-				)}
-				<PageNation
+				{logs && <ProductLogTable data={logs} replaceListHandler={getData} />}
+				<Pagenation
 					page={page}
 					totalPosts={totalPosts}
 					maxPosts={maxPosts}
@@ -72,4 +72,4 @@ function RepairLogPage() {
 	)
 }
 
-export default RepairLogPage
+export default ProductLogPage

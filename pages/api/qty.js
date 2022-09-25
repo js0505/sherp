@@ -10,7 +10,7 @@ const handler = nextConnect()
 handler.patch(async function (req, res) {
 	await dbConnect()
 
-	const { qty, calc, note, user, productId } = req.body
+	const { qty, calc, note, user, productId, date } = req.body
 	try {
 		const product = await Product.findById(productId)
 
@@ -25,6 +25,7 @@ handler.patch(async function (req, res) {
 					calc,
 					quantity: Number(qty),
 					note,
+					date,
 				}
 
 				const log = new ProductLog(logBody)
@@ -47,6 +48,7 @@ handler.patch(async function (req, res) {
 						calc,
 						quantity: Number(qty),
 						note,
+						date,
 					}
 
 					const log = new ProductLog(logBody)

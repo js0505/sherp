@@ -1,3 +1,4 @@
+import { format } from "date-fns"
 import { useSession } from "next-auth/react"
 import { useRef, useState } from "react"
 import DatalistInput from "react-datalist-input"
@@ -22,14 +23,15 @@ function QtyUpdateForm(props) {
 
 	async function submitHandler(e) {
 		e.preventDefault()
+		const today = new Date()
+		const formattedToday = format(today, "yyyy-MM-dd")
 
 		const productId = selectedProductId
 		const calc = selectedCalcValue
 		const userId = session.user.image._id
 		const note = noteInputRef.current.value
 		const qty = qtyInputRef.current.value
-
-		const body = { user: userId, productId, calc, note, qty: Number(qty) }
+		const date = formattedToday
 
 		let confirmQty
 		if (calc === "plus") {
@@ -46,6 +48,15 @@ function QtyUpdateForm(props) {
 		if (!accept) {
 			return
 		} else {
+			const body = {
+				user: userId,
+				productId,
+				calc,
+				note,
+				qty: Number(qty),
+				date,
+			}
+
 			const response = await fetchHelperFunction("PATCH", "/api/qty", body)
 
 			if (!response.success) {

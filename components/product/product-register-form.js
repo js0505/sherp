@@ -99,34 +99,41 @@ function ProductRegisterForm(props) {
 
 	return (
 		<section className="container lg:w-3/5">
-			<form className="grid gap-4" onSubmit={submitHandler}>
-				<div>
+			<form className="grid grid-cols-4 gap-4" onSubmit={submitHandler}>
+				<div className="col-span-4">
 					<label className="input-label">모델명</label>
 					<input className="input-text" ref={productNameInputRef} />
 				</div>
+				<div className="col-span-2">
+					<DropDownButton
+						items={vanItems}
+						label="VAN"
+						handler={selectedVANNameHandler}
+					/>
+				</div>
+				<div className="col-span-2">
+					<DropDownButton
+						items={categoryItems}
+						label="유형"
+						handler={selectednameHandler}
+					/>
+				</div>
+				<div className="col-span-2">
+					<DropDownButton
+						items={productCompany}
+						label="제조사"
+						handler={selectedCompanyIdHandler}
+					/>
+				</div>
+				<div className="col-span-2">
+					<DropDownButton
+						items={brand}
+						label="법인명"
+						handler={selectedBrandIdHandler}
+					/>
+				</div>
 
-				<DropDownButton
-					items={vanItems}
-					label="VAN"
-					handler={selectedVANNameHandler}
-				/>
-				<DropDownButton
-					items={categoryItems}
-					label="유형"
-					handler={selectednameHandler}
-				/>
-
-				<DropDownButton
-					items={productCompany}
-					label="제조사"
-					handler={selectedCompanyIdHandler}
-				/>
-				<DropDownButton
-					items={brand}
-					label="법인명"
-					handler={selectedBrandIdHandler}
-				/>
-				<div>
+				<div className="col-span-4">
 					<button className="input-button" type="submit">
 						등록
 					</button>

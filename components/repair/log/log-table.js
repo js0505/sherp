@@ -7,7 +7,7 @@ import Modal from "../../ui/modal"
 import RepairItemDetail from "../repair-card-item-detail"
 
 function CompleteRepairTable(props) {
-	const { data } = props
+	const { data, replaceListHandler } = props
 	const [showModal, setShowModal] = useState(false)
 	const [selectedItemState, setSelectedItemState] = useState()
 	const [selectedItem, setSelectedItem] = useState()
@@ -39,7 +39,7 @@ function CompleteRepairTable(props) {
 	function onCellClick(params) {
 		setSelectedItem(params.data)
 		setSelectedItemState(params.data.state)
-
+		console.log(params.data)
 		setShowModal(!showModal)
 	}
 
@@ -51,6 +51,7 @@ function CompleteRepairTable(props) {
 						state={selectedItemState}
 						modalHandler={modalHandler}
 						item={selectedItem}
+						replaceListHandler={replaceListHandler}
 					/>
 				</Modal>
 			)}

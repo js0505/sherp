@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 import { fetchHelperFunction } from "../../lib/fetch/json-fetch-data"
 import RepairCardItem from "./repair-card-item"
 import { format, differenceInDays, parseISO } from "date-fns"
@@ -8,7 +8,7 @@ function RepairList(props) {
 	const [repairList, setRepairList] = useState()
 	const [confirmRepairList, setConfirmRepairList] = useState()
 
-	async function getRepairProductListByState() {
+	const getRepairProductListByState = useCallback(async () => {
 		const { repairs } = await fetchHelperFunction(
 			"GET",
 			`/api/repair?state=${state}`,
@@ -39,11 +39,11 @@ function RepairList(props) {
 			setRepairList(repairs)
 			setConfirmRepairList()
 		}
-	}
+	}, [state])
 
 	useEffect(() => {
 		getRepairProductListByState()
-	}, [state])
+	}, [getRepairProductListByState])
 
 	return (
 		<section className="container lg:w-full mt-8 lg:mt-0 flex flex-col w-full lg:flex-row lg:justify-evenly ">

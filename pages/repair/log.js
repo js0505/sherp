@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 import PageTitle from "../../components/ui/page-title"
 import CompleteRepairTable from "../../components/repair/log/log-table"
 import { fetchHelperFunction } from "../../lib/fetch/json-fetch-data"
@@ -31,21 +31,24 @@ function RepairLogPage() {
 		setPage(page)
 	}
 
-	useEffect(() => {
-		async function getData(page) {
+	const getData = useCallback(
+		async (page) => {
 			const response = await fetchHelperFunction(
 				"GET",
 				`/api/repair/log?page=${page}&maxPosts=${maxPosts}&start=${startDate}&end=${endDate}`,
 			)
-
 			if (response.totalPosts) {
 				// 최초 페이지 접속 시 총 데이터 갯수를 받아와 페이지네이션 넘버링에 사용
 				setTotalPosts(response.totalPosts)
 			}
 			setRepairs(response.repairs)
-		}
+		},
+		[startDate, endDate],
+	)
+
+	useEffect(() => {
 		getData(page)
-	}, [page, totalPosts, startDate, endDate])
+	}, [getData, page, totalPosts])
 
 	return (
 		<div>
@@ -55,7 +58,9 @@ function RepairLogPage() {
 					clearDateHandler={initFilterDateFunction}
 					dateHandler={updateFilterDateFunction}
 				/>
-				{repairs && <CompleteRepairTable data={repairs} />}
+				{repairs && (
+					<CompleteRepairTable data={repairs} replaceListHandler={getData} />
+				)}
 				<PageNation
 					totalPosts={totalPosts}
 					maxPosts={maxPosts}

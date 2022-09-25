@@ -9,9 +9,9 @@ function RepairItemDetail(props) {
 	// state : 상태 값. 이 값으로 로그 창에서 다르게 핸들링 필요?
 	const { item, replaceListHandler, modalHandler, state } = props
 
-	const [reply, setReply] = useState([])
-
 	const replyInputRef = useRef()
+
+	const [reply, setReply] = useState(item.reply)
 
 	const { data: session } = useSession()
 
@@ -54,13 +54,10 @@ function RepairItemDetail(props) {
 			} else {
 				setReply(reply.concat(replyBody))
 				replyInputRef.current.value = ""
+				replaceListHandler()
 			}
 		}
 	}
-
-	useEffect(() => {
-		return replaceListHandler
-	})
 
 	return (
 		<div className="divide-y divide-gray-300/25 w-full lg:w-[32rem]">
@@ -78,36 +75,35 @@ function RepairItemDetail(props) {
 				desc={item.invoiceNum ? item.invoiceNum : "없음"}
 			/>
 			<DetailListItem title="메모" desc={item.note} />
-			<div
-				className="px-4 py-2 lg:flex lg:h-18 text-gray-700 font-normal 
-							mb-2 lg:mb-1 text-lg lg:basis-1/3 lg:h-full lg:pl-7  "
-			>
-				댓글
-			</div>
-			<div className="px-4 py-2 lg:flex-col lg:h-18  ">
-				{item.reply &&
-					item.reply.map((item, index) => (
-						<div className="flex-col justify-between pl-8 mb-2" key={index}>
-							<div className="mb-1">
-								<span className=" text-sm ">{item.writerName} </span>
-								<span className="text-sm text-gray-300">{item.date}</span>
-							</div>
-							<div className="pl-2">{item.note}</div>
-						</div>
-					))}
-
-				<div>
-					<form onSubmit={onSubmitHandler}>
-						<input
-							type="text"
-							ref={replyInputRef}
-							className="px-4 h-9 my-1 block w-full  rounded-md border border-gray-300 
+			<DetailListItem
+				title="댓글"
+				desc={
+					<>
+						{reply &&
+							reply.map((item, index) => (
+								<div className="flex-col justify-between pl-8 mb-2" key={index}>
+									<div className="mb-1">
+										<span className=" text-sm ">{item.writerName} </span>
+										<span className="text-sm text-gray-300">{item.date}</span>
+									</div>
+									<div className="pl-2">{item.note}</div>
+								</div>
+							))}
+						<div>
+							<form onSubmit={onSubmitHandler}>
+								<input
+									type="text"
+									ref={replyInputRef}
+									className="px-4 h-9 my-1 block w-full  rounded-md border border-gray-300 
 								shadow-lg lg:text-sm focus:border-primary focus:ring-2  
 								focus:ring-primary focus:outline-none"
-						/>
-					</form>
-				</div>
-			</div>
+								/>
+							</form>
+						</div>
+					</>
+				}
+			/>
+
 			<div className="w-full flex p-2">
 				{state === "수리접수" ||
 					(state === "수리완료" && (
@@ -144,7 +140,9 @@ function DetailListItem(props) {
 			<div className="text-gray-700 font-normal mb-2 lg:mb-1 text-lg lg:basis-1/3 lg:h-full lg:pl-3 ">
 				{props.title}
 			</div>
-			<div className="lg:w-full lg:h-full text-lg">{props.desc}</div>
+			<div className="lg:w-full lg:h-full text-lg">
+				{props.desc || props.children}
+			</div>
 		</div>
 	)
 }

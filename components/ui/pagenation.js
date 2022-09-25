@@ -12,7 +12,7 @@ function PageNation(props) {
 	}
 
 	return (
-		<div className="py-2">
+		<div className="py-2 flex justify-center ">
 			<button
 				className="text-lg text-primary hover:bg-primaryHover hover:text-white 
                 h-10 w-8 border border-gray-transparent"

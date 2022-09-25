@@ -81,16 +81,21 @@ function RepairItemDetail(props) {
 				title="댓글"
 				desc={
 					<>
-						{reply &&
-							reply.map((item, index) => (
-								<div className="flex-col justify-between pl-8 mb-2" key={index}>
-									<div className="mb-1">
-										<span className=" text-sm ">{item.writerName} </span>
-										<span className="text-sm text-gray-300">{item.date}</span>
+						<div className=" overflow-scroll max-h-80">
+							{reply &&
+								reply.map((item, index) => (
+									<div
+										className="flex-col justify-between pl-8 mb-2"
+										key={index}
+									>
+										<div className="mb-1">
+											<span className=" text-sm ">{item.writerName} </span>
+											<span className="text-sm text-gray-300">{item.date}</span>
+										</div>
+										<div className="pl-2">{item.note}</div>
 									</div>
-									<div className="pl-2">{item.note}</div>
-								</div>
-							))}
+								))}
+						</div>
 						<div>
 							<form onSubmit={onSubmitHandler}>
 								<input

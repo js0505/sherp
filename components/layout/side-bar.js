@@ -19,7 +19,7 @@ const sidebarData = [
 			{ title: "수리 접수", path: "/repair/register", icon: "" },
 			{ title: "접수 리스트", path: "/repair/list?state=수리접수", icon: "" },
 			{
-				title: "수리 입고 리스트",
+				title: "입고 리스트",
 				path: "/repair/list?state=수리완료",
 				icon: "",
 			},

@@ -20,8 +20,10 @@ function RepairItemDetail(props) {
 	async function repairCompletedHandler(buttonValue) {
 		if (state === "수리접수") {
 			await repairStateUpdateFunction(item, "수리완료", modalHandler)
+			replaceListHandler()
 		} else if (state === "수리완료") {
 			await repairStateUpdateFunction(item, buttonValue, modalHandler, userId)
+			replaceListHandler()
 		}
 	}
 
@@ -105,19 +107,21 @@ function RepairItemDetail(props) {
 			/>
 
 			<div className="w-full flex p-2">
-				{state === "수리접수" ||
-					(state === "수리완료" && (
-						<button
-							onClick={
-								state === "수리접수"
-									? repairCompletedHandler
-									: () => repairCompletedHandler("원복완료")
-							}
-							className="modal-button mr-1"
-						>
-							{state === "수리접수" ? "수리완료, 입고" : "원복완료"}
-						</button>
-					))}
+				{state === "수리접수" || state === "수리완료" ? (
+					<button
+						onClick={
+							state === "수리접수"
+								? () => repairCompletedHandler()
+								: () => repairCompletedHandler("원복완료")
+						}
+						className="modal-button mr-1"
+					>
+						{state === "수리접수" ? "수리완료, 입고" : "원복완료"}
+					</button>
+				) : (
+					<></>
+				)}
+
 				{state === "수리완료" && (
 					<button
 						onClick={() => repairCompletedHandler("재고입고")}

@@ -71,6 +71,9 @@ handler.post(async function (req, res) {
 })
 
 handler.patch(async function (req, res) {
+	// 입고된 장비 상태 업데이트 하는 부분. 
+	// 수리 입고 -> 완료는 그냥 상태만 변경
+	// 수리완료 -> 재고 or 원복은 재고 수량변경, 로그남기기, 최종 변경 날짜, 유저 입력
 	await dbConnect()
 	const { state, id, product, qty, completeUser, completeDate } = req.body
 

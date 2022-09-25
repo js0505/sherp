@@ -1,6 +1,6 @@
 import { useState } from "react"
 import Modal from "../ui/modal"
-import RepairItemDetail from "./repair-item-detail"
+import RepairItemDetail from "./repair-card-item-detail"
 
 function RepairCardItem(props) {
 	const { item, replaceListHandler, state } = props

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import { fetchHelperFunction } from "../../lib/fetch/json-fetch-data"
-import RepairCardItem from "./repair-item"
+import RepairCardItem from "./repair-card-item"
 import { format, differenceInDays, parseISO } from "date-fns"
 
 function RepairList(props) {

@@ -1,5 +1,6 @@
 import nextConnect from "next-connect"
 import Repair from "../../../../models/Repair"
+import User from "../../../../models/User"
 import Product from "../../../../models/Product"
 import dbConnect from "../../../../lib/mongoose/dbConnect"
 
@@ -20,13 +21,15 @@ handler.get(async function (req, res) {
 		// 날짜 필터 데이터가 들어왔을 때
 
 		const query = {
-			date: { $gte: start, $lte: end },
+			completeDate: { $gte: start, $lte: end },
 			state: { $in: ["원복완료", "재고입고"] },
 		}
 
 		const repairs = await Repair.find(query)
 			.limit(limitPageSize)
 			.populate({ path: "product", model: Product })
+			.populate({ path: "completeUser", model: User })
+			.populate({ path: "user", model: User })
 			.exec()
 
 		const totalPosts = await Repair.countDocuments(query)
@@ -42,6 +45,8 @@ handler.get(async function (req, res) {
 			const repairs = await Repair.find(query)
 				.limit(limitPageSize)
 				.populate({ path: "product", model: Product })
+				.populate({ path: "completeUser", model: User })
+				.populate({ path: "user", model: User })
 				.exec()
 
 			// 리미트 없이 해당 조건에 맞는 전체 데이터 갯수 전달.
@@ -56,6 +61,8 @@ handler.get(async function (req, res) {
 				.skip(skipIndex)
 				.limit(limitPageSize)
 				.populate({ path: "product", model: Product })
+				.populate({ path: "completeUser", model: User })
+				.populate({ path: "user", model: User })
 				.exec()
 
 			res.status(200).json({ success: true, repairs })

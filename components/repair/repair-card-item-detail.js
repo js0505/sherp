@@ -3,15 +3,24 @@ import { fetchHelperFunction } from "../../lib/fetch/json-fetch-data"
 import { useSession } from "next-auth/react"
 import { format } from "date-fns"
 function RepairItemDetail(props) {
+	// item : 상세 수리정보 데이터
+	// replaceListHandler : 상태 조건에 맞는 데이터 불러오는 함수
+	// modalHandler : 모달 창 켜고 끄는 상태변경 함수
+	// state : 상태 값. 이 값으로 로그 창에서 다르게 핸들링 필요?
 	const { item, replaceListHandler, modalHandler, state } = props
+
 	const [reply, setReply] = useState([])
+
 	const replyInputRef = useRef()
+
 	const { data: session } = useSession()
+
 	const userId = session.user.image._id
+
 	async function repairCompletedHandler(buttonValue) {
 		if (state === "수리접수") {
 			await repairStateUpdateFunction(item, "수리완료", modalHandler)
-		} else {
+		} else if (state === "수리완료") {
 			await repairStateUpdateFunction(item, buttonValue, modalHandler, userId)
 		}
 	}
@@ -100,16 +109,19 @@ function RepairItemDetail(props) {
 				</div>
 			</div>
 			<div className="w-full flex p-2">
-				<button
-					onClick={
-						state === "수리접수"
-							? repairCompletedHandler
-							: () => repairCompletedHandler("원복완료")
-					}
-					className="modal-button mr-1"
-				>
-					{state === "수리접수" ? "수리완료, 입고" : "원복완료"}
-				</button>
+				{state === "수리접수" ||
+					(state === "수리완료" && (
+						<button
+							onClick={
+								state === "수리접수"
+									? repairCompletedHandler
+									: () => repairCompletedHandler("원복완료")
+							}
+							className="modal-button mr-1"
+						>
+							{state === "수리접수" ? "수리완료, 입고" : "원복완료"}
+						</button>
+					))}
 				{state === "수리완료" && (
 					<button
 						onClick={() => repairCompletedHandler("재고입고")}
@@ -119,7 +131,7 @@ function RepairItemDetail(props) {
 					</button>
 				)}
 				<button onClick={modalHandler} className="modal-button">
-					취소
+					{state === "수리접수" || state === "수리완료" ? "취소" : "확인"}
 				</button>
 			</div>
 		</div>

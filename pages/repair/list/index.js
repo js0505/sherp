@@ -8,9 +8,9 @@ function RepairListPage() {
 
 	let title
 	if (state === "수리접수") {
-		title = "수리 접수 장비"
+		title = "수리 접수된 장비"
 	} else if (state === "수리완료") {
-		title = "수리 완료 장비"
+		title = "수리 완료된 장비"
 	}
 	return (
 		<>

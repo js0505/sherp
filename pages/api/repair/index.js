@@ -2,7 +2,9 @@ import nextConnect from "next-connect"
 import Product from "../../../models/Product"
 import ProductLog from "../../../models/ProductLog"
 import Repair from "../../../models/Repair"
+import Brand from "../../../models/Brand"
 import dbConnect from "../../../lib/mongoose/dbConnect"
+import User from "../../../models/User"
 
 const handler = nextConnect()
 
@@ -10,8 +12,10 @@ handler.get(async function (req, res) {
 	await dbConnect()
 	try {
 		const findRepairListByState = await Repair.find({ state: req.query.state })
-			.populate("product")
-			.populate("user")
+			.populate({ path: "product", model: Product })
+			.populate({ path: "user", model: User })
+			.exec()
+
 		res.status(200).json({ repairs: findRepairListByState, success: true })
 	} catch (e) {
 		res
@@ -31,38 +35,37 @@ handler.post(async function (req, res) {
 			repair.save()
 			res.status(201).json({ message: "수리 내역 저장 성공", success: true })
 		} else {
-			Product.findById(data.product).exec((err, result) => {
-				if (result.qty - data.qty < 0) {
-					res.status(200).json({
-						message: `재고 수량이 부족합니다. 보유수량 : ${result.qty}`,
-						success: false,
-					})
-				} else {
-					// 법인 장비인 경우
-					// 기존 재고에서 수리 들어가는 수량 빼기.
-					result.qty = result.qty - data.qty
-					result.save()
+			const result = await Product.findById(data.product)
+				.populate({ path: "brand", model: Brand })
+				.exec()
+			if (result.qty - data.qty < 0) {
+				res.status(200).json({
+					message: `재고 수량이 부족합니다. 보유수량 : ${result.qty}`,
+					success: false,
+				})
+			} else {
+				// 법인 장비인 경우
+				// 기존 재고에서 수리 들어가는 수량 빼기.
+				result.qty = result.qty - data.qty
+				result.save()
 
-					// 수량변경 로그 데이터 남기기
-					const logBody = {
-						user: data.user,
-						product: data.product,
-						calc: "minus",
-						quantity: Number(data.qty),
-						note: "수리 접수로 인한 재고 감소",
-						date: data.date,
-					}
-
-					const log = new ProductLog(logBody)
-					log.save()
-
-					const repair = new Repair(data)
-					repair.save()
-					res
-						.status(201)
-						.json({ message: "수리 내역 저장 성공", success: true })
+				// 수량변경 로그 데이터 남기기
+				const logBody = {
+					user: data.user,
+					product: data.product,
+					calc: "minus",
+					quantity: Number(data.qty),
+					note: "수리 접수로 인한 재고 감소",
+					date: data.date,
 				}
-			})
+
+				const log = new ProductLog(logBody)
+				log.save()
+
+				const repair = new Repair(data)
+				repair.save()
+				res.status(201).json({ message: "수리 내역 저장 성공", success: true })
+			}
 		}
 	} catch (e) {
 		res
@@ -98,28 +101,34 @@ handler.patch(async function (req, res) {
 			},
 		})
 
-		Product.findById(product).exec((err, result) => {
-			// 기존 재고 수량에 수리해서 돌아온 수량 증가.
-			result.qty = result.qty + qty
-			result.save()
+		Product.findById(product)
+			.populate({ path: "brand", model: Brand })
+			.exec((err, result) => {
+				// 기존 재고 수량에 수리해서 돌아온 수량 증가.
 
-			// 수량변경 로그 데이터
-			const logBody = {
-				user: completeUser,
-				product: product,
-				calc: "plus",
-				quantity: Number(qty),
-				note: `${state}로 인한 재고 증가.`,
-				date: completeDate,
-			}
+				// 법인장비 아닐 때만 수량조정, 로그 입력
+				if (result.brand.name !== "없음") {
+					result.qty = result.qty + qty
+					result.save()
 
-			const log = new ProductLog(logBody)
-			log.save()
+					// 수량변경 로그 데이터
+					const logBody = {
+						user: completeUser,
+						product: product,
+						calc: "plus",
+						quantity: Number(qty),
+						note: `${state}로 인한 재고 증가.`,
+						date: completeDate,
+					}
 
-			res
-				.status(201)
-				.json({ message: `${state} 상태 변경 완료.`, success: true })
-		})
+					const log = new ProductLog(logBody)
+					log.save()
+				}
+
+				res
+					.status(201)
+					.json({ message: `${state} 상태 변경 완료.`, success: true })
+			})
 	}
 })
 export default handler

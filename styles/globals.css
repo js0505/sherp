@@ -48,7 +48,7 @@ a {
 }
 
 .modal-button {
-	@apply bg-primary hover:bg-primaryHover text-white font-normal text-lg h-12 
+	@apply bg-primary hover:bg-primaryHover text-white font-normal text-base h-12 
 	rounded-md w-full;
 }
 

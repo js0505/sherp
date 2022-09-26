@@ -183,7 +183,7 @@ function RepairRegisterForm(props) {
 					<textarea
 						className="input-textarea"
 						id="symptom"
-						maxLength={50}
+						maxLength={200}
 						rows={1}
 						ref={symptomInputRef}
 					></textarea>

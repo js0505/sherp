@@ -7,25 +7,42 @@ import "ag-grid-community/styles/ag-theme-alpine.css"
 function ProductLogTable(props) {
 	const { data, replaceListHandler } = props
 
+	function calcRenderer(props) {
+		return (
+			<span
+				className={`${
+					props.value === "minus" ? "text-red" : "text-primary"
+				} font-semibold`}
+			>
+				{props.value === "minus" ? "출고" : "입고"}
+			</span>
+		)
+	}
 	// 표시 할 데이터
 	// 제품명, 입출고, 개수, 유저, 내용, 일자
 	const columns = [
-		{ headerName: "제품명", field: "product.name" },
+		{ headerName: "제품명", field: "product.name", width: 250 },
+		{ headerName: "내용", field: "note" },
 		{
 			headerName: "수량",
-			field: "quantity",
 			type: "numericColumn",
-			width: 80,
+			// field: "quantity",
+			valueGetter: (params) => {
+				return `${params.data.quantity}대`
+			},
 		},
-		{ headerName: "입,출고", field: "calc", width: 110 },
+		{
+			headerName: "입,출고",
+			field: "calc",
+			width: 100,
+			cellRenderer: calcRenderer,
+		},
 
-		{ headerName: "완료자", field: "user.name", width: 100 },
-		{ headerName: "내용", field: "note" },
-		{ headerName: "처리일자", field: "date", width: 150 },
+		{ headerName: "등록자", field: "user.name", width: 100 },
+		{ headerName: "등록일자", field: "date" },
 	]
 
 	function onGridReady(params) {
-		params.columnApi.autoSizeColumn("")
 		params.api.sizeColumnsToFit()
 	}
 

@@ -11,7 +11,7 @@ function ProductLogPage() {
 	const [startDate, setStartDate] = useState(null) // 현재 페이지에 나타날 데이터
 	const [endDate, setEndDate] = useState(null) // 현재 페이지에 나타날 데이터
 	const [page, setPage] = useState(1) // 현재 페이지네이션 번호
-	const maxPosts = 2 // 한 페이지에 나타낼 총 갯수
+	const maxPosts = 10 // 한 페이지에 나타낼 총 갯수
 
 	function updateFilterDateFunction(start, end) {
 		if (start === "") {

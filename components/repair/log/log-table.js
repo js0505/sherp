@@ -14,6 +14,7 @@ function CompleteRepairTable(props) {
 	function modalHandler() {
 		setShowModal(!showModal)
 	}
+
 	// 표시 할 데이터
 	// 가맹점명, 제품명, 처리상태, 개수, (완료날짜, 완료유저),
 	const columns = [
@@ -21,18 +22,17 @@ function CompleteRepairTable(props) {
 		{ headerName: "제품명", field: "product.name" },
 		{
 			headerName: "수량",
-			field: "qty",
 			type: "numericColumn",
-			width: 80,
+			field: "qty",
+			// cellRenderer: qtyRenderer,
 		},
 		{ headerName: "상태", field: "state", width: 110 },
 
 		{ headerName: "완료자", field: "completeUser.name", width: 100 },
-		{ headerName: "완료날짜", field: "completeDate", width: 150 },
+		{ headerName: "완료날짜", field: "completeDate" },
 	]
 
 	function onGridReady(params) {
-		params.columnApi.autoSizeColumn("completeDate")
 		params.api.sizeColumnsToFit()
 	}
 

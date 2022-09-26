@@ -156,13 +156,14 @@ function RepairRegisterForm(props) {
 					<label className="input-label" htmlFor="product-num">
 						제품번호
 					</label>
-					<input
-						className="input-text"
+
+					<textarea
+						className="input-textarea h-12"
 						id="product-num"
-						type="text"
+						maxLength={200}
+						rows={1}
 						ref={productNumInputRef}
-						required
-					/>
+					></textarea>
 				</div>
 
 				<div className="col-span-2">
@@ -184,7 +185,7 @@ function RepairRegisterForm(props) {
 						className="input-textarea"
 						id="symptom"
 						maxLength={200}
-						rows={1}
+						rows={3}
 						ref={symptomInputRef}
 					></textarea>
 				</div>

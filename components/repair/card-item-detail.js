@@ -30,6 +30,10 @@ function RepairItemDetail(props) {
 	async function onSubmitHandler(e) {
 		e.preventDefault()
 
+		if (replyInputRef.current.value === "") {
+			alert("내용을 입력 해주세요.")
+			return
+		}
 		const accept = confirm("댓글을 작성 하시겠습니까?")
 
 		if (!accept) {

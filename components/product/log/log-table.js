@@ -21,8 +21,9 @@ function ProductLogTable(props) {
 	// 표시 할 데이터
 	// 제품명, 입출고, 개수, 유저, 내용, 일자
 	const columns = [
-		{ headerName: "제품명", field: "product.name", width: 250 },
-		{ headerName: "내용", field: "note" },
+		{ headerName: "법인명", field: "product.brand.name" },
+		{ headerName: "제품명", field: "product.name" },
+		{ headerName: "내용", field: "note", width: 350 },
 		{
 			headerName: "수량",
 			type: "numericColumn",

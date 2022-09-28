@@ -1,6 +1,7 @@
 import nextConnect from "next-connect"
 import Repair from "../../../../models/Repair"
 import User from "../../../../models/User"
+import Brand from "../../../../models/Brand"
 import Product from "../../../../models/Product"
 import dbConnect from "../../../../lib/mongoose/dbConnect"
 
@@ -29,7 +30,11 @@ handler.get(async function (req, res) {
 			const repairs = await Repair.find(query)
 				.limit(limitPageSize)
 				.sort({ completeDate: -1 })
-				.populate({ path: "product", model: Product })
+				.populate({
+					path: "product",
+					model: Product,
+					populate: { path: "brand", model: Brand },
+				})
 				.populate({ path: "completeUser", model: User })
 				.populate({ path: "user", model: User })
 				.exec()
@@ -49,7 +54,11 @@ handler.get(async function (req, res) {
 				.skip(skipIndex)
 				.limit(limitPageSize)
 				.sort({ completeDate: -1 })
-				.populate({ path: "product", model: Product })
+				.populate({
+					path: "product",
+					model: Product,
+					populate: { path: "brand", model: Brand },
+				})
 				.populate({ path: "completeUser", model: User })
 				.populate({ path: "user", model: User })
 				.exec()
@@ -66,7 +75,11 @@ handler.get(async function (req, res) {
 			const repairs = await Repair.find(query)
 				.limit(limitPageSize)
 				.sort({ completeDate: -1 })
-				.populate({ path: "product", model: Product })
+				.populate({
+					path: "product",
+					model: Product,
+					populate: { path: "brand", model: Brand },
+				})
 				.populate({ path: "completeUser", model: User })
 				.populate({ path: "user", model: User })
 				.exec()
@@ -86,7 +99,11 @@ handler.get(async function (req, res) {
 				.skip(skipIndex)
 				.limit(limitPageSize)
 				.sort({ completeDate: -1 })
-				.populate({ path: "product", model: Product })
+				.populate({
+					path: "product",
+					model: Product,
+					populate: { path: "brand", model: Brand },
+				})
 				.populate({ path: "completeUser", model: User })
 				.populate({ path: "user", model: User })
 				.exec()

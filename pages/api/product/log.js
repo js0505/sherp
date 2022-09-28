@@ -1,5 +1,6 @@
 import nextConnect from "next-connect"
 import User from "../../../models/User"
+import Brand from "../../../models/Brand"
 import ProductLog from "../../../models/ProductLog"
 import Product from "../../../models/Product"
 import dbConnect from "../../../lib/mongoose/dbConnect"
@@ -25,7 +26,11 @@ handler.get(async function (req, res) {
 			const productLogs = await ProductLog.find(query)
 				.limit(limitPageSize)
 				.sort({ date: -1 })
-				.populate({ path: "product", model: Product })
+				.populate({
+					path: "product",
+					model: Product,
+					populate: { path: "brand", model: Brand },
+				})
 				.populate({ path: "user", model: User })
 				.exec()
 
@@ -33,7 +38,7 @@ handler.get(async function (req, res) {
 
 			res.status(200).json({ success: true, productLogs, totalPosts })
 
-		// 날짜 필터를 가지고 페이지네이션
+			// 날짜 필터를 가지고 페이지네이션
 		} else {
 			const query = { date: { $gte: start, $lte: end } }
 			const skipIndex = (parsedPage - 1) * limitPageSize
@@ -41,7 +46,11 @@ handler.get(async function (req, res) {
 				.skip(skipIndex)
 				.limit(limitPageSize)
 				.sort({ date: -1 })
-				.populate({ path: "product", model: Product })
+				.populate({
+					path: "product",
+					model: Product,
+					populate: { path: "brand", model: Brand },
+				})
 				.populate({ path: "user", model: User })
 				.exec()
 
@@ -56,7 +65,11 @@ handler.get(async function (req, res) {
 			const productLogs = await ProductLog.find(query)
 				.limit(limitPageSize)
 				.sort({ createdAt: -1 })
-				.populate({ path: "product", model: Product })
+				.populate({
+					path: "product",
+					model: Product,
+					populate: { path: "brand", model: Brand },
+				})
 				.populate({ path: "user", model: User })
 				.exec()
 
@@ -72,7 +85,11 @@ handler.get(async function (req, res) {
 				.skip(skipIndex)
 				.limit(limitPageSize)
 				.sort({ createdAt: -1 })
-				.populate({ path: "product", model: Product })
+				.populate({
+					path: "product",
+					model: Product,
+					populate: { path: "brand", model: Brand },
+				})
 				.populate({ path: "user", model: User })
 				.exec()
 

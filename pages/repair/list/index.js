@@ -1,5 +1,5 @@
 import { useRouter } from "next/router"
-import RepairList from "../../../components/repair/repair-list"
+import RepairList from "../../../components/repair/list"
 import PageTitle from "../../../components/ui/page-title"
 
 function RepairListPage() {

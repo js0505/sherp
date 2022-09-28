@@ -1,6 +1,6 @@
 import { useState } from "react"
 import Modal from "../ui/modal"
-import RepairItemDetail from "./repair-card-item-detail"
+import RepairItemDetail from "./card-item-detail"
 
 function RepairCardItem(props) {
 	const { item, replaceListHandler, state } = props
@@ -30,7 +30,8 @@ function RepairCardItem(props) {
 				<div className=" w-full text-lg lg:text-base flex font-medium">
 					<div className="mr-2">{item.storeName} </div>
 					<span className="mr-2">{item.product.name} </span>
-					<span>{item.qty}대</span>
+					<span className="mr-1">{item.qty}대</span>
+					{item.reply.length > 0 && <span> ({item.reply.length})</span>}
 				</div>
 				<div className="text-gray-300 text-xs lg:text-base  flex lg:justify-end w-full p-0 ">
 					<div className="mr-2">{item.user.name}</div>

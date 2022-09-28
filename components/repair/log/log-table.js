@@ -4,7 +4,7 @@ import React, { useState } from "react"
 import "ag-grid-community/styles/ag-grid.css"
 import "ag-grid-community/styles/ag-theme-alpine.css"
 import Modal from "../../ui/modal"
-import RepairItemDetail from "../repair-card-item-detail"
+import RepairItemDetail from "../card-item-detail"
 
 function CompleteRepairTable(props) {
 	const { data, replaceListHandler } = props

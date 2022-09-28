@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import RepairRegisterForm from "../../components/repair/repair-register-form"
+import RepairRegisterForm from "../../components/repair/register-form"
 import PageTitle from "../../components/ui/page-title"
 import { getAllProducts } from "../../lib/util/product-util"
 

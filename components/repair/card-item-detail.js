@@ -66,7 +66,7 @@ function RepairItemDetail(props) {
 	}
 
 	return (
-		<div className="divide-y divide-gray-300/25 w-full lg:w-[32rem]">
+		<div className="divide-y divide-gray-300/25 w-full lg:w-[40rem]">
 			<div className="px-4 py-2">
 				<div className="text-xl font-medium">{item.storeName}</div>
 				<div className="text-gray-300">{`${item.product.name} / ${item.user.name}`}</div>
@@ -85,7 +85,7 @@ function RepairItemDetail(props) {
 				title="댓글"
 				desc={
 					<>
-						<div className=" overflow-scroll max-h-80">
+						<div className=" overflow-auto max-h-80">
 							{reply &&
 								reply.map((item, index) => (
 									<div className="flex-col justify-between mb-2" key={index}>

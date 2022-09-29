@@ -85,7 +85,7 @@ function RepairRegisterForm(props) {
 		setSelectedBrand(item.brand)
 	}
 	return (
-		<section className="container lg:w-3/5">
+		<section className="container lg:w-3/5 ">
 			<form onSubmit={submitHandler} className="grid grid-cols-4 gap-4">
 				<div className="col-span-4">
 					<label className="input-label" htmlFor="date">

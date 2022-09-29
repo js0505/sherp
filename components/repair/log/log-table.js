@@ -56,7 +56,7 @@ function CompleteRepairTable(props) {
 					/>
 				</Modal>
 			)}
-			<div className="h-96 mt-5 mb-3 lg:h-[30rem]">
+			<div className="h-96 mt-5 mb-3 lg:h-[29rem]">
 				<div className="ag-theme-alpine w-full h-full">
 					<AgGridReact
 						defaultColDef={{

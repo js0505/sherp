@@ -1,8 +1,4 @@
-import { AgGridReact } from "ag-grid-react"
-import React, { useState } from "react"
-
-import "ag-grid-community/styles/ag-grid.css"
-import "ag-grid-community/styles/ag-theme-alpine.css"
+import GridTable from "../../ui/grid-table"
 
 function ProductLogTable(props) {
 	const { data, replaceListHandler } = props
@@ -48,20 +44,7 @@ function ProductLogTable(props) {
 	}
 
 	return (
-		<>
-			<div className="h-96 mt-5 mb-3 lg:h-[29rem]">
-				<div className="ag-theme-alpine w-full h-full">
-					<AgGridReact
-						defaultColDef={{
-							sortable: true,
-						}}
-						columnDefs={columns}
-						rowData={data}
-						onGridReady={onGridReady}
-					/>
-				</div>
-			</div>
-		</>
+		<GridTable columnDefs={columns} rowData={data} onGridReady={onGridReady} />
 	)
 }
 

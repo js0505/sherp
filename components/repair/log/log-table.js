@@ -1,10 +1,7 @@
-import { AgGridReact } from "ag-grid-react"
-import React, { useState } from "react"
-
-import "ag-grid-community/styles/ag-grid.css"
-import "ag-grid-community/styles/ag-theme-alpine.css"
+import { useState } from "react"
 import Modal from "../../ui/modal"
 import RepairItemDetail from "../card-item-detail"
+import GridTable from "../../ui/grid-table"
 
 function CompleteRepairTable(props) {
 	const { data, replaceListHandler } = props
@@ -25,7 +22,6 @@ function CompleteRepairTable(props) {
 			headerName: "수량",
 			type: "numericColumn",
 			field: "qty",
-			// cellRenderer: qtyRenderer,
 		},
 		{ headerName: "상태", field: "state", width: 110 },
 
@@ -40,8 +36,7 @@ function CompleteRepairTable(props) {
 	function onCellClick(params) {
 		setSelectedItem(params.data)
 		setSelectedItemState(params.data.state)
-		console.log(params.data)
-		setShowModal(!showModal)
+		modalHandler()
 	}
 
 	return (
@@ -56,19 +51,12 @@ function CompleteRepairTable(props) {
 					/>
 				</Modal>
 			)}
-			<div className="h-96 mt-5 mb-3 lg:h-[29rem]">
-				<div className="ag-theme-alpine w-full h-full">
-					<AgGridReact
-						defaultColDef={{
-							sortable: true,
-						}}
-						columnDefs={columns}
-						rowData={data}
-						onGridReady={onGridReady}
-						onCellClicked={onCellClick}
-					/>
-				</div>
-			</div>
+			<GridTable
+				columnDefs={columns}
+				rowData={data}
+				onGridReady={onGridReady}
+				onCellClick={onCellClick}
+			/>
 		</>
 	)
 }

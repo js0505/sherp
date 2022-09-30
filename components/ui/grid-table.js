@@ -3,7 +3,14 @@ import "ag-grid-community/styles/ag-grid.css"
 import "ag-grid-community/styles/ag-theme-alpine.css"
 
 function GridTable(props) {
-	const { columnDefs, rowData, onGridReady, onCellClicked } = props
+	const {
+		columnDefs,
+		rowData,
+		onGridReady,
+		onCellClicked,
+		filter = false,
+		floatingFilter = false,
+	} = props
 	return (
 		<>
 			<div className="h-96 mt-5 mb-3 lg:h-[29rem]">
@@ -11,6 +18,8 @@ function GridTable(props) {
 					<AgGridReact
 						defaultColDef={{
 							sortable: true,
+							filter: filter,
+							floatingFilter: floatingFilter,
 						}}
 						columnDefs={columnDefs}
 						rowData={rowData}

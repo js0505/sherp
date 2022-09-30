@@ -15,8 +15,9 @@ function ProductListPage() {
 	return (
 		<>
 			<PageTitle title="장비 리스트" />
-
-			{products && <ProductListTable data={products} />}
+			<div className=" w-5/6  container ">
+				{products && <ProductListTable data={products} />}
+			</div>
 		</>
 	)
 }

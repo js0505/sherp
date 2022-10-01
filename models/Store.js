@@ -7,7 +7,7 @@ export const StoreSchema = new Schema(
 			type: Schema.Types.ObjectId,
 			ref: "User",
 		},
-		name: {
+		storeName: {
 			type: String,
 		},
 		businessNum: {
@@ -36,8 +36,10 @@ export const StoreSchema = new Schema(
 		},
 		product: [
 			{
-				type: Schema.Types.ObjectId,
-				ref: "Product",
+				productId: {
+					type: Schema.Types.ObjectId,
+					ref: "Product",
+				},
 			},
 		],
 		cms: {
@@ -64,11 +66,15 @@ export const StoreSchema = new Schema(
 				note: { type: String },
 			},
 		],
-		contract: [
+		contractImg: [
 			{
 				url: { type: String },
 			},
 		],
+		isBackup: {
+			type: Boolean,
+			default: false,
+		},
 	},
 	{ timestamps: true },
 )

@@ -69,7 +69,7 @@ function DropDownButton(props) {
 						</button>
 						{visibleAnimation && (
 							<div className="relative">
-								<div className={`absolute w-full overflow-hidden`}>
+								<div className={`absolute w-full overflow-auto h-80`}>
 									<ul
 										className={`border border-gray-transparent  bg-white w-full shadow-md rounded-md mt-1 ${
 											toggle

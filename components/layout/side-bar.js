@@ -7,8 +7,17 @@ import AdminIcon from "../icons/admin-icon"
 import DownChevronIcon from "../icons/down-chevron"
 import UpChevronIcon from "../icons/up-chevron"
 import UserIcon from "../icons/user-icon"
+import StoreIcon from "../icons/store-icon"
 
 const sidebarData = [
+	{
+		title: "가맹점 관리",
+		path: "",
+		icon: <StoreIcon />,
+		iconClosed: <DownChevronIcon />,
+		iconOpened: <UpChevronIcon />,
+		subNav: [{ title: "가맹점 등록", path: "/store/register", icon: "" }],
+	},
 	{
 		title: "수리",
 		path: "",

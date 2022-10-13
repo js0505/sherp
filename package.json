@@ -5,7 +5,7 @@
 	"scripts": {
 		"dev": "next dev",
 		"build": "cross-env next build",
-		"start": "next start",
+		"start": "cross-env next start",
 		"pm2dev": "pm2 start npm --name `sherp` -- run dev",
 		"pm2prod": "pm2 start npm --name `sherp` -- start"
 	},

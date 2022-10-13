@@ -1,33 +1,13 @@
 import { format } from "date-fns"
-import { useRef, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import DatalistInput, { useComboboxControls } from "react-datalist-input"
 import { fetchHelperFunction } from "../../lib/fetch/json-fetch-data"
 import DropDownButton from "../ui/dropdown-button"
-
-const vanItems = [
-	{ name: "KIS", _id: "KIS" },
-	{ name: "NICE", _id: "NICE" },
-	{ name: "FDIK", _id: "FDIK" },
-	{ name: "DAOU", _id: "DAOU" },
-	{ name: "SMARTRO", _id: "SMARTRO" },
-	{ name: "JTNET", _id: "JTNET" },
-	{ name: "KSNET", _id: "KSNET" },
-	{ name: "KFTC", _id: "KFTC" },
-	{ name: "KICC", _id: "KICC" },
-]
-const isBackupItems = [
-	{ name: "메인", _id: false },
-	{ name: "백업", _id: true },
-]
-
-const cityItems = [
-	{ name: "시흥시", _id: "시흥시" },
-	{ name: "인천시", _id: "인천시" },
-	{ name: "서울시", _id: "서울시" },
-	{ name: "고양시", _id: "고양시" },
-	{ name: "파주시", _id: "파주시" },
-	{ name: "안산시", _id: "안산시" },
-]
+import {
+	cityItems,
+	vanItems,
+	isBackupItems,
+} from "../../lib/variables/variables"
 
 function StoreRegisterForm(props) {
 	const { filteredProducts, users } = props
@@ -35,10 +15,10 @@ function StoreRegisterForm(props) {
 	const formattedToday = format(today, "yyyy-MM-dd")
 
 	const [selectedProducts, setSelectedProducts] = useState([])
-	const [isBackup, setIsBackup] = useState(isBackupItems[0]._id)
-	const [selectedVANName, setSelectedVANName] = useState(vanItems[0]._id)
-	const [selectedCity, setSelectedCity] = useState(cityItems[0]._id)
-	const [selectedUser, setSelectedUser] = useState(users[0]._id)
+	const [isBackup, setIsBackup] = useState()
+	const [selectedVANName, setSelectedVANName] = useState()
+	const [selectedCity, setSelectedCity] = useState()
+	const [selectedUser, setSelectedUser] = useState()
 	const [contractDate, setContractDate] = useState(formattedToday)
 	const storeNameInputRef = useRef()
 	const businessNumInputRef = useRef()
@@ -49,6 +29,13 @@ function StoreRegisterForm(props) {
 	const addressInputRef = useRef()
 	const cmsInputRef = useRef()
 	const noteInputRef = useRef()
+
+	useEffect(() => {
+		setIsBackup(isBackupItems[0]._id)
+		setSelectedVANName(vanItems[0]._id)
+		setSelectedCity(cityItems[0]._id)
+		setSelectedUser(users[0]._id)
+	}, [])
 
 	const { setValue: setDataListValue, value: dataListValue } =
 		useComboboxControls({
@@ -83,6 +70,7 @@ function StoreRegisterForm(props) {
 
 	async function submitHandler(e) {
 		e.preventDefault()
+
 		const body = {
 			user: selectedUser,
 			storeName: storeNameInputRef.current.value,
@@ -175,6 +163,7 @@ function StoreRegisterForm(props) {
 						type="text"
 						ref={businessNumInputRef}
 						required
+						maxLength={10}
 					/>
 				</div>
 				<div className="col-span-1">
@@ -193,6 +182,7 @@ function StoreRegisterForm(props) {
 					<DropDownButton
 						items={users}
 						label="담당자"
+						value={selectedUser}
 						handler={selectedUserHandler}
 					/>
 				</div>
@@ -225,6 +215,7 @@ function StoreRegisterForm(props) {
 					<DropDownButton
 						items={cityItems}
 						label="주소(도시)"
+						value={selectedCity}
 						handler={selectedCityHandler}
 					/>
 				</div>
@@ -245,6 +236,7 @@ function StoreRegisterForm(props) {
 					<DropDownButton
 						items={isBackupItems}
 						label="메인/백업"
+						value={isBackup}
 						handler={selectedIsBackupHandler}
 					/>
 				</div>
@@ -284,7 +276,7 @@ function StoreRegisterForm(props) {
 						{selectedProducts &&
 							selectedProducts.map((item, index) => (
 								<div
-									className="flex border w-30 py-1 px-2 rounded-md mr-2 bg-primary"
+									className="flex w-30 p-2  rounded-md mr-2 bg-primary"
 									key={index}
 								>
 									<div className="mr-2 text-white">{item.value}</div>
@@ -312,7 +304,8 @@ function StoreRegisterForm(props) {
 							className:
 								" px-2 py-2 h-10 hover:bg-primary hover:text-white  w-full",
 						}}
-						isExpandedClassName="absolute border border-gray-300 rounded-md   bg-white w-full max-h-40 overflow-auto "
+						isExpandedClassName="absolute border border-gray-300 rounded-md   
+											bg-white w-full max-h-40 overflow-auto "
 					/>
 				</div>
 

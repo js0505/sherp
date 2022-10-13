@@ -1,35 +1,45 @@
 import nextConnect from "next-connect"
 import Product from "../../../models/Product"
-import ProductCompany from "../../../models/ProductCompany"
 import Store from "../../../models/Store"
+import User from "../../../models/User"
 import dbConnect from "../../../lib/mongoose/dbConnect"
 
 const handler = nextConnect()
 
-// // 모든 등록된 장비 불러오기
-// handler.get(async function (req, res) {
-// 	console.log(req.query)
-// 	await dbConnect()
+// 사업자번호, 상호명으로 필터링 된 데이터 전달
+handler.get(async function (req, res) {
+	const { filter } = req.query
 
-// 	try {
-// 		const getAllProducts = await Product.find({})
-// 			.populate({ path: "productCompany", model: ProductCompany })
-// 			.populate({ path: "brand", model: Brand })
-// 			.exec()
+	await dbConnect()
 
-// 		res.status(200).json({ products: getAllProducts, success: true })
-// 	} catch (e) {
-// 		console.log(e)
-// 		res.status(200).json({
-// 			message: "장비 정보 가져오는 중 에러 발생",
-// 			success: false,
-// 			error: e,
-// 		})
-// 	}
-// })
+	try {
+		const filterdStore = await Store.find({})
+			.or([
+				{ businessNum: { $regex: filter, $options: "i" } },
+				{ storeName: { $regex: filter, $options: "i" } },
+			])
+			.populate({
+				path: "product",
+				populate: { path: "productId", model: Product },
+			})
+			.populate({ path: "user", model: User })
+			.exec()
+
+		res.status(200).json({ filterdStore, success: true })
+	} catch (e) {
+		console.log(e)
+		res.status(200).json({
+			message: "가맹점 정보 가져오는 중 에러 발생",
+			success: false,
+			error: e,
+		})
+	}
+})
 
 // 가맹점 신규 등록
 handler.post(async function (req, res) {
+	await dbConnect()
+
 	const {
 		user,
 		storeName,
@@ -80,19 +90,3 @@ handler.post(async function (req, res) {
 })
 
 export default handler
-
-// const [selectedProducts, setSelectedProducts] = useState([])
-// const [isBackup, setIsBackup] = useState(isBackupItems[0]._id)
-// const [selectedVANName, setSelectedVANName] = useState(vanItems[0]._id)
-// const [selectedCity, setSelectedCity] = useState(cityItems[0]._id)
-// const [selectedUser, setSelectedUser] = useState(users[0]._id)
-// const [contractDate, setContractDate] = useState(formattedToday)
-// const storeNameInputRef = useRef()
-// const businessNumInputRef = useRef()
-// const ownerInputRef = useRef()
-// const contactInputRef = useRef()
-// const vanIdInputRef = useRef()
-// const vanCodeInputRef = useRef()
-// const addressInputRef = useRef()
-// const cmsInputRef = useRef()
-// const noteInputRef = useRef()

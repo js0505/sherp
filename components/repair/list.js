@@ -13,7 +13,7 @@ function RepairList(props) {
 			"GET",
 			`/api/repair?state=${state}`,
 		)
-		console.log(repairs)
+
 
 		if (state === "수리접수") {
 			const today = new Date()

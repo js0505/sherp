@@ -16,7 +16,10 @@ const sidebarData = [
 		icon: <StoreIcon />,
 		iconClosed: <DownChevronIcon />,
 		iconOpened: <UpChevronIcon />,
-		subNav: [{ title: "가맹점 등록", path: "/store/register", icon: "" }],
+		subNav: [
+			{ title: "가맹점 등록", path: "/store/register", icon: "" },
+			{ title: "가맹점 검색", path: "/store/search", icon: "" },
+		],
 	},
 	{
 		title: "수리",

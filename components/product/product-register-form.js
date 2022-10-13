@@ -2,35 +2,13 @@ import { useRouter } from "next/router"
 import { useEffect, useRef, useState } from "react"
 import { fetchHelperFunction } from "../../lib/fetch/json-fetch-data"
 import DropDownButton from "../ui/dropdown-button"
+import { categoryItems, vanItems } from "../../lib/variables/variables"
 
-const categoryItems = [
-	{ name: "프린터", _id: "프린터" },
-	{ name: "리더기", _id: "리더기" },
-	{ name: "포스", _id: "포스" },
-	{ name: "키오스크", _id: "키오스크" },
-	{ name: "CAT단말기", _id: "CAT단말기" },
-	{ name: "서명패드", _id: "서명패드" },
-	{ name: "멀티패드", _id: "멀티패드" },
-	{ name: "부가장비", _id: "부가장비" },
-]
-
-const vanItems = [
-	{ name: "없음", _id: "없음" },
-	{ name: "KIS", _id: "KIS" },
-	{ name: "NICE", _id: "NICE" },
-	{ name: "FDIK", _id: "FDIK" },
-	{ name: "DAOU", _id: "DAOU" },
-	{ name: "SMARTRO", _id: "SMARTRO" },
-	{ name: "JTNET", _id: "JTNET" },
-	{ name: "KSNET", _id: "KSNET" },
-	{ name: "KFTC", _id: "KFTC" },
-	{ name: "KICC", _id: "KICC" },
-]
 function ProductRegisterForm(props) {
 	const [productCompany, setProductCompany] = useState()
 	const [brand, setBrand] = useState()
 	const [selectedVANName, setSelectedVANName] = useState()
-	const [selectedname, setSelectedname] = useState()
+	const [selectedCategoryName, setSelectedCategoryName] = useState()
 	const [selectedCompanyId, setSelectedCompanyId] = useState()
 	const [selectedBrandId, setSelectedBrandId] = useState()
 
@@ -46,7 +24,7 @@ function ProductRegisterForm(props) {
 		setSelectedCompanyId(company[0]._id)
 		setSelectedBrandId(brand[0]._id)
 		setSelectedVANName(vanItems[0].name)
-		setSelectedname(categoryItems[0].name)
+		setSelectedCategoryName(categoryItems[0].name)
 	}
 
 	useEffect(() => {
@@ -57,7 +35,7 @@ function ProductRegisterForm(props) {
 		setSelectedVANName(name)
 	}
 	function selectednameHandler(name) {
-		setSelectedname(name)
+		setSelectedCategoryName(name)
 	}
 	function selectedCompanyIdHandler(id) {
 		setSelectedCompanyId(id)
@@ -83,7 +61,7 @@ function ProductRegisterForm(props) {
 			body = {
 				name: productName,
 				van: selectedVANName,
-				category: selectedname,
+				category: selectedCategoryName,
 				brand: selectedBrandId,
 				productCompany: selectedCompanyId,
 			}
@@ -108,6 +86,7 @@ function ProductRegisterForm(props) {
 					<DropDownButton
 						items={vanItems}
 						label="VAN"
+						value={selectedVANName}
 						handler={selectedVANNameHandler}
 					/>
 				</div>
@@ -115,6 +94,7 @@ function ProductRegisterForm(props) {
 					<DropDownButton
 						items={categoryItems}
 						label="유형"
+						value={selectedCategoryName}
 						handler={selectednameHandler}
 					/>
 				</div>
@@ -122,12 +102,14 @@ function ProductRegisterForm(props) {
 					<DropDownButton
 						items={productCompany}
 						label="제조사"
+						value={selectedCompanyId}
 						handler={selectedCompanyIdHandler}
 					/>
 				</div>
 				<div className="col-span-2">
 					<DropDownButton
 						items={brand}
+						value={selectedBrandId}
 						label="법인명"
 						handler={selectedBrandIdHandler}
 					/>

@@ -1,23 +1,24 @@
-import { useEffect, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 import { LeftArrow } from "./icons/arrows"
 
 function DropDownButton(props) {
-	const { items, label, handler, initValue = null, disabled = false } = props
+	// items : 전체 옵션이 들어있는 배열. {name, _id}
+	// value : 현재 선택된 값의 이름.
+	// handler : 선택된 데이터의 id 값을 상위 컴포넌트로 보내주는 함수.
+	// value가 변한다 -> items에서 찾아서 해당하는 item 하나를 상태에 집어넣는다 -> 그 상태를 보여준다.
+	const { items, label, handler, value, disabled = false } = props
 
-	const [initItemName, setInitItemName] = useState()
 	const [selectedItem, setSelectedItem] = useState()
 	const [visibleAnimation, setVisibleAnimation] = useState(false)
 	const [toggle, setToggle] = useState(false)
-
 	useEffect(() => {
-		if (items) {
-			if (initValue) {
-				const value = items.find((item) => item.name === initValue)
+		if (items && selectedItem === undefined) {
+			setSelectedItem(() => items[0])
+		}
 
-				setInitItemName(value)
-			} else {
-				setInitItemName(items[0])
-			}
+		if (value) {
+			const correctValue = items.find((item) => item.name === value)
+			optionSelectHandler(correctValue)
 		}
 
 		if (toggle) {
@@ -27,12 +28,17 @@ function DropDownButton(props) {
 				setVisibleAnimation(false)
 			}, 400)
 		}
-	}, [toggle, handler, items, initValue])
+	}, [toggle, handler, items, selectedItem, value, optionSelectHandler])
 
-	function optionSelectHandler(item) {
-		handler(item._id)
-		setSelectedItem(item)
-	}
+	const optionSelectHandler = useCallback(
+		(item) => {
+			if (item) {
+				handler(item._id)
+				setSelectedItem(item)
+			}
+		},
+		[handler],
+	)
 
 	function dropdownToggleHandler(e) {
 		e.preventDefault()
@@ -58,10 +64,7 @@ function DropDownButton(props) {
 							onClick={!disabled ? dropdownToggleHandler : disabledHandler}
 						>
 							<div className="flex justify-between ">
-								<span>
-									{(selectedItem && selectedItem.name) ||
-										(initItemName && initItemName.name)}
-								</span>
+								<span>{selectedItem && selectedItem.name}</span>
 								<span className={`duration-300  ${toggle ? "-rotate-90" : ""}`}>
 									<LeftArrow />
 								</span>

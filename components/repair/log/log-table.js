@@ -55,7 +55,7 @@ function CompleteRepairTable(props) {
 				columnDefs={columns}
 				rowData={data}
 				onGridReady={onGridReady}
-				onCellClick={onCellClick}
+				onCellClicked={onCellClick}
 			/>
 		</>
 	)

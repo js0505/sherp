@@ -21,6 +21,8 @@ function DropDownButton(props) {
 		},
 		[handler],
 	)
+	console.log(value)
+	console.log(items)
 
 	useEffect(() => {
 		if (items && selectedItem === undefined) {

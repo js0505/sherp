@@ -35,7 +35,7 @@ function StoreRegisterForm(props) {
 		setSelectedVANName(vanItems[0]._id)
 		setSelectedCity(cityItems[0]._id)
 		setSelectedUser(users[0]._id)
-	}, [])
+	}, [users])
 
 	const { setValue: setDataListValue, value: dataListValue } =
 		useComboboxControls({

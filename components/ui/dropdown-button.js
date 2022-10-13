@@ -11,6 +11,17 @@ function DropDownButton(props) {
 	const [selectedItem, setSelectedItem] = useState()
 	const [visibleAnimation, setVisibleAnimation] = useState(false)
 	const [toggle, setToggle] = useState(false)
+
+	const optionSelectHandler = useCallback(
+		(item) => {
+			if (item) {
+				handler(item._id)
+				setSelectedItem(item)
+			}
+		},
+		[handler],
+	)
+
 	useEffect(() => {
 		if (items && selectedItem === undefined) {
 			setSelectedItem(() => items[0])
@@ -29,16 +40,6 @@ function DropDownButton(props) {
 			}, 400)
 		}
 	}, [toggle, handler, items, selectedItem, value, optionSelectHandler])
-
-	const optionSelectHandler = useCallback(
-		(item) => {
-			if (item) {
-				handler(item._id)
-				setSelectedItem(item)
-			}
-		},
-		[handler],
-	)
 
 	function dropdownToggleHandler(e) {
 		e.preventDefault()

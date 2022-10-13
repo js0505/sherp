@@ -1,9 +1,11 @@
 import { useRouter } from "next/router"
 import { useEffect, useRef, useState } from "react"
 import { fetchHelperFunction } from "../../lib/fetch/json-fetch-data"
-import DropDownButton from "../ui/dropdown-button"
 import { categoryItems, vanItems } from "../../lib/variables/variables"
-
+import Dropdown from "react-dropdown"
+// import "react-dropdown/style.css"
+import { editItemforDropdownButton } from "../../lib/util/dropdown-util"
+import { DownArrow } from "../ui/icons/arrows"
 function ProductRegisterForm(props) {
 	const [productCompany, setProductCompany] = useState()
 	const [brand, setBrand] = useState()
@@ -19,30 +21,21 @@ function ProductRegisterForm(props) {
 	async function init() {
 		const { company } = await fetchHelperFunction("GET", "/api/company")
 		const { brand } = await fetchHelperFunction("GET", "/api/brand")
-		setProductCompany(company)
-		setBrand(brand)
-		setSelectedCompanyId(company[0]._id)
-		setSelectedBrandId(brand[0]._id)
-		setSelectedVANName(vanItems[0].name)
-		setSelectedCategoryName(categoryItems[0].name)
+
+		const editedCompany = editItemforDropdownButton(company)
+		const editedBrand = editItemforDropdownButton(brand)
+
+		setProductCompany(editedCompany)
+		setBrand(editedBrand)
+		setSelectedCompanyId(editedCompany[0])
+		setSelectedBrandId(editedBrand[0])
+		setSelectedVANName(vanItems[0])
+		setSelectedCategoryName(categoryItems[0])
 	}
 
 	useEffect(() => {
 		init()
 	}, [])
-
-	function selectedVANNameHandler(name) {
-		setSelectedVANName(name)
-	}
-	function selectednameHandler(name) {
-		setSelectedCategoryName(name)
-	}
-	function selectedCompanyIdHandler(id) {
-		setSelectedCompanyId(id)
-	}
-	function selectedBrandIdHandler(id) {
-		setSelectedBrandId(id)
-	}
 
 	async function submitHandler(e) {
 		e.preventDefault()
@@ -60,10 +53,10 @@ function ProductRegisterForm(props) {
 		if (accept) {
 			body = {
 				name: productName,
-				van: selectedVANName,
-				category: selectedCategoryName,
-				brand: selectedBrandId,
-				productCompany: selectedCompanyId,
+				van: selectedVANName.value,
+				category: selectedCategoryName.value,
+				brand: selectedBrandId.value,
+				productCompany: selectedCompanyId.value,
 			}
 		} else {
 			return
@@ -72,6 +65,7 @@ function ProductRegisterForm(props) {
 		const result = await props.addProduct(body)
 
 		alert(result.message)
+
 		router.reload()
 	}
 
@@ -83,35 +77,43 @@ function ProductRegisterForm(props) {
 					<input className="input-text" ref={productNameInputRef} />
 				</div>
 				<div className="col-span-2">
-					<DropDownButton
-						items={vanItems}
-						label="VAN"
+					<Dropdown
+						arrowClosed={<DownArrow />}
+						arrowOpen={<DownArrow />}
+						options={vanItems}
+						onChange={setSelectedVANName}
 						value={selectedVANName}
-						handler={selectedVANNameHandler}
+						placeholder="Select an option"
 					/>
 				</div>
 				<div className="col-span-2">
-					<DropDownButton
-						items={categoryItems}
-						label="유형"
+					<Dropdown
+						arrowClosed={<DownArrow />}
+						arrowOpen={<DownArrow />}
+						options={categoryItems}
+						placeholder="유형"
 						value={selectedCategoryName}
-						handler={selectednameHandler}
+						onChange={setSelectedCategoryName}
 					/>
 				</div>
 				<div className="col-span-2">
-					<DropDownButton
-						items={productCompany}
-						label="제조사"
+					<Dropdown
+						arrowClosed={<DownArrow />}
+						arrowOpen={<DownArrow />}
+						options={productCompany}
+						placeholder="제조사"
 						value={selectedCompanyId}
-						handler={selectedCompanyIdHandler}
+						onChange={setProductCompany}
 					/>
 				</div>
 				<div className="col-span-2">
-					<DropDownButton
-						items={brand}
+					<Dropdown
+						arrowClosed={<DownArrow />}
+						arrowOpen={<DownArrow />}
+						options={brand}
 						value={selectedBrandId}
-						label="법인명"
-						handler={selectedBrandIdHandler}
+						placeholder="법인명"
+						onChange={setSelectedBrandId}
 					/>
 				</div>
 

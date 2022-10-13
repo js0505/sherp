@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react"
+import { useEffect, useState } from "react"
 import { LeftArrow } from "./icons/arrows"
 
 function DropDownButton(props) {
@@ -12,15 +12,12 @@ function DropDownButton(props) {
 	const [visibleAnimation, setVisibleAnimation] = useState(false)
 	const [toggle, setToggle] = useState(false)
 
-	const optionSelectHandler = useCallback(
-		(item) => {
-			if (item) {
-				handler(item._id)
-				setSelectedItem(item)
-			}
-		},
-		[handler],
-	)
+	const optionSelectHandler = (item) => {
+		handler(item._id)
+		setSelectedItem(item)
+		// if (item) {
+		// }
+	}
 
 	useEffect(() => {
 		if (items && selectedItem === undefined) {
@@ -28,8 +25,8 @@ function DropDownButton(props) {
 		}
 
 		if (value) {
-			const correctValue = items.find((item) => item.name === value)
-			optionSelectHandler(correctValue)
+			const correctValue = items.find((item) => item.name || item._id === value)
+			setSelectedItem(correctValue)
 		}
 
 		if (toggle) {
@@ -39,7 +36,7 @@ function DropDownButton(props) {
 				setVisibleAnimation(false)
 			}, 400)
 		}
-	}, [toggle, handler, items, selectedItem, value, optionSelectHandler])
+	}, [toggle, handler, items, selectedItem, value])
 
 	function dropdownToggleHandler(e) {
 		e.preventDefault()
@@ -53,51 +50,46 @@ function DropDownButton(props) {
 
 	return (
 		<>
-			{items && (
-				<>
-					<label className="input-label">{label}</label>
-					<div className="w-full">
-						<button
-							onBlur={() => setToggle(false)}
-							className=" px-4 h-12 mt-1 block w-full text-left  rounded-md 
+			<label className="input-label">{label}</label>
+			<div className="w-full">
+				<button
+					onBlur={() => setToggle(false)}
+					className=" px-4 h-12 mt-1 block w-full text-left  rounded-md 
 										border border-gray-300 shadow-md text-lg lg:text-md 
 										focus:border-primary focus:ring-2  focus:ring-primary focus:outline-none"
-							onClick={!disabled ? dropdownToggleHandler : disabledHandler}
-						>
-							<div className="flex justify-between ">
-								<span>{selectedItem && selectedItem.name}</span>
-								<span className={`duration-300  ${toggle ? "-rotate-90" : ""}`}>
-									<LeftArrow />
-								</span>
-							</div>
-						</button>
-						{visibleAnimation && (
-							<div className="relative">
-								<div className={`absolute w-full overflow-auto h-80`}>
-									<ul
-										className={`border border-gray-transparent  bg-white w-full shadow-md rounded-md mt-1 ${
-											toggle
-												? "animate-dropdownFadeIn"
-												: "animate-dropdownFadeOut"
-										}`}
-									>
-										{items.map((item) => (
-											<li
-												key={item._id}
-												onClick={() => optionSelectHandler(item)}
-												className="hover:bg-primary  hover:text-white border-b border-b-gray-transparent 
-															 h-12 text-lg lg:text-md px-3 pt-3"
-											>
-												{item.name}
-											</li>
-										))}
-									</ul>
-								</div>
-							</div>
-						)}
+					onClick={!disabled ? dropdownToggleHandler : disabledHandler}
+				>
+					<div className="flex justify-between ">
+						<span>{selectedItem && selectedItem.name}</span>
+						<span className={`duration-300  ${toggle ? "-rotate-90" : ""}`}>
+							<LeftArrow />
+						</span>
 					</div>
-				</>
-			)}
+				</button>
+				{visibleAnimation && (
+					<div className="relative">
+						<div className={`absolute w-full overflow-auto h-80`}>
+							<ul
+								className={`border border-gray-transparent  bg-white w-full shadow-md rounded-md mt-1 ${
+									toggle ? "animate-dropdownFadeIn" : "animate-dropdownFadeOut"
+								}`}
+							>
+								{items &&
+									items.map((item) => (
+										<li
+											key={item._id}
+											onClick={() => optionSelectHandler(item)}
+											className="hover:bg-primary  hover:text-white border-b border-b-gray-transparent 
+															 h-12 text-lg lg:text-md px-3 pt-3"
+										>
+											{item.name}
+										</li>
+									))}
+							</ul>
+						</div>
+					</div>
+				)}
+			</div>
 		</>
 	)
 }

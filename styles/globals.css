@@ -58,3 +58,27 @@ a {
 /* .ag-theme-alpine .ag-header {
 	@apply;
 } */
+
+.Dropdown-root {
+	@apply relative;
+}
+
+.Dropdown-control {
+	@apply relative bg-white px-4 pt-3 h-12 mt-1  w-full text-left  rounded-md  
+	overflow-hidden
+			border border-gray-300 shadow-md text-base flex justify-between;
+}
+
+.Dropdown-menu {
+	@apply absolute z-20 border border-gray-transparent overflow-y-auto max-h-80
+	  bg-white w-full shadow-md rounded-md mt-1;
+}
+
+.Dropdown-option {
+	@apply hover:text-white hover:bg-primary  border-b border-b-gray-transparent  
+			h-12 text-base px-3 pt-3;
+}
+
+.is-open .Dropdown-arrow {
+	@apply text-primary bg-primary border-primary;
+}

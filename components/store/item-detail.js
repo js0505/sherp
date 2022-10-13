@@ -1,8 +1,11 @@
 import { useCallback, useEffect, useState } from "react"
-import DropDownButton from "../ui/dropdown-button"
-import { isBackupItems } from "../../lib/variables/variables"
+import { cityItems, isBackupItems } from "../../lib/variables/variables"
 import DatalistInput, { useComboboxControls } from "react-datalist-input"
 import { vanItems } from "../../lib/variables/variables"
+
+import Dropdown from "react-dropdown"
+import { DownArrow } from "../ui/icons/arrows"
+
 function StoreItemDetail(props) {
 	const { item, modalHandler, filteredProducts } = props
 
@@ -21,7 +24,6 @@ function StoreItemDetail(props) {
 	const [cms, setCms] = useState("")
 	const [selectedProducts, setSelectedProducts] = useState([])
 	const [owner, setOwner] = useState("")
-	const [loading, setLoading] = useState(false)
 
 	const { setValue: setDataListValue, value: dataListValue } =
 		useComboboxControls({
@@ -57,22 +59,21 @@ function StoreItemDetail(props) {
 	)
 
 	useEffect(() => {
-		setLoading(true)
+		setVan(item.van)
+		setCity(item.city)
+		setIsBackup(item.isBackup ? "백업" : "메인")
+		setUser(item.user.name)
+
 		setContractDate(item.contractDate)
 		setStoreName(item.storeName)
 		setBusinessNum(filteredBusinessNum(item.businessNum))
-		setCity(item.city)
 		setAddress(item.address)
-		setIsBackup(item.isBackup ? "백업" : "메인")
 		setContact(item.contact)
-		setUser(item.user.name)
-		setVan(item.van)
 		setVanId(item.vanId)
 		setVanCode(item.vanCode)
 		setCms(item.cms)
 		setSelectedProducts(initProducts)
 		setOwner(item.owner)
-		setLoading(false)
 
 		if (isEditable) {
 			// 수정모드 들어갈 때 사업자번호 안에 - 값 제거
@@ -113,7 +114,7 @@ function StoreItemDetail(props) {
 	}
 	return (
 		<>
-			{item && !loading && (
+			{item && (
 				<div className="flex justify-between divide-x divide-gray-300  w-[80rem] p-3">
 					<div className="w-full p-3 grid grid-cols-5 gap-4">
 						<div className="col-span-2">
@@ -139,21 +140,25 @@ function StoreItemDetail(props) {
 							/>
 						</div>
 						<div className="col-span-1">
-							<DropDownButton
-								items={vanItems}
-								label="VAN"
-								handler={setVan}
+							<label className="input-label">VAN</label>
+							<Dropdown
+								arrowClosed={<DownArrow />}
+								arrowOpen={<DownArrow />}
+								options={vanItems}
+								onChange={setVan}
 								value={van}
 								disabled={!isEditable}
 							/>
 						</div>
 						<div className="col-span-1">
-							<DropDownButton
-								items={isBackupItems}
-								label="메인/백업"
+							<label className="input-label">메인/백업</label>
+							<Dropdown
+								arrowClosed={<DownArrow />}
+								arrowOpen={<DownArrow />}
+								options={isBackupItems}
 								disabled={!isEditable}
 								value={isBackup}
-								handler={setIsBackup}
+								onChange={setIsBackup}
 							/>
 						</div>
 						<div className="col-span-3">
@@ -179,9 +184,12 @@ function StoreItemDetail(props) {
 						</div>
 						<div className="col-span-1">
 							<label className="input-label">도시</label>
-							<input
-								className="input-text"
+							<Dropdown
+								arrowClosed={<DownArrow />}
+								arrowOpen={<DownArrow />}
+								options={cityItems}
 								value={city}
+								onChange={setCity}
 								disabled={!isEditable}
 							/>
 						</div>

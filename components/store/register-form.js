@@ -2,12 +2,14 @@ import { format } from "date-fns"
 import { useEffect, useRef, useState } from "react"
 import DatalistInput, { useComboboxControls } from "react-datalist-input"
 import { fetchHelperFunction } from "../../lib/fetch/json-fetch-data"
-import DropDownButton from "../ui/dropdown-button"
 import {
 	cityItems,
 	vanItems,
 	isBackupItems,
 } from "../../lib/variables/variables"
+import { editItemforDropdownButton } from "../../lib/util/dropdown-util"
+import Dropdown from "react-dropdown"
+import { DownArrow } from "../ui/icons/arrows"
 
 function StoreRegisterForm(props) {
 	const { filteredProducts, users } = props
@@ -30,29 +32,20 @@ function StoreRegisterForm(props) {
 	const cmsInputRef = useRef()
 	const noteInputRef = useRef()
 
+	const editedUsers = editItemforDropdownButton(users)
+
 	useEffect(() => {
-		setIsBackup(isBackupItems[0]._id)
-		setSelectedVANName(vanItems[0]._id)
-		setSelectedCity(cityItems[0]._id)
-		setSelectedUser(users[0]._id)
-	}, [users])
+		setIsBackup(isBackupItems[0])
+		setSelectedVANName(vanItems[0])
+		setSelectedCity(cityItems[0])
+		setSelectedUser(editedUsers[0])
+	}, [])
 
 	const { setValue: setDataListValue, value: dataListValue } =
 		useComboboxControls({
 			initialValue: "",
 		})
-	function selectedVANNameHandler(name) {
-		setSelectedVANName(name)
-	}
-	function selectedIsBackupHandler(name) {
-		setIsBackup(name)
-	}
-	function selectedUserHandler(name) {
-		setSelectedUser(name)
-	}
-	function selectedCityHandler(name) {
-		setSelectedCity(name)
-	}
+
 	function dataListSelectHandler(item) {
 		if (selectedProducts.length > 3) {
 			alert("최대 4개까지 입력 가능 합니다.")
@@ -72,14 +65,14 @@ function StoreRegisterForm(props) {
 		e.preventDefault()
 
 		const body = {
-			user: selectedUser,
+			user: selectedUser.value,
 			storeName: storeNameInputRef.current.value,
 			businessNum: businessNumInputRef.current.value,
-			van: selectedVANName,
+			van: selectedVANName.value,
 			vanId: vanIdInputRef.current.value,
 			vanCode: vanCodeInputRef.current.value,
 			owner: ownerInputRef.current.value,
-			city: selectedCity,
+			city: selectedCity.value,
 			address: addressInputRef.current.value,
 			contact: contactInputRef.current.value,
 			product: selectedProducts.map((item) => ({
@@ -88,7 +81,7 @@ function StoreRegisterForm(props) {
 			cms: cmsInputRef.current.value,
 			contractDate: contractDate,
 			note: noteInputRef.current.value,
-			isBackup: isBackup,
+			isBackup: isBackup.value,
 		}
 
 		const accept = confirm("가맹점을 등록 하시겠습니까?")
@@ -108,10 +101,10 @@ function StoreRegisterForm(props) {
 		alert(response.message)
 
 		setSelectedProducts([])
-		setIsBackup(isBackupItems[0]._id)
-		setSelectedVANName(vanItems[0]._id)
-		setSelectedCity(() => cityItems[0]._id)
-		setSelectedUser(users[0]._id)
+		setIsBackup(isBackupItems[0])
+		setSelectedVANName(vanItems[0])
+		setSelectedCity(cityItems[0])
+		setSelectedUser(editedUsers[0])
 		setContractDate(formattedToday)
 		storeNameInputRef.current.value = ""
 		businessNumInputRef.current.value = ""
@@ -179,11 +172,15 @@ function StoreRegisterForm(props) {
 					/>
 				</div>
 				<div className="col-span-1">
-					<DropDownButton
-						items={users}
-						label="담당자"
+					<label className="input-label" htmlFor="user">
+						담당자
+					</label>
+					<Dropdown
+						arrowClosed={<DownArrow />}
+						arrowOpen={<DownArrow />}
+						options={editedUsers}
 						value={selectedUser}
-						handler={selectedUserHandler}
+						onChange={setSelectedUser}
 					/>
 				</div>
 				<div className="col-span-1">
@@ -212,11 +209,15 @@ function StoreRegisterForm(props) {
 				</div>
 
 				<div className="col-span-1">
-					<DropDownButton
-						items={cityItems}
-						label="주소(도시)"
+					<label className="input-label" htmlFor="city">
+						주소(도시)
+					</label>
+					<Dropdown
+						arrowClosed={<DownArrow />}
+						arrowOpen={<DownArrow />}
+						options={cityItems}
 						value={selectedCity}
-						handler={selectedCityHandler}
+						onChange={setSelectedCity}
 					/>
 				</div>
 				<div className="col-span-3">
@@ -233,19 +234,28 @@ function StoreRegisterForm(props) {
 				</div>
 
 				<div className="col-span-1">
-					<DropDownButton
-						items={isBackupItems}
-						label="메인/백업"
+					<label className="input-label" htmlFor="isbackup">
+						메인/백업
+					</label>
+					<Dropdown
+						arrowClosed={<DownArrow />}
+						arrowOpen={<DownArrow />}
+						options={isBackupItems}
 						value={isBackup}
-						handler={selectedIsBackupHandler}
+						onChange={setIsBackup}
 					/>
 				</div>
 
 				<div className="col-span-1">
-					<DropDownButton
-						items={vanItems}
-						label="VAN"
-						handler={selectedVANNameHandler}
+					<label className="input-label" htmlFor="van">
+						VAN
+					</label>
+					<Dropdown
+						arrowClosed={<DownArrow />}
+						arrowOpen={<DownArrow />}
+						options={vanItems}
+						value={selectedVANName}
+						handler={setSelectedVANName}
 					/>
 				</div>
 				<div className="col-span-1">

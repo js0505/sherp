@@ -1,7 +1,3 @@
-import { useRef, useState } from "react"
-// import { fetchHelperFunction } from "../../lib/fetch/json-fetch-data"
-// import { useSession } from "next-auth/react"
-// import { format } from "date-fns"
 import DetailListItem from "../../ui/detail-list-item"
 function ProductLogItemDetail(props) {
 	// item : 상세 입출고 정보 데이터

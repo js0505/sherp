@@ -21,6 +21,7 @@ function StoreItemDetail(props) {
 	const [van, setVan] = useState("")
 	const [vanId, setVanId] = useState("")
 	const [vanCode, setVanCode] = useState("")
+	const [closeDate, setCloseDate] = useState("")
 	const [cms, setCms] = useState("")
 	const [selectedProducts, setSelectedProducts] = useState([])
 	const [owner, setOwner] = useState("")
@@ -74,6 +75,9 @@ function StoreItemDetail(props) {
 		setCms(item.cms)
 		setSelectedProducts(initProducts)
 		setOwner(item.owner)
+		setCloseDate(() =>
+			item.closeDate === undefined ? "영업중" : item.closeDate,
+		)
 
 		if (isEditable) {
 			// 수정모드 들어갈 때 사업자번호 안에 - 값 제거
@@ -270,6 +274,14 @@ function StoreItemDetail(props) {
 								}}
 								isExpandedClassName="absolute border border-gray-300 rounded-md   
 											bg-white w-full max-h-40 overflow-auto "
+							/>
+						</div>
+						<div className="col-span-1">
+							<label className="input-label">영업중/폐업</label>
+							<input
+								className="input-text"
+								value={closeDate}
+								disabled={!isEditable}
 							/>
 						</div>
 						<div className="col-span-2">

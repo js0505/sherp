@@ -1,7 +1,17 @@
+import { useState } from "react"
 import GridTable from "../../ui/grid-table"
+import Modal from "../../ui/modal"
+import ProductLogItemDetail from "./log-item-detail"
 
 function ProductLogTable(props) {
 	const { data, replaceListHandler } = props
+
+	const [showModal, setShowModal] = useState(false)
+	const [selectedItem, setSelectedItem] = useState()
+
+	function modalHandler() {
+		setShowModal(!showModal)
+	}
 
 	function calcRenderer(props) {
 		return (
@@ -43,8 +53,28 @@ function ProductLogTable(props) {
 		params.api.sizeColumnsToFit()
 	}
 
+	function onCellClick(params) {
+		setSelectedItem(params.data)
+		modalHandler()
+	}
+
 	return (
-		<GridTable columnDefs={columns} rowData={data} onGridReady={onGridReady} />
+		<>
+			{showModal && (
+				<Modal>
+					<ProductLogItemDetail
+						modalHandler={modalHandler}
+						item={selectedItem}
+					/>
+				</Modal>
+			)}
+			<GridTable
+				columnDefs={columns}
+				rowData={data}
+				onGridReady={onGridReady}
+				onCellClicked={onCellClick}
+			/>
+		</>
 	)
 }
 

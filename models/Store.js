@@ -34,14 +34,14 @@ export const StoreSchema = new Schema(
 		contact: {
 			type: String,
 		},
-		product: [
-			{
-				productId: {
-					type: Schema.Types.ObjectId,
-					ref: "Product",
-				},
-			},
-		],
+		product: {
+			pos: { type: Boolean, default: false },
+			kiosk: { type: Boolean, default: false },
+			printer: { type: Boolean, default: false },
+			cat: { type: Boolean, default: false },
+			router: { type: Boolean, default: false },
+		},
+
 		cms: {
 			type: Number,
 		},
@@ -56,14 +56,19 @@ export const StoreSchema = new Schema(
 		},
 		creditCount: [
 			{
-				yearMonth: { type: String },
+				year: { type: String },
+				month: { type: String },
 				count: { type: Number },
+				cms: { type: Number },
+				inOperation: { type: Boolean, default: true },
+				// 영업 여부 매달 입력 해야 함
 			},
 		],
 		asNote: [
 			{
 				date: { type: String },
 				note: { type: String },
+				writerName: { type: String },
 			},
 		],
 		contractImg: [

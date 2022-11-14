@@ -1,70 +1,54 @@
-import { useState } from "react"
+import { useRef, useState } from "react"
 import { getFilteredStore } from "../../lib/util/store-util"
-import Modal from "../ui/modal"
-import StoreItemDetail from "./item-detail"
 import StoreSearchResult from "./search-result"
 
 function StoreSearchFilterForm(props) {
-	const { filteredProducts } = props
-	const [filterData, setFilterData] = useState()
+	const { filteredProducts, updateStoreCreditCount } = props
 	const [searchedStore, setSearchedStore] = useState()
-	const [showModal, setShowModal] = useState(false)
-	function modalHandler() {
-		setShowModal(!showModal)
-	}
+
+	const inputRef = useRef()
 
 	async function submitHandler(e) {
 		e.preventDefault()
-
+		const filterData = inputRef.current.value
 		if (filterData === "" || filterData === undefined) {
 			setSearchedStore("")
 			return
 		}
 		const response = await getFilteredStore(filterData)
 
-		if (response.length === 1) {
-			setSearchedStore(response)
-			setShowModal(!showModal)
-			return
-		}
 		setSearchedStore(response)
 	}
 
 	return (
-		<>
-			{showModal && (
-				<Modal>
-					<StoreItemDetail
-						item={searchedStore[0]}
-						modalHandler={modalHandler}
+		<section className="container w-full flex flex-col">
+			<div className="">
+				<form className="flex justify-center" onSubmit={submitHandler}>
+					<div className=" w-2/6">
+						<input
+							className="input-text  w-full mt-0"
+							ref={inputRef}
+							placeholder="검색어를 입력하세요.  ex) 가맹점명, 사업자번호, 지역, VAN"
+						/>
+					</div>
+					<div className="flex ml-2 ">
+						<button className="input-button mt-0" type="submit">
+							검색
+						</button>
+					</div>
+				</form>
+			</div>
+			<div className="flex justify-center">
+				{searchedStore && (
+					<StoreSearchResult
+						searchedStore={searchedStore}
+						setSearchedStore={setSearchedStore}
 						filteredProducts={filteredProducts}
+						updateStoreCreditCount={updateStoreCreditCount}
 					/>
-				</Modal>
-			)}
-			<section className="container w-4/5 flex flex-col">
-				<div className="">
-					<form className="flex justify-center" onSubmit={submitHandler}>
-						<div className=" w-2/5">
-							<input
-								className="input-text  w-full mt-0"
-								placeholder="사업자번호 또는 상호명을 입력하세요."
-								onChange={(e) => setFilterData(e.target.value)}
-							/>
-						</div>
-						<div className="flex ml-2 ">
-							<button className="input-button mt-0" type="submit">
-								검색
-							</button>
-						</div>
-					</form>
-				</div>
-				<div className="flex justify-center">
-					{searchedStore && searchedStore.length > 1 && (
-						<StoreSearchResult searchedStore={searchedStore} />
-					)}
-				</div>
-			</section>
-		</>
+				)}
+			</div>
+		</section>
 	)
 }
 

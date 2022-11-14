@@ -3,7 +3,6 @@ import { useEffect, useRef, useState } from "react"
 import { fetchHelperFunction } from "../../lib/fetch/json-fetch-data"
 import { categoryItems, vanItems } from "../../lib/variables/variables"
 import Dropdown from "react-dropdown"
-// import "react-dropdown/style.css"
 import { editItemforDropdownButton } from "../../lib/util/dropdown-util"
 import { DownArrow } from "../ui/icons/arrows"
 function ProductRegisterForm(props) {

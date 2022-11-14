@@ -12,7 +12,7 @@ handler.post(async function (req, res) {
 	await dbConnect()
 
 	try {
-		const reply = await Repair.findByIdAndUpdate(
+		await Repair.findByIdAndUpdate(
 			{ _id: repairId },
 			{
 				$push: {

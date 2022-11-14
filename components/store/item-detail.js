@@ -1,13 +1,26 @@
 import { useCallback, useEffect, useState } from "react"
+import { useSession } from "next-auth/react"
 import { cityItems, isBackupItems } from "../../lib/variables/variables"
-import DatalistInput, { useComboboxControls } from "react-datalist-input"
+import { CheckboxButton } from "../ui/checkbox-button"
 import { vanItems } from "../../lib/variables/variables"
-
+import { fetchHelperFunction } from "../../lib/fetch/json-fetch-data"
 import Dropdown from "react-dropdown"
 import { DownArrow } from "../ui/icons/arrows"
+import { format } from "date-fns"
+import { getAllUsers } from "../../lib/util/user-util"
+import { editItemforDropdownButton } from "../../lib/util/dropdown-util"
 
 function StoreItemDetail(props) {
-	const { item, modalHandler, filteredProducts } = props
+	const {
+		item,
+		setItem,
+		modalHandler,
+		filteredProducts,
+		updateRowDataFunction,
+	} = props
+	const today = new Date()
+	const formattedToday = format(today, "yyyy-MM-dd")
+	const { data: session } = useSession()
 
 	const [isEditable, setIsEditable] = useState(false)
 	const [contractDate, setContractDate] = useState("")
@@ -18,31 +31,53 @@ function StoreItemDetail(props) {
 	const [isBackup, setIsBackup] = useState(false)
 	const [contact, setContact] = useState("")
 	const [user, setUser] = useState("")
+	const [users, setUsers] = useState([])
 	const [van, setVan] = useState("")
 	const [vanId, setVanId] = useState("")
 	const [vanCode, setVanCode] = useState("")
 	const [closeDate, setCloseDate] = useState("")
 	const [cms, setCms] = useState("")
-	const [selectedProducts, setSelectedProducts] = useState([])
+	const [product, setProduct] = useState({})
 	const [owner, setOwner] = useState("")
+	const [note, setNote] = useState("")
+	const [asNote, setAsNote] = useState([])
+	const [asNoteDate, setAsNoteDate] = useState("")
+	const [asNoteValue, setAsNoteValue] = useState("")
 
-	const { setValue: setDataListValue, value: dataListValue } =
-		useComboboxControls({
-			initialValue: "",
-		})
+	useEffect(() => {
+		setVan(item.van)
+		setCity(item.city)
+		setIsBackup(item.isBackup ? "백업" : "메인")
+		setUser({ label: item.user.name, value: item.user._id })
+		setAsNote(item.asNote)
+		setContractDate(item.contractDate)
+		setStoreName(item.storeName)
+		setBusinessNum(filteredBusinessNum(item.businessNum))
+		setAddress(item.address)
+		setContact(item.contact)
+		setVanId(item.vanId)
+		setVanCode(item.vanCode)
+		setCms(item.cms)
+		setProduct(item.product)
+		setOwner(item.owner)
+		setCloseDate(() =>
+			item.closeDate === undefined ? "영업중" : item.closeDate,
+		)
+		setAsNoteDate(formattedToday)
 
-	const initProducts = useCallback(() => {
-		let initProductList = []
+		const getUsers = async () => {
+			const users = await getAllUsers()
+			const editedUsers = editItemforDropdownButton(users)
 
-		item.product.map((alreadyHavedItem) => {
-			const filtered = filteredProducts.find(
-				(filteredItem) => filteredItem.id === alreadyHavedItem.productId._id,
-			)
-			initProductList.push(filtered)
-		})
+			setUsers(editedUsers)
+		}
+		getUsers()
 
-		return initProductList
-	}, [filteredProducts, item.product])
+		if (isEditable) {
+			// 수정모드 들어갈 때 사업자번호 안에 - 값 제거
+			setBusinessNum(businessNum.replace(/-/g, ""))
+		}
+	}, [item, isEditable, filteredBusinessNum, formattedToday])
 
 	const filteredBusinessNum = useCallback(
 		(plainNumber) => {
@@ -59,33 +94,7 @@ function StoreItemDetail(props) {
 		[isEditable],
 	)
 
-	useEffect(() => {
-		setVan(item.van)
-		setCity(item.city)
-		setIsBackup(item.isBackup ? "백업" : "메인")
-		setUser(item.user.name)
-
-		setContractDate(item.contractDate)
-		setStoreName(item.storeName)
-		setBusinessNum(filteredBusinessNum(item.businessNum))
-		setAddress(item.address)
-		setContact(item.contact)
-		setVanId(item.vanId)
-		setVanCode(item.vanCode)
-		setCms(item.cms)
-		setSelectedProducts(initProducts)
-		setOwner(item.owner)
-		setCloseDate(() =>
-			item.closeDate === undefined ? "영업중" : item.closeDate,
-		)
-
-		if (isEditable) {
-			// 수정모드 들어갈 때 사업자번호 안에 - 값 제거
-			setBusinessNum(businessNum.replace(/-/g, ""))
-		}
-	}, [item, isEditable, businessNum, filteredBusinessNum, initProducts])
-
-	function cancelSubmitHandler() {
+	const cancelSubmitHandler = () => {
 		const accept = confirm("수정을 취소 하시겠습니까?")
 
 		if (!accept) {
@@ -95,27 +104,79 @@ function StoreItemDetail(props) {
 		}
 	}
 
-	function editStoreSubmitHandler(e) {
+	const editStoreSubmitHandler = async (e) => {
 		e.preventDefault()
-		alert("submit form")
 
 		// todo : 사업자번호 10자리 값 확인.
-
-		setIsEditable(!isEditable)
-	}
-	function removeToListFunction(item) {
-		setSelectedProducts(
-			selectedProducts.filter((product) => product.id !== item.id),
-		)
-	}
-	function dataListSelectHandler(item) {
-		if (selectedProducts.length > 3) {
-			alert("최대 4개까지 입력 가능 합니다.")
+		if (businessNum.length != 10) {
+			alert("사업자번호는 10자리 입니다.")
 			return
 		}
-		setSelectedProducts([...selectedProducts, item])
-		setDataListValue("")
+
+		const accept = confirm("정보를 수정 하시겠습니까?")
+
+		if (!accept) {
+			return
+		} else {
+			const body = {
+				_id: item._id,
+				user: user.value,
+				storeName,
+				contractDate,
+				businessNum,
+				city: city.value,
+				address,
+				contact,
+				van: van.value,
+				vanId,
+				vanCode,
+				closeDate,
+				cms,
+				product,
+				owner,
+				note,
+			}
+
+			const response = await fetchHelperFunction("PATCH", "/api/store", body)
+			if (response.success) {
+				alert(response.message)
+				// 기존 표에 새로운 데이터 업데이트
+				updateRowDataFunction(response.updatedStore)
+				setItem(response.updatedStore)
+				setIsEditable(!isEditable)
+			} else {
+				alert(response.message)
+			}
+		}
 	}
+
+	const asNoteSubmitHandler = async (e) => {
+		const accept = confirm("수리내역을 저장 하시겠습니까?")
+		if (!accept) {
+			return
+		} else {
+			e.preventDefault()
+
+			const body = {
+				storeId: item._id,
+				writerName: session.user.name,
+				date: asNoteDate,
+				note: asNoteValue,
+			}
+			const response = await fetchHelperFunction("POST", "/api/store/as", body)
+			if (response.success) {
+				alert(response.message)
+
+				// 밑에는 다시 데이터를 불러오지 않고 수리내역이 보이게끔 하려고 만듬.
+				setAsNote([...asNote, body])
+				setAsNoteValue("")
+				item.asNote.push(body)
+			} else {
+				alert(response.message)
+			}
+		}
+	}
+
 	return (
 		<>
 			{item && (
@@ -130,17 +191,20 @@ function StoreItemDetail(props) {
 								id="contract-date"
 								type="date"
 								value={contractDate}
-								// onChange={(event) => setContractDate(event.target.value)}
+								onChange={(event) => setContractDate(event.target.value)}
 								required
 								disabled={!isEditable}
 							/>
 						</div>
 						<div className="col-span-1">
 							<label className="input-label">담당자</label>
-							<input
-								className="input-text"
-								value={user}
+							<Dropdown
+								arrowClosed={<DownArrow />}
+								arrowOpen={<DownArrow />}
+								options={users}
 								disabled={!isEditable}
+								value={user}
+								onChange={setUser}
 							/>
 						</div>
 						<div className="col-span-1">
@@ -202,6 +266,7 @@ function StoreItemDetail(props) {
 							<input
 								className="input-text"
 								value={address}
+								onChange={(e) => setAddress(e.target.value)}
 								required
 								disabled={!isEditable}
 							/>
@@ -212,6 +277,7 @@ function StoreItemDetail(props) {
 							<input
 								className="input-text"
 								value={owner}
+								onChange={(e) => setOwner(e.target.value)}
 								required
 								disabled={!isEditable}
 							/>
@@ -221,6 +287,7 @@ function StoreItemDetail(props) {
 							<input
 								className="input-text"
 								value={contact}
+								onChange={(e) => setContact(e.target.value)}
 								required
 								disabled={!isEditable}
 							/>
@@ -230,52 +297,52 @@ function StoreItemDetail(props) {
 							<input
 								className="input-text"
 								value={cms}
+								onChange={(e) => setCms(e.target.value)}
 								required
 								disabled={!isEditable}
 							/>
 						</div>
 						<div className="col-span-5">
-							<div className="input-label">선택한 제품</div>
-							<div className="input-text flex py-1 overflow-auto ">
-								{selectedProducts &&
-									selectedProducts.map((item, index) => (
-										<div
-											className="flex w-30 p-2  rounded-md mr-2 bg-primary"
-											key={index}
-										>
-											<div className="mr-2 text-white">{item.value}</div>
-											<div
-												className={`${
-													isEditable
-														? "text-white cursor-pointer block"
-														: "hidden"
-												}`}
-												onClick={() => removeToListFunction(item)}
-											>
-												X
-											</div>
-										</div>
-									))}
+							<div className="input-label">장비</div>
+							<div className="flex">
+								<CheckboxButton
+									id="pos"
+									disabled={!isEditable}
+									value={product}
+									onChangeFunction={setProduct}
+									title="포스"
+								/>
+								<CheckboxButton
+									id="kiosk"
+									value={product}
+									disabled={!isEditable}
+									onChangeFunction={setProduct}
+									title="키오스크"
+								/>
+								<CheckboxButton
+									id="printer"
+									value={product}
+									disabled={!isEditable}
+									onChangeFunction={setProduct}
+									title="주방프린터"
+								/>
+								<CheckboxButton
+									id="cat"
+									value={product}
+									disabled={!isEditable}
+									onChangeFunction={setProduct}
+									title="단말기"
+								/>
+								<CheckboxButton
+									id="router"
+									value={product}
+									disabled={!isEditable}
+									onChangeFunction={setProduct}
+									title="라우터"
+								/>
 							</div>
 						</div>
-						<div className={`${isEditable ? "col-span-5 block" : "hidden"}`}>
-							<DatalistInput
-								value={dataListValue}
-								setValue={setDataListValue}
-								className="relative"
-								label={<div className="input-label">제품선택</div>}
-								onSelect={(item) => dataListSelectHandler(item)}
-								items={filteredProducts}
-								required
-								inputProps={{ className: " input-text " }}
-								listboxOptionProps={{
-									className:
-										" px-2 py-2 h-10 hover:bg-primary hover:text-white  w-full",
-								}}
-								isExpandedClassName="absolute border border-gray-300 rounded-md   
-											bg-white w-full max-h-40 overflow-auto "
-							/>
-						</div>
+
 						<div className="col-span-1">
 							<label className="input-label">영업중/폐업</label>
 							<input
@@ -289,6 +356,7 @@ function StoreItemDetail(props) {
 							<input
 								className="input-text"
 								value={vanCode}
+								onChange={(e) => setVanCode(e.target.value)}
 								disabled={!isEditable}
 							/>
 						</div>
@@ -297,6 +365,7 @@ function StoreItemDetail(props) {
 							<input
 								className="input-text"
 								value={vanId}
+								onChange={(e) => setVanId(e.target.value)}
 								disabled={!isEditable}
 							/>
 						</div>
@@ -306,6 +375,8 @@ function StoreItemDetail(props) {
 							<label className="input-label">비고</label>
 							<textarea
 								rows={6}
+								value={note}
+								onChange={(e) => setNote(e.target.value)}
 								disabled={!isEditable}
 								className="input-textarea"
 							></textarea>
@@ -313,7 +384,50 @@ function StoreItemDetail(props) {
 						<div className="col-span-5">
 							<div>
 								<label className="input-label">수리내역</label>
-								<input className="input-text" />
+
+								<div className="mt-3 mb-3 border border-gray-300 rounded-md p-2 overflow-auto  max-h-60">
+									{asNote &&
+										asNote
+											.slice()
+											.reverse()
+											.map((item, index) => (
+												<div
+													key={index}
+													className="flex-col justify-between mb-2"
+												>
+													<div className="mb-1">
+														<span className=" text-sm ">
+															{item.writerName}{" "}
+														</span>
+														<span className="text-sm text-gray-300">
+															{item.date}
+														</span>
+													</div>
+													<div className="pl-2">{item.note}</div>
+												</div>
+											))}
+								</div>
+								<div>
+									<form className="flex" onSubmit={asNoteSubmitHandler}>
+										{/* 수리내역 완성하기 */}
+										<input
+											className="input-text h-9 w-1/3 mr-2"
+											id="asNote-date"
+											type="date"
+											value={asNoteDate}
+											onChange={(event) => setAsNoteDate(event.target.value)}
+											required
+										/>
+										<input
+											type="text"
+											value={asNoteValue}
+											onChange={(event) => setAsNoteValue(event.target.value)}
+											className="px-4 h-9 my-1 block w-full  rounded-md border border-gray-300 
+								shadow-lg lg:text-sm focus:border-primary focus:ring-2  
+								focus:ring-primary focus:outline-none"
+										/>
+									</form>
+								</div>
 							</div>
 						</div>
 						<div className="col-span-5 flex">

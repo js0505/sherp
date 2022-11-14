@@ -1,27 +1,28 @@
 import { format } from "date-fns"
 import { useEffect, useRef, useState } from "react"
-import DatalistInput, { useComboboxControls } from "react-datalist-input"
 import { fetchHelperFunction } from "../../lib/fetch/json-fetch-data"
 import {
 	cityItems,
 	vanItems,
 	isBackupItems,
+	storeProductsInit,
 } from "../../lib/variables/variables"
 import { editItemforDropdownButton } from "../../lib/util/dropdown-util"
 import Dropdown from "react-dropdown"
 import { DownArrow } from "../ui/icons/arrows"
-
+import { CheckboxButton } from "../ui/checkbox-button"
 function StoreRegisterForm(props) {
-	const { filteredProducts, users } = props
+	const { users } = props
 	const today = new Date()
 	const formattedToday = format(today, "yyyy-MM-dd")
 
-	const [selectedProducts, setSelectedProducts] = useState([])
+	const [product, setProduct] = useState(storeProductsInit)
 	const [isBackup, setIsBackup] = useState()
 	const [selectedVANName, setSelectedVANName] = useState()
 	const [selectedCity, setSelectedCity] = useState()
 	const [selectedUser, setSelectedUser] = useState()
 	const [contractDate, setContractDate] = useState(formattedToday)
+
 	const storeNameInputRef = useRef()
 	const businessNumInputRef = useRef()
 	const ownerInputRef = useRef()
@@ -41,26 +42,6 @@ function StoreRegisterForm(props) {
 		setSelectedUser(editedUsers[0])
 	}, [])
 
-	const { setValue: setDataListValue, value: dataListValue } =
-		useComboboxControls({
-			initialValue: "",
-		})
-
-	function dataListSelectHandler(item) {
-		if (selectedProducts.length > 3) {
-			alert("최대 4개까지 입력 가능 합니다.")
-			return
-		}
-		setSelectedProducts([...selectedProducts, item])
-		setDataListValue("")
-	}
-
-	function removeToListFunction(item) {
-		setSelectedProducts(
-			selectedProducts.filter((product) => product.id !== item.id),
-		)
-	}
-
 	async function submitHandler(e) {
 		e.preventDefault()
 
@@ -75,9 +56,7 @@ function StoreRegisterForm(props) {
 			city: selectedCity.value,
 			address: addressInputRef.current.value,
 			contact: contactInputRef.current.value,
-			product: selectedProducts.map((item) => ({
-				productId: item.id,
-			})),
+			product: product,
 			cms: cmsInputRef.current.value,
 			contractDate: contractDate,
 			note: noteInputRef.current.value,
@@ -100,7 +79,7 @@ function StoreRegisterForm(props) {
 
 		alert(response.message)
 
-		setSelectedProducts([])
+		setProduct(storeProductsInit)
 		setIsBackup(isBackupItems[0])
 		setSelectedVANName(vanItems[0])
 		setSelectedCity(cityItems[0])
@@ -118,6 +97,7 @@ function StoreRegisterForm(props) {
 
 		return
 	}
+
 	return (
 		<section className="container lg:w-3/5 ">
 			<form onSubmit={submitHandler} className="grid grid-cols-4 gap-4">
@@ -255,7 +235,7 @@ function StoreRegisterForm(props) {
 						arrowOpen={<DownArrow />}
 						options={vanItems}
 						value={selectedVANName}
-						handler={setSelectedVANName}
+						onChange={setSelectedVANName}
 					/>
 				</div>
 				<div className="col-span-1">
@@ -280,43 +260,35 @@ function StoreRegisterForm(props) {
 						ref={vanCodeInputRef}
 					/>
 				</div>
-				<div className="col-span-3">
-					<div className="input-label">선택한 제품</div>
-					<div className="input-text flex py-1 overflow-auto ">
-						{selectedProducts &&
-							selectedProducts.map((item, index) => (
-								<div
-									className="flex w-30 p-2  rounded-md mr-2 bg-primary"
-									key={index}
-								>
-									<div className="mr-2 text-white">{item.value}</div>
-									<div
-										className="text-white cursor-pointer"
-										onClick={() => removeToListFunction(item)}
-									>
-										X
-									</div>
-								</div>
-							))}
+				<div className="col-span-4">
+					<div className="input-label">장비</div>
+					<div className="flex justify-between">
+						<CheckboxButton
+							id="pos"
+							onChangeFunction={setProduct}
+							title="포스"
+						/>
+						<CheckboxButton
+							id="kiosk"
+							onChangeFunction={setProduct}
+							title="키오스크"
+						/>
+						<CheckboxButton
+							id="printer"
+							onChangeFunction={setProduct}
+							title="주방프린터"
+						/>
+						<CheckboxButton
+							id="cat"
+							onChangeFunction={setProduct}
+							title="단말기"
+						/>
+						<CheckboxButton
+							id="router"
+							onChangeFunction={setProduct}
+							title="라우터"
+						/>
 					</div>
-				</div>
-				<div className="col-span-1 ">
-					<DatalistInput
-						value={dataListValue}
-						setValue={setDataListValue}
-						className="relative"
-						label={<div className="input-label">제품선택</div>}
-						onSelect={(item) => dataListSelectHandler(item)}
-						items={filteredProducts}
-						required
-						inputProps={{ className: " input-text " }}
-						listboxOptionProps={{
-							className:
-								" px-2 py-2 h-10 hover:bg-primary hover:text-white  w-full",
-						}}
-						isExpandedClassName="absolute border border-gray-300 rounded-md   
-											bg-white w-full max-h-40 overflow-auto "
-					/>
 				</div>
 
 				<div className="col-span-4">

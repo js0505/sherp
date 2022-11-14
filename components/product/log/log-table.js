@@ -4,7 +4,7 @@ import Modal from "../../ui/modal"
 import ProductLogItemDetail from "./log-item-detail"
 
 function ProductLogTable(props) {
-	const { data, replaceListHandler } = props
+	const { data } = props
 
 	const [showModal, setShowModal] = useState(false)
 	const [selectedItem, setSelectedItem] = useState()
@@ -29,6 +29,7 @@ function ProductLogTable(props) {
 	const columns = [
 		{ headerName: "법인명", field: "product.brand.name" },
 		{ headerName: "제품명", field: "product.name" },
+		{ headerName: "VAN", field: "product.van" },
 		{ headerName: "내용", field: "note", width: 350 },
 		{
 			headerName: "수량",

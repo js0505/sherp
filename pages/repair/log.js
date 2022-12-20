@@ -28,8 +28,9 @@ const RepairLogPage = () => {
 		setEndDate("")
 	}
 
-	const pageHandleFunction = (page) => {
-		setPage(page)
+	const pageHandleFunction = (e) => {
+		const { selected } = e
+		setPage(selected + 1)
 	}
 
 	const getData = useCallback(

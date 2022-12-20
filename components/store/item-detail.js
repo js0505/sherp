@@ -1,6 +1,6 @@
-import { useCallback, useEffect, useState } from "react"
+import { useCallback, useEffect, useRef, useState } from "react"
 import { useSession } from "next-auth/react"
-import { cityItems, isBackupItems } from "../../lib/variables/variables"
+import { cityItems, inOperationItems } from "../../lib/variables/variables"
 import { CheckboxButton } from "../ui/checkbox-button"
 import { vanItems } from "../../lib/variables/variables"
 import { fetchHelperFunction } from "../../lib/fetch/json-fetch-data"
@@ -11,31 +11,24 @@ import { getAllUsers } from "../../lib/util/user-util"
 import { editItemforDropdownButton } from "../../lib/util/dropdown-util"
 
 function StoreItemDetail(props) {
-	const {
-		item,
-		setItem,
-		modalHandler,
-		filteredProducts,
-		updateRowDataFunction,
-	} = props
+	const { item, setItem, modalHandler, updateRowDataFunction } = props
 	const today = new Date()
 	const formattedToday = format(today, "yyyy-MM-dd")
 	const { data: session } = useSession()
 
 	const [isEditable, setIsEditable] = useState(false)
-	const [contractDate, setContractDate] = useState("")
+	const [contractDate, setContractDate] = useState("2000-01-01")
 	const [storeName, setStoreName] = useState("")
 	const [businessNum, setBusinessNum] = useState(0)
 	const [city, setCity] = useState("")
 	const [address, setAddress] = useState("")
-	const [isBackup, setIsBackup] = useState(false)
 	const [contact, setContact] = useState("")
 	const [user, setUser] = useState("")
 	const [users, setUsers] = useState([])
 	const [van, setVan] = useState("")
 	const [vanId, setVanId] = useState("")
 	const [vanCode, setVanCode] = useState("")
-	const [closeDate, setCloseDate] = useState("")
+	const [inOperation, setInOperation] = useState("")
 	const [cms, setCms] = useState("")
 	const [product, setProduct] = useState({})
 	const [owner, setOwner] = useState("")
@@ -43,12 +36,12 @@ function StoreItemDetail(props) {
 	const [asNote, setAsNote] = useState([])
 	const [asNoteDate, setAsNoteDate] = useState("")
 	const [asNoteValue, setAsNoteValue] = useState("")
+	const [closeDate, setCloseDate] = useState("")
 
 	useEffect(() => {
 		setVan(item.van)
 		setCity(item.city)
-		setIsBackup(item.isBackup ? "백업" : "메인")
-		setUser({ label: item.user.name, value: item.user._id })
+		setUser(item.user)
 		setAsNote(item.asNote)
 		setContractDate(item.contractDate)
 		setStoreName(item.storeName)
@@ -60,9 +53,7 @@ function StoreItemDetail(props) {
 		setCms(item.cms)
 		setProduct(item.product)
 		setOwner(item.owner)
-		setCloseDate(() =>
-			item.closeDate === undefined ? "영업중" : item.closeDate,
-		)
+		setInOperation(item.inOperation)
 		setAsNoteDate(formattedToday)
 
 		const getUsers = async () => {
@@ -74,6 +65,10 @@ function StoreItemDetail(props) {
 		getUsers()
 
 		if (isEditable) {
+			if (item && item.inOperation === "폐업") {
+				alert("폐업 가맹점은 수정 할 수 없습니다.")
+				setIsEditable(false)
+			}
 			// 수정모드 들어갈 때 사업자번호 안에 - 값 제거
 			setBusinessNum(businessNum.replace(/-/g, ""))
 		}
@@ -120,7 +115,7 @@ function StoreItemDetail(props) {
 		} else {
 			const body = {
 				_id: item._id,
-				user: user.value,
+				user: user.label,
 				storeName,
 				contractDate,
 				businessNum,
@@ -130,11 +125,12 @@ function StoreItemDetail(props) {
 				van: van.value,
 				vanId,
 				vanCode,
-				closeDate,
+				inOperation,
 				cms,
 				product,
 				owner,
 				note,
+				closeDate,
 			}
 
 			const response = await fetchHelperFunction("PATCH", "/api/store", body)
@@ -176,6 +172,37 @@ function StoreItemDetail(props) {
 			}
 		}
 	}
+	const testRef = useRef()
+	const onCloseStateHandler = (selectedItem) => {
+		const { value } = selectedItem
+		if (value === "폐업") {
+			const accept = confirm(
+				"폐업으로 변경하면 다시 변경 할 수 없습니다. 변경 하시겠습니까?",
+			)
+
+			if (!accept) {
+				// 폐업 변경 안할시에 다시 원래대로 돌아가게 해야 하는데 어쩌지..
+				const oldInOperation = item.inOperation
+				setInOperation(oldInOperation)
+				setItem((prev) => prev)
+
+				return
+			}
+
+			const closeDateInput = prompt(
+				"폐업 일자를 입력 해주세요. ex) 2022-11-22",
+				formattedToday,
+			)
+
+			alert(`${closeDateInput}로 폐업처리 합니다. 수정완료 해주세요.`)
+			setCloseDate(closeDateInput)
+			setInOperation(value)
+			return
+		}
+
+		setInOperation(value)
+		return
+	}
 
 	return (
 		<>
@@ -190,9 +217,8 @@ function StoreItemDetail(props) {
 								className="input-text"
 								id="contract-date"
 								type="date"
-								value={contractDate}
+								value={contractDate || ""}
 								onChange={(event) => setContractDate(event.target.value)}
-								required
 								disabled={!isEditable}
 							/>
 						</div>
@@ -219,14 +245,15 @@ function StoreItemDetail(props) {
 							/>
 						</div>
 						<div className="col-span-1">
-							<label className="input-label">메인/백업</label>
+							<label className="input-label">영업상태</label>
 							<Dropdown
 								arrowClosed={<DownArrow />}
 								arrowOpen={<DownArrow />}
-								options={isBackupItems}
+								options={inOperationItems}
 								disabled={!isEditable}
-								value={isBackup}
-								onChange={setIsBackup}
+								value={inOperation}
+								ref={testRef}
+								onChange={(item) => onCloseStateHandler(item)}
 							/>
 						</div>
 						<div className="col-span-3">
@@ -286,7 +313,7 @@ function StoreItemDetail(props) {
 							<label className="input-label">연락처</label>
 							<input
 								className="input-text"
-								value={contact}
+								value={contact || ""}
 								onChange={(e) => setContact(e.target.value)}
 								required
 								disabled={!isEditable}
@@ -296,7 +323,7 @@ function StoreItemDetail(props) {
 							<label className="input-label">CMS</label>
 							<input
 								className="input-text"
-								value={cms}
+								value={cms || ""}
 								onChange={(e) => setCms(e.target.value)}
 								required
 								disabled={!isEditable}
@@ -343,28 +370,20 @@ function StoreItemDetail(props) {
 							</div>
 						</div>
 
-						<div className="col-span-1">
-							<label className="input-label">영업중/폐업</label>
-							<input
-								className="input-text"
-								value={closeDate}
-								disabled={!isEditable}
-							/>
-						</div>
 						<div className="col-span-2">
 							<label className="input-label">VAN Code</label>
 							<input
 								className="input-text"
-								value={vanCode}
+								value={vanCode || ""}
 								onChange={(e) => setVanCode(e.target.value)}
 								disabled={!isEditable}
 							/>
 						</div>
-						<div className="col-span-2">
+						<div className="col-span-3">
 							<label className="input-label">VAN ID</label>
 							<input
 								className="input-text"
-								value={vanId}
+								value={vanId || ""}
 								onChange={(e) => setVanId(e.target.value)}
 								disabled={!isEditable}
 							/>
@@ -375,7 +394,7 @@ function StoreItemDetail(props) {
 							<label className="input-label">비고</label>
 							<textarea
 								rows={6}
-								value={note}
+								value={note || ""}
 								onChange={(e) => setNote(e.target.value)}
 								disabled={!isEditable}
 								className="input-textarea"
@@ -409,7 +428,6 @@ function StoreItemDetail(props) {
 								</div>
 								<div>
 									<form className="flex" onSubmit={asNoteSubmitHandler}>
-										{/* 수리내역 완성하기 */}
 										<input
 											className="input-text h-9 w-1/3 mr-2"
 											id="asNote-date"

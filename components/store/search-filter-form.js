@@ -3,7 +3,7 @@ import { getFilteredStore } from "../../lib/util/store-util"
 import StoreSearchResult from "./search-result"
 
 function StoreSearchFilterForm(props) {
-	const { filteredProducts, updateStoreCreditCount } = props
+	const { updateStoreCreditCount } = props
 	const [searchedStore, setSearchedStore] = useState()
 
 	const inputRef = useRef()
@@ -42,8 +42,6 @@ function StoreSearchFilterForm(props) {
 				{searchedStore && (
 					<StoreSearchResult
 						searchedStore={searchedStore}
-						setSearchedStore={setSearchedStore}
-						filteredProducts={filteredProducts}
 						updateStoreCreditCount={updateStoreCreditCount}
 					/>
 				)}

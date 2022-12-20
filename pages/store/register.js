@@ -4,16 +4,16 @@ import PageTitle from "../../components/ui/page-title"
 import { getBrandNoneProducts } from "../../lib/util/product-util"
 import { getAllUsers } from "../../lib/util/user-util"
 
-function StoreRegisterPage() {
+const StoreRegisterPage = () => {
 	const [products, setProducts] = useState()
 	const [users, setUsers] = useState()
 
-	async function getBrandNoneProductsToUtil() {
+	const getBrandNoneProductsToUtil = async () => {
 		const productList = await getBrandNoneProducts()
 		setProducts(productList)
 	}
 
-	async function getAllUsersToUtil() {
+	const getAllUsersToUtil = async () => {
 		const users = await getAllUsers()
 		setUsers(users)
 	}

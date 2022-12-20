@@ -5,6 +5,8 @@ import { fetchHelperFunction } from "../../lib/fetch/json-fetch-data"
 
 import ProductLogTable from "../../components/product/log/log-table"
 import LogDateFilterForm from "../../components/repair/log/date-filter-form"
+
+import PagenationUi from "../../components/ui/pagenation-lib"
 function ProductLogPage() {
 	const [totalPosts, setTotalPosts] = useState(null) // 모든 데이터의 갯수
 	const [logs, setLogs] = useState() // 현재 페이지에 나타날 데이터
@@ -13,7 +15,7 @@ function ProductLogPage() {
 	const [page, setPage] = useState(1) // 현재 페이지네이션 번호
 	const maxPosts = 10 // 한 페이지에 나타낼 총 갯수
 
-	function updateFilterDateFunction(start, end) {
+	const updateFilterDateFunction = (start, end) => {
 		if (start === "") {
 			setStartDate("")
 			setEndDate("")
@@ -23,13 +25,14 @@ function ProductLogPage() {
 		}
 	}
 
-	function initFilterDateFunction() {
+	const initFilterDateFunction = () => {
 		setStartDate("")
 		setEndDate("")
 	}
 
-	function pageHandleFunction(page) {
-		setPage(page)
+	const pageHandleFunction = (e) => {
+		const { selected } = e
+		setPage(selected + 1)
 	}
 
 	const getData = useCallback(
@@ -61,11 +64,11 @@ function ProductLogPage() {
 					dateHandler={updateFilterDateFunction}
 				/>
 				{logs && <ProductLogTable data={logs} replaceListHandler={getData} />}
-				<Pagenation
-					page={page}
-					totalPosts={totalPosts}
-					maxPosts={maxPosts}
-					pageHandleFunction={pageHandleFunction}
+
+				<PagenationUi
+					onPageChange={pageHandleFunction}
+					pageRangeDisplayed={maxPosts}
+					pageCount={totalPosts}
 				/>
 			</div>
 		</div>

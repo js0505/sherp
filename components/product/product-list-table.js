@@ -9,6 +9,11 @@ function ProductListTable(props) {
 			field: "name",
 		},
 		{
+			headerName: "카테고리",
+			field: "category",
+			width: 100,
+		},
+		{
 			headerName: "재고수량",
 			field: "qty",
 			type: "numericColumn",

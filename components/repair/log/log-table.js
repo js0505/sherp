@@ -11,7 +11,7 @@ function CompleteRepairTable(props) {
 	function modalHandler() {
 		setShowModal(!showModal)
 	}
-	console.log(data)
+
 	// 표시 할 데이터
 	// 가맹점명, 제품명, 처리상태, 개수, (완료날짜, 완료유저),
 	const columns = [

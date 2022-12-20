@@ -29,7 +29,6 @@ export const CheckboxButton = ({
 					type="checkbox"
 					id={id}
 					onChange={(e) => {
-						console.log(e.target.checked)
 						setIsChecked(e.target.checked)
 						onChangeFunction((oldProduct) => {
 							let newProduct = { ...oldProduct }

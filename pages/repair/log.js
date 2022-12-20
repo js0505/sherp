@@ -3,8 +3,9 @@ import PageTitle from "../../components/ui/page-title"
 import CompleteRepairTable from "../../components/repair/log/log-table"
 import { fetchHelperFunction } from "../../lib/fetch/json-fetch-data"
 import LogDateFilterForm from "../../components/repair/log/date-filter-form"
-import PageNation from "../../components/ui/pagenation"
-function RepairLogPage() {
+import PagenationUi from "../../components/ui/pagenation-lib"
+
+const RepairLogPage = () => {
 	const [totalPosts, setTotalPosts] = useState(null) // 모든 데이터의 갯수
 	const [repairs, setRepairs] = useState() // 현재 페이지에 나타날 데이터
 	const [startDate, setStartDate] = useState(null) // 현재 페이지에 나타날 데이터
@@ -12,7 +13,7 @@ function RepairLogPage() {
 	const [page, setPage] = useState(1) // 현재 페이지네이션 번호
 	const maxPosts = 10 // 한 페이지에 나타낼 총 갯수
 
-	function updateFilterDateFunction(start, end) {
+	const updateFilterDateFunction = (start, end) => {
 		if (start === "") {
 			setStartDate("")
 			setEndDate("")
@@ -22,12 +23,12 @@ function RepairLogPage() {
 		}
 	}
 
-	function initFilterDateFunction() {
+	const initFilterDateFunction = () => {
 		setStartDate("")
 		setEndDate("")
 	}
 
-	function pageHandleFunction(page) {
+	const pageHandleFunction = (page) => {
 		setPage(page)
 	}
 
@@ -61,11 +62,11 @@ function RepairLogPage() {
 				{repairs && (
 					<CompleteRepairTable data={repairs} replaceListHandler={getData} />
 				)}
-				<PageNation
-					page={page}
-					totalPosts={totalPosts}
-					maxPosts={maxPosts}
-					pageHandleFunction={pageHandleFunction}
+
+				<PagenationUi
+					onPageChange={pageHandleFunction}
+					pageRangeDisplayed={maxPosts}
+					pageCount={totalPosts}
 				/>
 			</div>
 		</div>

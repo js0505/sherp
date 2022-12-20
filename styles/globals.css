@@ -55,9 +55,13 @@ a {
 .ag-theme-alpine .ag-cell {
 	@apply py-2 text-sm;
 }
-/* .ag-theme-alpine .ag-header {
-	@apply;
-} */
+
+.ag-header-cell-label {
+	@apply justify-center;
+}
+.ag-theme-alpine .ag-header-cell-text {
+	@apply text-sm;
+}
 
 .Dropdown-root {
 	@apply relative;

@@ -19,6 +19,7 @@ const sidebarData = [
 		subNav: [
 			{ title: "가맹점 등록", path: "/store/register", icon: "" },
 			{ title: "가맹점 검색", path: "/store/search", icon: "" },
+			{ title: "데이터 관리", path: "/store/data", icon: "" },
 		],
 	},
 	{
@@ -117,7 +118,7 @@ function SubMenu(props) {
 	)
 }
 
-function SideBar(props) {
+const SideBar = (props) => {
 	const { sideBarHandler } = props
 	const { data: session } = useSession()
 
@@ -127,7 +128,7 @@ function SideBar(props) {
 		icon: <UserIcon />,
 	}
 
-	function logoutHandler() {
+	const logoutHandler = () => {
 		const accept = confirm("로그아웃 하시겠습니까?")
 
 		if (!accept) {
@@ -139,7 +140,7 @@ function SideBar(props) {
 		}
 	}
 
-	function closeSideBarHandler() {
+	const closeSideBarHandler = () => {
 		sideBarHandler()
 	}
 	return (

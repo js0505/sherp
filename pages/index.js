@@ -2,8 +2,9 @@ import { getSession } from "next-auth/react"
 import { useRouter } from "next/router"
 import { useEffect, useState } from "react"
 
-function Home() {
+const Home = () => {
 	const [isLoading, setIsLoading] = useState(true)
+
 	const router = useRouter()
 
 	useEffect(() => {
@@ -15,7 +16,8 @@ function Home() {
 			}
 		})
 	}, [router])
-	return <>{isLoading ? <div>Loading</div> : <div>HomePage</div>}</>
+
+	return <>{isLoading ? <div>Loading</div> : <div>home</div>}</>
 }
 
 export default Home

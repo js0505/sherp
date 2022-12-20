@@ -3,10 +3,10 @@ import RepairRegisterForm from "../../components/repair/register-form"
 import PageTitle from "../../components/ui/page-title"
 import { getAllProducts } from "../../lib/util/product-util"
 
-function RepairRegisterPage() {
+const RepairRegisterPage = () => {
 	const [productList, setProductList] = useState()
 
-	async function getAllProductsToUtil() {
+	const getAllProductsToUtil = async () => {
 		const products = await getAllProducts()
 		setProductList(products)
 	}

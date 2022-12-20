@@ -1,8 +1,7 @@
 import Link from "next/link"
-import { useSession, signOut } from "next-auth/react"
 import NavBarIcon from "../icons/nav-bar-icon"
 
-function TopNavigation(props) {
+const TopNavigation = (props) => {
 	return (
 		<header className="flex justify-between h-10 z-30  w-full text-primary bg-white px-2 fixed ">
 			<Link href="/">

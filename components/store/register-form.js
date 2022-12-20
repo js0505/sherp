@@ -46,9 +46,9 @@ function StoreRegisterForm(props) {
 		e.preventDefault()
 
 		const body = {
-			user: selectedUser.value,
+			user: selectedUser.label,
 			storeName: storeNameInputRef.current.value,
-			businessNum: businessNumInputRef.current.value,
+			businessNum: Number(businessNumInputRef.current.value),
 			van: selectedVANName.value,
 			vanId: vanIdInputRef.current.value,
 			vanCode: vanCodeInputRef.current.value,
@@ -172,7 +172,6 @@ function StoreRegisterForm(props) {
 						id="contact"
 						type="text"
 						ref={contactInputRef}
-						required
 					/>
 				</div>
 				<div className="col-span-1">
@@ -240,6 +239,18 @@ function StoreRegisterForm(props) {
 				</div>
 				<div className="col-span-1">
 					<label className="input-label" htmlFor="van-id">
+						VAN CODE
+					</label>
+					<input
+						className="input-text"
+						id="van-id"
+						type="text"
+						ref={vanCodeInputRef}
+						required
+					/>
+				</div>
+				<div className="col-span-1">
+					<label className="input-label" htmlFor="van-id">
 						VAN ID
 					</label>
 					<input
@@ -249,17 +260,7 @@ function StoreRegisterForm(props) {
 						ref={vanIdInputRef}
 					/>
 				</div>
-				<div className="col-span-1">
-					<label className="input-label" htmlFor="van-id">
-						VAN CODE
-					</label>
-					<input
-						className="input-text"
-						id="van-id"
-						type="text"
-						ref={vanCodeInputRef}
-					/>
-				</div>
+
 				<div className="col-span-4">
 					<div className="input-label">장비</div>
 					<div className="flex justify-between">

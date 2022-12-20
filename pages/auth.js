@@ -3,7 +3,7 @@ import { useRouter } from "next/router"
 import { useEffect } from "react"
 import AuthForm from "../components/auth/auth-form"
 
-function AuthPage() {
+const AuthPage = () => {
 	const router = useRouter()
 
 	useEffect(() => {

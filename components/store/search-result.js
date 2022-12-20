@@ -1,20 +1,14 @@
 import { format } from "date-fns"
 import { useRef, useEffect, useState } from "react"
-import { fetchHelperFunction } from "../../lib/fetch/json-fetch-data"
 import GridTable from "../ui/grid-table"
 import Modal from "../ui/modal"
 import StoreItemDetail from "./item-detail"
 
-function StoreSearchResult(props) {
-	const {
-		searchedStore,
-		setSearchedStore,
-		filteredProducts,
-		updateStoreCreditCount,
-	} = props
+const StoreSearchResult = (props) => {
+	const { searchedStore, updateStoreCreditCount } = props
 
 	const [rowData, setRowData] = useState()
-	const [selectedStore, setSelectedStore] = useState()
+	const [selectedStore, setSelectedStore] = useState({})
 	const [filterYear, setFilterYear] = useState()
 	const [showModal, setShowModal] = useState(false)
 	function modalHandler() {
@@ -41,7 +35,8 @@ function StoreSearchResult(props) {
 				month: monthNum,
 				data: "count",
 			},
-			width: 100,
+			width: 150,
+			cellStyle: { textAlign: "right" },
 			valueGetter: (params) => {
 				const yearFiltered = params.data.creditCount
 					.filter((item) => item.year === filterYear)
@@ -64,7 +59,10 @@ function StoreSearchResult(props) {
 				month: monthNum,
 				data: "cms",
 			},
-			width: 100,
+			width: 150,
+			cellStyle: { textAlign: "right" },
+			filter: false,
+			floatingFilter: false,
 			valueGetter: (params) => {
 				const yearFiltered = params.data.creditCount
 					.filter((item) => item.year === filterYear)
@@ -82,11 +80,16 @@ function StoreSearchResult(props) {
 	}
 
 	const columns = [
-		{ headerName: "담당자", field: "user.name", width: 100 },
-		{ headerName: "지역", field: "city", width: 100 },
-		{ headerName: "가맹점명", field: "storeName" },
-		{ headerName: "사업자번호", field: "businessNum" },
-		{ headerName: "VAN", field: "van", editable: true, width: 100 },
+		{ headerName: "담당자", field: "user", width: 100, pinned: true },
+		{ headerName: "지역", field: "city", width: 100, pinned: true },
+		{ headerName: "가맹점명", field: "storeName", pinned: true },
+		{ headerName: "사업자번호", field: "businessNum", pinned: true },
+		{ headerName: "VAN", field: "van", width: 100 },
+		{
+			headerName: "영업상태",
+			field: "inOperation",
+			width: 100,
+		},
 		...countColumnData,
 	]
 	function onGridReady(params) {
@@ -106,6 +109,12 @@ function StoreSearchResult(props) {
 	// 셀에서 직접 거래건수, cms 수정 시에 동작
 	const cellEditRequest = async (event) => {
 		const oldData = event.data
+
+		if (oldData.inOperation === "폐업") {
+			alert("폐업 가맹점은 데이터를 변경 할 수 없습니다.")
+			return
+		}
+
 		const field = event.colDef.field
 		const editItemYear = event.colDef.colId.year
 		const editItemMonth = event.colDef.colId.month
@@ -118,6 +127,7 @@ function StoreSearchResult(props) {
 			month: editItemMonth,
 			count: isCountEdit ? newValue : null,
 			cms: isCountEdit ? null : newValue,
+			inOperation: oldData.inOperation,
 		}
 
 		let filteredCorrectField = newData[field].find(
@@ -159,7 +169,6 @@ function StoreSearchResult(props) {
 		// 업데이트 된 가맹점 id로 다시 정보를 받고, 기존 데이터에서 찾아서 업데이트
 
 		const newData = updatedStore
-		// console.log(newData)
 
 		const itemsToUpdate = []
 		gridRef.current.api.forEachNodeAfterFilterAndSort(function (rowNode) {
@@ -185,10 +194,8 @@ function StoreSearchResult(props) {
 					<StoreItemDetail
 						item={selectedStore}
 						setItem={setSelectedStore}
-						// 디테일 페이지에서 수정이 끝나면 값을 변경하고 싶은데 에러남
 						updateRowDataFunction={updateRowDataFunction}
 						modalHandler={modalHandler}
-						filteredProducts={filteredProducts}
 					/>
 				</Modal>
 			)}
@@ -205,6 +212,8 @@ function StoreSearchResult(props) {
 							onGridReady={onGridReady}
 							onCellClicked={onCellClick}
 							onCellEditRequest={cellEditRequest}
+							filter={true}
+							floatingFilter={true}
 						/>
 					</div>
 				</div>

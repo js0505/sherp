@@ -2,10 +2,10 @@ import { useState } from "react"
 import TopNavigation from "./top-navigation"
 import SideBar from "./side-bar"
 
-function Layout(props) {
+const Layout = (props) => {
 	const [showSideBar, setShowSideBar] = useState(false)
 
-	function sideBarHandler() {
+	const sideBarHandler = () => {
 		setShowSideBar(!showSideBar)
 	}
 	return (

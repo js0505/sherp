@@ -8,7 +8,6 @@ const handler = nextConnect()
 
 // 모든 등록된 장비 불러오기
 handler.get(async function (req, res) {
-	console.log(req.query)
 	await dbConnect()
 
 	try {

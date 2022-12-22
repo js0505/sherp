@@ -28,7 +28,7 @@ a {
 		@apply block  text-base font-medium text-gray-700;
 	}
 	.input-textarea {
-		@apply p-2 block w-full mt-1 rounded-md border border-gray-300 
+		@apply p-2 block w-full mt-1 rounded-md border border-gray-300 resize-none
 		shadow-md text-base  focus:border-primary focus:ring-2  focus:ring-primary focus:outline-none;
 	}
 	.input-button {
@@ -57,7 +57,7 @@ a {
 }
 
 .ag-header-cell-label {
-	@apply justify-center;
+	@apply text-left;
 }
 .ag-theme-alpine .ag-header-cell-text {
 	@apply text-sm;

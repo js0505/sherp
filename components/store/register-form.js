@@ -99,7 +99,7 @@ function StoreRegisterForm(props) {
 	}
 
 	return (
-		<section className="container lg:w-3/5 ">
+		<section className="container w-2/5 ">
 			<form onSubmit={submitHandler} className="grid grid-cols-4 gap-4">
 				<div className="col-span-1">
 					<label className="input-label" htmlFor="contract-date">

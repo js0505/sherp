@@ -123,8 +123,8 @@ const StoreDataManagePage = () => {
 	return (
 		<>
 			<PageTitle title="가맹점 데이터 관리" />
-			<div className="w-full flex justify-center">
-				<div className="flex flex-col justify-around h-96 w-1/2">
+			<div className="w-full flex justify-left ml-32 mt-20">
+				<div className="flex flex-col justify-around h-96 w-1/5">
 					<button
 						className="input-button w-full"
 						type="button"
@@ -133,7 +133,7 @@ const StoreDataManagePage = () => {
 						보고서 다운로드
 					</button>
 					<button
-						className="input-button w-full"
+						className="input-button w-full mt-10"
 						type="button"
 						onClick={onClosedStoreFixHandler}
 					>
@@ -141,7 +141,7 @@ const StoreDataManagePage = () => {
 					</button>
 
 					<button
-						className="input-button w-full"
+						className="input-button w-full mt-10"
 						onClick={onSampleDownloadHandler}
 					>
 						업로드 샘플 다운로드
@@ -153,7 +153,7 @@ const StoreDataManagePage = () => {
 						onChange={onChangeFileHandler}
 					/>
 					<button
-						className="input-button float-none w-full"
+						className="input-button w-full mt-10"
 						type="submit"
 						onClick={onCountUploadHandler}
 					>

@@ -35,6 +35,10 @@ module.exports = {
 				dropdownFadeIn: "dropdownFadeIn 0.4s ease",
 				dropdownFadeOut: "dropdownFadeOut 0.4s ease",
 			},
+			height: {
+				"65vh": "65vh",
+				"70vh": "70vh",
+			},
 		},
 	},
 	plugins: [],

@@ -18,14 +18,15 @@ function GridTable(props, ref) {
 
 	return (
 		<>
-			<div className="h-96 mt-5 mb-3 lg:h-[29rem]">
-				<div className="ag-theme-alpine w-full h-full">
+			<div className="mt-5 mb-3">
+				<div className="ag-theme-alpine h-65vh">
 					<AgGridReact
 						ref={ref}
 						defaultColDef={{
 							sortable: true,
 							filter: filter,
 							floatingFilter: floatingFilter,
+							cellStyle: { textAlign: "left" },
 						}}
 						readOnlyEdit={readOnlyEdit}
 						columnDefs={columnDefs}

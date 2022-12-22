@@ -69,7 +69,7 @@ function ProductRegisterForm(props) {
 	}
 
 	return (
-		<section className="container lg:w-3/5">
+		<section className="container lg:w-2/5">
 			<form className="grid grid-cols-4 gap-4" onSubmit={submitHandler}>
 				<div className="col-span-4">
 					<label className="input-label">모델명</label>

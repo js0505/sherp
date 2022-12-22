@@ -14,7 +14,6 @@ function RepairList(props) {
 			`/api/repair?state=${state}`,
 		)
 
-
 		if (state === "수리접수") {
 			const today = new Date()
 			const formattedToday = format(today, "yyyy-MM-dd")
@@ -48,7 +47,7 @@ function RepairList(props) {
 
 	return (
 		<section className="container lg:w-full mt-8 lg:mt-0 flex flex-col w-full lg:flex-row lg:justify-evenly ">
-			<div className="relative lg:h-[35rem] w-full lg:w-2/5 p-2 pb-5 pt-8 border border-gray-transparent rounded-lg shadow-md">
+			<div className="relative lg:h-70vh w-full lg:w-2/5 p-2 pb-5 pt-8 border border-gray-transparent rounded-lg shadow-md">
 				<div className="absolute -top-3 left-7 bg-white text-lg px-2 ">
 					최근 접수내역
 				</div>
@@ -69,7 +68,7 @@ function RepairList(props) {
 			</div>
 
 			{confirmRepairList && (
-				<div className="relative mt-9 lg:mt-0 lg:h-[35rem] w-full lg:w-2/5 p-2 pb-5 pt-8 border border-gray-transparent rounded-lg shadow-md">
+				<div className="relative mt-9 lg:mt-0 lg:h-70vh w-full lg:w-2/5 p-2 pb-5 pt-8 border border-gray-transparent rounded-lg shadow-md">
 					<div className="absolute -top-3 left-7 bg-white text-lg px-2 ">
 						1주일 이상 경과된 내역
 					</div>

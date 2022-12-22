@@ -42,6 +42,7 @@ function StoreItemDetail(props) {
 		setVan(item.van)
 		setCity(item.city)
 		setUser(item.user)
+		setNote(item.note)
 		setAsNote(item.asNote)
 		setContractDate(item.contractDate)
 		setStoreName(item.storeName)

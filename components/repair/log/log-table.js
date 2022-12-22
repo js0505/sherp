@@ -18,11 +18,14 @@ function CompleteRepairTable(props) {
 		{ headerName: "법인명", field: "product.brand.name" },
 		{ headerName: "가맹점명", field: "storeName", width: 250 },
 		{ headerName: "제품명", field: "product.name" },
-		{ headerName: "VAN", field: "product.van" },
+		{ headerName: "카테고리", field: "product.category" },
+		{ headerName: "VAN", field: "product.van", width: 150 },
 		{
 			headerName: "수량",
-			type: "numericColumn",
-			field: "qty",
+			width: 100,
+			valueGetter: (param) => {
+				return `${param.data.qty}대`
+			},
 		},
 		{ headerName: "상태", field: "state", width: 110 },
 

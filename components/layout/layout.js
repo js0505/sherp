@@ -10,11 +10,11 @@ const Layout = (props) => {
 	}
 	return (
 		<>
-			<div className="">
+			<div className="w-100vh h-100vh">
 				<TopNavigation sideBarHandler={sideBarHandler} />
 				<div className="sm:flex h-screen">
 					<SideBar showSideBar={showSideBar} sideBarHandler={sideBarHandler} />
-					<main className="bg-white pt-10 sm:pt-20 px-8 w-full  ">
+					<main className="bg-white pt-10 sm:pt-20 px-8 w-full ">
 						{props.children}
 					</main>
 				</div>

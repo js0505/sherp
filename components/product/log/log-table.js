@@ -29,15 +29,20 @@ function ProductLogTable(props) {
 	const columns = [
 		{ headerName: "법인명", field: "product.brand.name" },
 		{ headerName: "제품명", field: "product.name" },
+		{ headerName: "카테고리", field: "product.category" },
 		{ headerName: "VAN", field: "product.van" },
-		{ headerName: "내용", field: "note", width: 350 },
+		{
+			headerName: "내용",
+			field: "note",
+			width: 350,
+			cellStyle: { textAlign: "left" },
+		},
 		{
 			headerName: "수량",
-			type: "numericColumn",
-			// field: "quantity",
 			valueGetter: (params) => {
 				return `${params.data.quantity}대`
 			},
+			width: 100,
 		},
 		{
 			headerName: "입,출고",

@@ -73,7 +73,7 @@ function QtyUpdateForm(props) {
 	}
 
 	return (
-		<section className="container lg:w-3/5 pt-3 ">
+		<section className="container lg:w-2/5 pt-3 ">
 			<form onSubmit={submitHandler} className="grid grid-cols-4 gap-4">
 				<div className="col-span-4 lg:col-span-2">
 					<DatalistInput

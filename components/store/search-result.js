@@ -83,12 +83,26 @@ const StoreSearchResult = (props) => {
 		{ headerName: "담당자", field: "user", width: 100, pinned: true },
 		{ headerName: "지역", field: "city", width: 100, pinned: true },
 		{ headerName: "가맹점명", field: "storeName", pinned: true },
-		{ headerName: "사업자번호", field: "businessNum", pinned: true },
+		{
+			headerName: "사업자번호",
+			field: "businessNum",
+			pinned: true,
+			valueGetter: (params) => {
+				const plainNumber = params.data.businessNum
+				const parsedPlainNumber = String(plainNumber)
+				const filteredNumber = `${parsedPlainNumber.slice(
+					0,
+					3,
+				)}-${parsedPlainNumber.slice(3, 5)}-${parsedPlainNumber.slice(5, 10)}`
+
+				return filteredNumber
+			},
+		},
 		{ headerName: "VAN", field: "van", width: 100 },
 		{
 			headerName: "영업상태",
 			field: "inOperation",
-			width: 100,
+			width: 120,
 		},
 		...countColumnData,
 	]
@@ -201,21 +215,20 @@ const StoreSearchResult = (props) => {
 			)}
 			<div className="w-full  mt-10">
 				<div className=" text-center text-xl mb-10">검색결과</div>
-				<div className="">
-					<div className=" w-full ">
-						<GridTable
-							ref={gridRef}
-							columnDefs={columns}
-							rowData={rowData}
-							readOnlyEdit={true}
-							getRowId={getRowId}
-							onGridReady={onGridReady}
-							onCellClicked={onCellClick}
-							onCellEditRequest={cellEditRequest}
-							filter={true}
-							floatingFilter={true}
-						/>
-					</div>
+
+				<div className="w-full h-full">
+					<GridTable
+						ref={gridRef}
+						columnDefs={columns}
+						rowData={rowData}
+						readOnlyEdit={true}
+						getRowId={getRowId}
+						onGridReady={onGridReady}
+						onCellClicked={onCellClick}
+						onCellEditRequest={cellEditRequest}
+						filter={true}
+						floatingFilter={true}
+					/>
 				</div>
 			</div>
 		</>

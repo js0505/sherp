@@ -11,8 +11,7 @@ import { editItemforDropdownButton } from "../../lib/util/dropdown-util"
 import Dropdown from "react-dropdown"
 import { DownArrow } from "../ui/icons/arrows"
 import { CheckboxButton } from "../ui/checkbox-button"
-function StoreRegisterForm(props) {
-	const { users } = props
+function StoreRegisterForm({ users }) {
 	const today = new Date()
 	const formattedToday = format(today, "yyyy-MM-dd")
 

@@ -18,14 +18,15 @@ handler.get(async function (req, res) {
 	const limitPageSize = maxPosts
 	// 날짜 형식으로 날아온 글자 갯수로 파악...
 	//  === undefined 같은거 안 통함
-	if (start.length > 4) {
+	if (start !== "null") {
 		// 날짜 필터 데이터가 존재할 때
+
 		if (parsedPage === 1) {
 			const query = { date: { $gte: start, $lte: end } }
 
 			const productLogs = await ProductLog.find(query)
 				.limit(limitPageSize)
-				.sort({ date: -1 })
+				.sort({ date: -1, updatedAt: -1 })
 				.populate({
 					path: "product",
 					model: Product,
@@ -36,7 +37,7 @@ handler.get(async function (req, res) {
 
 			const totalPosts = await ProductLog.countDocuments(query)
 
-			res.status(200).json({ success: true, productLogs, totalPosts })
+			return res.status(200).json({ success: true, productLogs, totalPosts })
 
 			// 날짜 필터를 가지고 페이지네이션
 		} else {
@@ -45,7 +46,7 @@ handler.get(async function (req, res) {
 			const productLogs = await ProductLog.find(query)
 				.skip(skipIndex)
 				.limit(limitPageSize)
-				.sort({ date: -1 })
+				.sort({ date: -1, updatedAt: -1 })
 				.populate({
 					path: "product",
 					model: Product,
@@ -53,8 +54,8 @@ handler.get(async function (req, res) {
 				})
 				.populate({ path: "user", model: User })
 				.exec()
-
-			res.status(200).json({ success: true, productLogs })
+			const totalPosts = await ProductLog.countDocuments(query)
+			return res.status(200).json({ success: true, productLogs, totalPosts })
 		}
 		// 필터 없이 전체 데이터만 나타내는 부분
 	} else {
@@ -64,7 +65,7 @@ handler.get(async function (req, res) {
 			// 페이지에 나타낼 데이터 쿼리
 			const productLogs = await ProductLog.find(query)
 				.limit(limitPageSize)
-				.sort({ createdAt: -1 })
+				.sort({ date: -1, updatedAt: -1 })
 				.populate({
 					path: "product",
 					model: Product,
@@ -76,7 +77,7 @@ handler.get(async function (req, res) {
 			// 리미트 없이 해당 조건에 맞는 전체 데이터 갯수 전달.
 			const totalPosts = await ProductLog.countDocuments(query)
 
-			res.status(200).json({ success: true, productLogs, totalPosts })
+			return res.status(200).json({ success: true, productLogs, totalPosts })
 		} else {
 			// 그 외 페이지네이션
 			const query = {}
@@ -93,7 +94,8 @@ handler.get(async function (req, res) {
 				.populate({ path: "user", model: User })
 				.exec()
 
-			res.status(200).json({ success: true, productLogs })
+			const totalPosts = await ProductLog.countDocuments(query)
+			return res.status(200).json({ success: true, productLogs, totalPosts })
 		}
 	}
 })

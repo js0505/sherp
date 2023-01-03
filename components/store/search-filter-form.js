@@ -26,7 +26,7 @@ function StoreSearchFilterForm(props) {
 				<form className="flex justify-center" onSubmit={submitHandler}>
 					<div className=" w-2/6">
 						<input
-							className="input-text  w-full mt-0"
+							className="input-text  w-full mt-0 text-lg"
 							ref={inputRef}
 							placeholder="검색어를 입력하세요.  ex) 가맹점명, 사업자번호, 지역, VAN"
 						/>

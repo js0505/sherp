@@ -13,6 +13,7 @@ handler.get(async function (req, res) {
 	// maxPosts : 페이지에 나타낼 총 데이터 갯수
 	// start, end : 검색 시작, 끝 날짜
 	const { page, maxPosts, start, end } = req.query
+
 	const parsedPage = Number(page)
 	const limitPageSize = maxPosts
 
@@ -29,7 +30,7 @@ handler.get(async function (req, res) {
 
 			const repairs = await Repair.find(query)
 				.limit(limitPageSize)
-				.sort({ completeDate: -1 })
+				.sort({ completeDate: -1, updatedAt: -1 })
 				.populate({
 					path: "product",
 					model: Product,
@@ -53,7 +54,7 @@ handler.get(async function (req, res) {
 			const repairs = await Repair.find(query)
 				.skip(skipIndex)
 				.limit(limitPageSize)
-				.sort({ completeDate: -1 })
+				.sort({ completeDate: -1, updatedAt: -1 })
 				.populate({
 					path: "product",
 					model: Product,
@@ -74,7 +75,7 @@ handler.get(async function (req, res) {
 			// 페이지에 나타낼 데이터 쿼리
 			const repairs = await Repair.find(query)
 				.limit(limitPageSize)
-				.sort({ completeDate: -1 })
+				.sort({ completeDate: -1, updatedAt: -1 })
 				.populate({
 					path: "product",
 					model: Product,
@@ -98,7 +99,7 @@ handler.get(async function (req, res) {
 			const repairs = await Repair.find(query)
 				.skip(skipIndex)
 				.limit(limitPageSize)
-				.sort({ completeDate: -1 })
+				.sort({ completeDate: -1, updatedAt: -1 })
 				.populate({
 					path: "product",
 					model: Product,

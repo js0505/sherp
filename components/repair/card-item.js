@@ -2,9 +2,7 @@ import { useState } from "react"
 import Modal from "../ui/modal"
 import RepairItemDetail from "./card-item-detail"
 
-function RepairCardItem(props) {
-	const { item, replaceListHandler, state } = props
-
+function RepairCardItem({ item, state }) {
 	const [showModal, setShowModal] = useState(false)
 	function modalHandler() {
 		setShowModal(!showModal)
@@ -17,8 +15,7 @@ function RepairCardItem(props) {
 					<RepairItemDetail
 						state={state}
 						modalHandler={modalHandler}
-						replaceListHandler={replaceListHandler}
-						item={item}
+						repairId={item._id}
 					/>
 				</Modal>
 			)}

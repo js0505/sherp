@@ -1,12 +1,14 @@
 import { useRef } from "react"
-import { fetchHelperFunction } from "../../lib/fetch/json-fetch-data"
+import { api } from "../../query/api"
 
 function CompanyRegisterForm() {
 	const companyNameInputRef = useRef()
 	const companyContactInputRef = useRef()
 	const companyAddressInputRef = useRef()
 
-	async function submitHandler(e) {
+	const [plainFetcher] = api.usePlainFetcherMutation()
+
+	const submitHandler = async (e) => {
 		e.preventDefault()
 
 		const companyName = companyNameInputRef.current.value
@@ -21,8 +23,13 @@ function CompanyRegisterForm() {
 
 		const accept = confirm("등록 하시겠습니까?")
 		if (accept) {
-			const response = await fetchHelperFunction("POST", "/api/company", body)
-			if (!response.result) {
+			const { data: response } = await plainFetcher({
+				method: "POST",
+				url: "company",
+				body,
+			})
+
+			if (!response.success) {
 				alert(`${response.message}`)
 				return
 			}

@@ -1,6 +1,4 @@
-function Modal(props) {
-	const { children } = props
-
+function Modal({ children }) {
 	return (
 		<div className="relative z-40">
 			<div className={`fixed inset-0 bg-gray-300 bg-opacity-90 `}>

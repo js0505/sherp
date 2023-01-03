@@ -13,7 +13,7 @@ const PagenationUi = ({ onPageChange, pageRangeDisplayed, pageCount }) => {
 			nextLabel=">"
 			onPageChange={onPageChange}
 			pageRangeDisplayed={pageRangeDisplayed}
-			pageCount={pageCount / 10}
+			pageCount={pageCount / pageRangeDisplayed}
 			previousLabel="<"
 			className="py-2 flex justify-center"
 			pageClassName="text-lg py-1 text-center text-primary

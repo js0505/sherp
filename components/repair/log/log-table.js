@@ -4,7 +4,7 @@ import RepairItemDetail from "../card-item-detail"
 import GridTable from "../../ui/grid-table"
 
 function CompleteRepairTable(props) {
-	const { data, replaceListHandler } = props
+	const { data } = props
 	const [showModal, setShowModal] = useState(false)
 	const [selectedItemState, setSelectedItemState] = useState()
 	const [selectedItem, setSelectedItem] = useState()
@@ -38,7 +38,7 @@ function CompleteRepairTable(props) {
 	}
 
 	function onCellClick(params) {
-		setSelectedItem(params.data)
+		setSelectedItem(params.data._id)
 		setSelectedItemState(params.data.state)
 		modalHandler()
 	}
@@ -50,8 +50,7 @@ function CompleteRepairTable(props) {
 					<RepairItemDetail
 						state={selectedItemState}
 						modalHandler={modalHandler}
-						item={selectedItem}
-						replaceListHandler={replaceListHandler}
+						repairId={selectedItem}
 					/>
 				</Modal>
 			)}

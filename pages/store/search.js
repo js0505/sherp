@@ -24,3 +24,4 @@ const StoreSearchPage = () => {
 }
 
 export default StoreSearchPage
+// todo: 가맹점도 rtk로 업데이트

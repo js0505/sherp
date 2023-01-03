@@ -1,13 +1,11 @@
-import { useRouter } from "next/router"
-import { useEffect, useRef, useState } from "react"
-import { fetchHelperFunction } from "../../lib/fetch/json-fetch-data"
-import { categoryItems, vanItems } from "../../lib/variables/variables"
+import { useRef, useState } from "react"
 import Dropdown from "react-dropdown"
+import { categoryItems, vanItems } from "../../lib/variables/variables"
 import { editItemforDropdownButton } from "../../lib/util/dropdown-util"
 import { DownArrow } from "../ui/icons/arrows"
-function ProductRegisterForm(props) {
-	const [productCompany, setProductCompany] = useState()
-	const [brand, setBrand] = useState()
+import { api } from "../../query/api"
+
+function ProductRegisterForm() {
 	const [selectedVANName, setSelectedVANName] = useState()
 	const [selectedCategoryName, setSelectedCategoryName] = useState()
 	const [selectedCompanyId, setSelectedCompanyId] = useState()
@@ -15,28 +13,17 @@ function ProductRegisterForm(props) {
 
 	const productNameInputRef = useRef()
 
-	const router = useRouter()
+	const [addProduct] = api.useAddProductMutation()
+	const { data: companyData } = api.useGetAllItemsByUrlQuery({
+		url: "company",
+	})
+	const { data: brandData } = api.useGetAllItemsByUrlQuery({
+		url: "brand",
+	})
+	const companyList = editItemforDropdownButton(companyData?.company)
+	const brandList = editItemforDropdownButton(brandData?.brand)
 
-	async function init() {
-		const { company } = await fetchHelperFunction("GET", "/api/company")
-		const { brand } = await fetchHelperFunction("GET", "/api/brand")
-
-		const editedCompany = editItemforDropdownButton(company)
-		const editedBrand = editItemforDropdownButton(brand)
-
-		setProductCompany(editedCompany)
-		setBrand(editedBrand)
-		setSelectedCompanyId(editedCompany[0])
-		setSelectedBrandId(editedBrand[0])
-		setSelectedVANName(vanItems[0])
-		setSelectedCategoryName(categoryItems[0])
-	}
-
-	useEffect(() => {
-		init()
-	}, [])
-
-	async function submitHandler(e) {
+	const submitHandler = async (e) => {
 		e.preventDefault()
 		const productName = productNameInputRef.current.value
 
@@ -45,29 +32,44 @@ function ProductRegisterForm(props) {
 			return
 		}
 
-		const accept = confirm("장비를 등록 하시겠습니까?")
-
-		let body
-
-		if (accept) {
-			body = {
-				name: productName,
-				van: selectedVANName.value,
-				category: selectedCategoryName.value,
-				brand: selectedBrandId.value,
-				productCompany: selectedCompanyId.value,
-			}
-		} else {
+		if (
+			selectedBrandId === undefined ||
+			selectedCategoryName === undefined ||
+			selectedCompanyId === undefined ||
+			selectedVANName === undefined
+		) {
+			alert("옵션을 모두 선택 해주세요.")
 			return
 		}
 
-		const result = await props.addProduct(body)
+		const accept = confirm("장비를 등록 하시겠습니까?")
 
-		alert(result.message)
+		if (!accept) {
+			return
+		}
+		const body = {
+			name: productName,
+			van: selectedVANName.value,
+			category: selectedCategoryName.value,
+			brand: selectedBrandId.value,
+			productCompany: selectedCompanyId.value,
+		}
 
-		router.reload()
+		const { data } = await addProduct(body)
+
+		if (data.success) {
+			alert(data.message)
+
+			productNameInputRef.current.value = ""
+			setSelectedBrandId(undefined)
+			setSelectedCategoryName(undefined)
+			setSelectedCompanyId(undefined)
+			setSelectedVANName(undefined)
+			return
+		} else {
+			alert(data.message)
+		}
 	}
-
 	return (
 		<section className="container lg:w-2/5">
 			<form className="grid grid-cols-4 gap-4" onSubmit={submitHandler}>
@@ -82,7 +84,7 @@ function ProductRegisterForm(props) {
 						options={vanItems}
 						onChange={setSelectedVANName}
 						value={selectedVANName}
-						placeholder="Select an option"
+						placeholder="VAN"
 					/>
 				</div>
 				<div className="col-span-2">
@@ -90,7 +92,7 @@ function ProductRegisterForm(props) {
 						arrowClosed={<DownArrow />}
 						arrowOpen={<DownArrow />}
 						options={categoryItems}
-						placeholder="유형"
+						placeholder="카테고리"
 						value={selectedCategoryName}
 						onChange={setSelectedCategoryName}
 					/>
@@ -99,17 +101,17 @@ function ProductRegisterForm(props) {
 					<Dropdown
 						arrowClosed={<DownArrow />}
 						arrowOpen={<DownArrow />}
-						options={productCompany}
+						options={companyList}
 						placeholder="제조사"
 						value={selectedCompanyId}
-						onChange={setProductCompany}
+						onChange={setSelectedCompanyId}
 					/>
 				</div>
 				<div className="col-span-2">
 					<Dropdown
 						arrowClosed={<DownArrow />}
 						arrowOpen={<DownArrow />}
-						options={brand}
+						options={brandList}
 						value={selectedBrandId}
 						placeholder="법인명"
 						onChange={setSelectedBrandId}
@@ -126,10 +128,4 @@ function ProductRegisterForm(props) {
 	)
 }
 
-// - 제조사 (_id) (기존 데이터 불러오기)
-// - 모델명
-// - VAN
-// - 유형 : 프린터, 리더기, 포스, 키오스크, 부가장비 …
-// - 보유 수량 (기본 1)
-// - 법인명 (_id) (기존 데이터 불러오기)
 export default ProductRegisterForm

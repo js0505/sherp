@@ -1,12 +1,17 @@
-import { format } from "date-fns"
-import { useSession } from "next-auth/react"
 import { useRef, useState } from "react"
+import { useSession } from "next-auth/react"
 import DatalistInput from "react-datalist-input"
-import { fetchHelperFunction } from "../../../lib/fetch/json-fetch-data"
+import { format } from "date-fns"
+import {
+	usePlainFetcherMutation,
+} from "../../../query/api"
+import { getAllProductsForDatalist } from "../../../lib/util/product-util"
 
-function QtyUpdateForm(props) {
-	const { productList } = props
+function QtyUpdateForm() {
+	const productList = getAllProductsForDatalist()
 	const { data: session } = useSession()
+
+	const [plainFetcher] = usePlainFetcherMutation()
 
 	const [selectedProductId, setSelectedProductId] = useState()
 	const [selectedProductQty, setSelectedProductQty] = useState()
@@ -16,12 +21,12 @@ function QtyUpdateForm(props) {
 	const noteInputRef = useRef()
 	const dataListRef = useRef()
 
-	function dataListSelectHandler(item) {
+	const dataListSelectHandler = (item) => {
 		setSelectedProductId(item.id)
 		setSelectedProductQty(item.qty)
 	}
 
-	async function submitHandler(e) {
+	const submitHandler = async (e) => {
 		e.preventDefault()
 		const today = new Date()
 		const formattedToday = format(today, "yyyy-MM-dd")
@@ -47,29 +52,32 @@ function QtyUpdateForm(props) {
 
 		if (!accept) {
 			return
-		} else {
-			const body = {
-				user: userId,
-				productId,
-				calc,
-				note,
-				qty: Number(qty),
-				date,
-			}
-
-			const response = await fetchHelperFunction("PATCH", "/api/qty", body)
-
-			if (!response.success) {
-				alert(response.message)
-			} else {
-				alert(response.message)
-				noteInputRef.current.value = ""
-				qtyInputRef.current.value = ""
-				dataListRef.current.value = ""
-				setSelectedProductId("")
-				setSelectedCalcValue("plus")
-			}
 		}
+
+		const body = {
+			user: userId,
+			productId,
+			calc,
+			note,
+			qty: Number(qty),
+			date,
+		}
+
+		const { data: response } = await plainFetcher({
+			url: "qty",
+			method: "PATCH",
+			body,
+		})
+		if (!response.success) {
+			alert(response.message)
+		}
+
+		alert(response.message)
+		noteInputRef.current.value = ""
+		qtyInputRef.current.value = ""
+		dataListRef.current.value = ""
+		setSelectedProductId("")
+		setSelectedCalcValue("plus")
 	}
 
 	return (

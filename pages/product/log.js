@@ -1,75 +1,104 @@
-import { useCallback, useEffect, useState } from "react"
+import { useRef, useState } from "react"
 import PageTitle from "../../components/ui/page-title"
-import Pagenation from "../../components/ui/pagenation"
-import { fetchHelperFunction } from "../../lib/fetch/json-fetch-data"
-
 import ProductLogTable from "../../components/product/log/log-table"
-import LogDateFilterForm from "../../components/repair/log/date-filter-form"
-
 import PagenationUi from "../../components/ui/pagenation-lib"
+import { api } from "../../query/api"
+
 function ProductLogPage() {
-	const [totalPosts, setTotalPosts] = useState(null) // 모든 데이터의 갯수
-	const [logs, setLogs] = useState() // 현재 페이지에 나타날 데이터
-	const [startDate, setStartDate] = useState(null) // 현재 페이지에 나타날 데이터
-	const [endDate, setEndDate] = useState(null) // 현재 페이지에 나타날 데이터
 	const [page, setPage] = useState(1) // 현재 페이지네이션 번호
-	const maxPosts = 10 // 한 페이지에 나타낼 총 갯수
+	const [dateFilter, setDateFilter] = useState({
+		startDate: null,
+		endDate: null,
+	})
+	const maxPosts = 20 // 한 페이지에 나타낼 총 갯수
 
-	const updateFilterDateFunction = (start, end) => {
-		if (start === "") {
-			setStartDate("")
-			setEndDate("")
-		} else {
-			setStartDate(start)
-			setEndDate(end)
-		}
-	}
+	const startDateInputRef = useRef()
+	const endDateInputRef = useRef()
 
-	const initFilterDateFunction = () => {
-		setStartDate("")
-		setEndDate("")
-	}
+	const { data, isLoading } = api.useGetProductLogQuery({
+		page,
+		maxPosts,
+		startDate: dateFilter.startDate,
+		endDate: dateFilter.endDate,
+	})
 
-	const pageHandleFunction = (e) => {
+	const pageHandleFunction = async (e) => {
 		const { selected } = e
 		setPage(selected + 1)
 	}
 
-	const getData = useCallback(
-		async (page) => {
-			const response = await fetchHelperFunction(
-				"GET",
-				`/api/product/log?page=${page}&maxPosts=${maxPosts}&start=${startDate}&end=${endDate}`,
-			)
+	const onDateFilterHandler = async (e) => {
+		e.preventDefault()
+		setDateFilter({
+			startDate: startDateInputRef.current.value,
+			endDate: endDateInputRef.current.value,
+		})
+	}
 
-			if (response.totalPosts) {
-				// 최초 페이지 접속 시 총 데이터 갯수를 받아와 페이지네이션 넘버링에 사용
-				setTotalPosts(response.totalPosts)
-			}
-			setLogs(response.productLogs)
-		},
-		[startDate, endDate],
-	)
+	const clearDateFilter = () => {
+		setDateFilter({ startDate: null, endDate: null })
+		startDateInputRef.current.value = ""
+		endDateInputRef.current.value = ""
+	}
 
-	useEffect(() => {
-		getData(page)
-	}, [getData, page, totalPosts])
+	if (isLoading) {
+		return <div>Loading</div>
+	}
 
 	return (
 		<div>
 			<PageTitle title="입고, 출고 내역" />
 			<div className=" w-5/6  container ">
-				<LogDateFilterForm
-					clearDateHandler={initFilterDateFunction}
-					dateHandler={updateFilterDateFunction}
-				/>
-				{logs && <ProductLogTable data={logs} replaceListHandler={getData} />}
+				{data && (
+					<>
+						<form
+							onSubmit={onDateFilterHandler}
+							className="flex justify-center w-full px-3"
+						>
+							<div className="w-full mr-3">
+								<label className="input-label" htmlFor="date">
+									시작 일자
+								</label>
+								<input
+									className="input-text"
+									id="date"
+									type="date"
+									ref={startDateInputRef}
+								/>
+							</div>
+							<div className="w-full mr-3">
+								<label className="input-label" htmlFor="date">
+									종료 일자
+								</label>
+								<input
+									className="input-text"
+									id="date"
+									type="date"
+									ref={endDateInputRef}
+								/>
+							</div>
+							<div className="mt-4 flex w-full">
+								<button className="input-button w-full mr-2" type="submit">
+									검색
+								</button>
+								<button
+									className="input-button w-full"
+									type="button"
+									onClick={clearDateFilter}
+								>
+									초기화
+								</button>
+							</div>
+						</form>
+						<ProductLogTable data={data.productLogs} />
 
-				<PagenationUi
-					onPageChange={pageHandleFunction}
-					pageRangeDisplayed={maxPosts}
-					pageCount={totalPosts}
-				/>
+						<PagenationUi
+							onPageChange={pageHandleFunction}
+							pageRangeDisplayed={maxPosts}
+							pageCount={data.totalPosts}
+						/>
+					</>
+				)}
 			</div>
 		</div>
 	)

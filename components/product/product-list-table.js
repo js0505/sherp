@@ -1,7 +1,9 @@
+import { api } from "../../query/api"
 import GridTable from "../ui/grid-table"
 
-function ProductListTable(props) {
-	const { data } = props
+const ProductListTable = () => {
+	const { data } = api.useGetAllItemsByUrlQuery({ url: "product" })
+	const products = data?.products
 
 	const columns = [
 		{
@@ -11,15 +13,17 @@ function ProductListTable(props) {
 		{
 			headerName: "카테고리",
 			field: "category",
-			width: 100,
+			width: 150,
 		},
 		{
 			headerName: "재고수량",
 			field: "qty",
-			type: "numericColumn",
 			floatingFilter: false,
 			filter: false,
-			width: 80,
+			width: 100,
+			valueGetter: (params) => {
+				return `${params.data.qty}대`
+			},
 		},
 		{
 			headerName: "법인명",
@@ -41,7 +45,7 @@ function ProductListTable(props) {
 	return (
 		<GridTable
 			columnDefs={columns}
-			rowData={data}
+			rowData={products}
 			onGridReady={onGridReady}
 			onCellClicked={onCellClick}
 			filter={true}

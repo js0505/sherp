@@ -1,15 +1,19 @@
 import { useRef, useState } from "react"
 import { useSession } from "next-auth/react"
 import { DatalistInput } from "react-datalist-input"
-import { fetchHelperFunction } from "../../lib/fetch/json-fetch-data"
 import { useRouter } from "next/router"
+import { getAllProductsForDatalist } from "../../lib/util/product-util"
+import { api } from "../../query/api"
+import { format } from "date-fns"
 
-function RepairRegisterForm(props) {
-	const { productList } = props
+function RepairRegisterForm() {
+	const productList = getAllProductsForDatalist()
+	const [plainFetcher] = api.usePlainFetcherMutation()
+
 	const today = new Date()
-	const year = today.getFullYear()
-	const month = ("0" + (today.getMonth() + 1)).slice(-2)
-	const day = ("0" + today.getDate()).slice(-2)
+	const year = format(today, "yyyy")
+	const month = format(today, "MM")
+	const day = format(today, "dd")
 	const dateString = year + "-" + month + "-" + day
 
 	const { data: session } = useSession()
@@ -67,14 +71,14 @@ function RepairRegisterForm(props) {
 		const accept = confirm("등록 하시겠습니까?")
 		if (!accept) {
 			return
-		} else {
-			const data = await fetchHelperFunction("POST", "/api/repair", body)
+		}
 
-			alert(data.message)
+		const { data } = await plainFetcher({ url: "repair", method: "POST", body })
 
-			if (data.success) {
-				router.reload()
-			}
+		alert(data.message)
+
+		if (data.success) {
+			router.reload()
 		}
 	}
 

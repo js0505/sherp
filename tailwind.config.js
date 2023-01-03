@@ -11,14 +11,16 @@ module.exports = {
 		colors: {
 			primary: "#075985",
 			primaryHover: "#0c4a6e",
-			secondary: "#22d3ee",
+			secondary: "#2C74B3",
 			gray: {
 				transparent: "#d1d5db",
 				300: "#6b7280",
 				700: "#374151",
 			},
 			red: "#dc2626",
-			white: "#f8fafc",
+			white: "white",
+			yellow: "#FFC745",
+			beige: "#3A4F7A",
 		},
 		extend: {
 			keyframes: {

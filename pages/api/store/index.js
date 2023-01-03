@@ -193,6 +193,8 @@ handler.patch(async function (req, res) {
 			}
 		}
 
+		if (inOperation === "백업") {
+		}
 		// 가맹점 정보 수정 쿼리
 
 		await Store.findByIdAndUpdate(
@@ -215,6 +217,7 @@ handler.patch(async function (req, res) {
 					owner,
 					note,
 					inOperation,
+					isBackup: inOperation === "영업중" ? false : true,
 				},
 			},
 		)

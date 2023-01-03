@@ -26,7 +26,7 @@ function GridTable(props, ref) {
 							sortable: true,
 							filter: filter,
 							floatingFilter: floatingFilter,
-							cellStyle: { textAlign: "left" },
+							cellStyle: { textAlign: "left", fontSize: "17px" },
 						}}
 						readOnlyEdit={readOnlyEdit}
 						columnDefs={columnDefs}

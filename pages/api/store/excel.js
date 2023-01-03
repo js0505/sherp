@@ -126,6 +126,9 @@ handler.use(uploadFile).post(async function (req, res) {
 				}
 			})
 		})
+
+		// todo: public/upload/countTest.xlsx 파일 삭제기능 추가
+
 		res.status(200).json({ success: true, message: "건수 입력 성공." })
 	} catch (e) {
 		console.log(e)

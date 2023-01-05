@@ -1,6 +1,5 @@
 import { format } from "date-fns"
-import { useEffect, useRef, useState } from "react"
-import { fetchHelperFunction } from "../../lib/fetch/json-fetch-data"
+import { useRef, useState } from "react"
 import {
 	cityItems,
 	vanItems,
@@ -11,14 +10,19 @@ import { editItemforDropdownButton } from "../../lib/util/dropdown-util"
 import Dropdown from "react-dropdown"
 import { DownArrow } from "../ui/icons/arrows"
 import { CheckboxButton } from "../ui/checkbox-button"
-function StoreRegisterForm({ users }) {
+import { useAddStoreMutation, useGetAllItemsByUrlQuery } from "../../query/api"
+function StoreRegisterForm() {
 	const today = new Date()
 	const formattedToday = format(today, "yyyy-MM-dd")
 
+	const [addStore] = useAddStoreMutation()
+	const { data } = useGetAllItemsByUrlQuery({ url: "user" })
+	const editedUsers = editItemforDropdownButton(data?.users)
+
 	const [product, setProduct] = useState(storeProductsInit)
-	const [isBackup, setIsBackup] = useState()
-	const [selectedVANName, setSelectedVANName] = useState()
-	const [selectedCity, setSelectedCity] = useState()
+	const [isBackup, setIsBackup] = useState(isBackupItems[0])
+	const [selectedVANName, setSelectedVANName] = useState(vanItems[0])
+	const [selectedCity, setSelectedCity] = useState(cityItems[0])
 	const [selectedUser, setSelectedUser] = useState()
 	const [contractDate, setContractDate] = useState(formattedToday)
 
@@ -31,15 +35,6 @@ function StoreRegisterForm({ users }) {
 	const addressInputRef = useRef()
 	const cmsInputRef = useRef()
 	const noteInputRef = useRef()
-
-	const editedUsers = editItemforDropdownButton(users)
-
-	useEffect(() => {
-		setIsBackup(isBackupItems[0])
-		setSelectedVANName(vanItems[0])
-		setSelectedCity(cityItems[0])
-		setSelectedUser(editedUsers[0])
-	}, [])
 
 	async function submitHandler(e) {
 		e.preventDefault()
@@ -68,7 +63,7 @@ function StoreRegisterForm({ users }) {
 			return
 		}
 
-		const response = await fetchHelperFunction("POST", "/api/store", body)
+		const { data: response } = await addStore(body)
 
 		if (!response.success) {
 			alert(response.message)

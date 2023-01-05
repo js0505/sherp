@@ -1,23 +1,19 @@
-import { useRef, useState } from "react"
-import { getFilteredStore } from "../../lib/util/store-util"
+import { useRef } from "react"
 import StoreSearchResult from "./search-result"
+import { useLazyGetFilteredStoresQuery } from "../../query/api"
 
-function StoreSearchFilterForm(props) {
-	const { updateStoreCreditCount } = props
-	const [searchedStore, setSearchedStore] = useState()
-
+function StoreSearchFilterForm() {
 	const inputRef = useRef()
+	const [trigger, result] = useLazyGetFilteredStoresQuery()
 
-	async function submitHandler(e) {
+	const submitHandler = async (e) => {
 		e.preventDefault()
 		const filterData = inputRef.current.value
 		if (filterData === "" || filterData === undefined) {
-			setSearchedStore("")
 			return
 		}
-		const response = await getFilteredStore(filterData)
 
-		setSearchedStore(response)
+		await trigger({ filter: filterData })
 	}
 
 	return (
@@ -39,11 +35,8 @@ function StoreSearchFilterForm(props) {
 				</form>
 			</div>
 			<div className="flex justify-center">
-				{searchedStore && (
-					<StoreSearchResult
-						searchedStore={searchedStore}
-						updateStoreCreditCount={updateStoreCreditCount}
-					/>
+				{result.data && (
+					<StoreSearchResult searchedStore={result.data.filteredStore} />
 				)}
 			</div>
 		</section>

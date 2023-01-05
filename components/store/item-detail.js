@@ -1,20 +1,31 @@
-import { useCallback, useEffect, useRef, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 import { useSession } from "next-auth/react"
 import { cityItems, inOperationItems } from "../../lib/variables/variables"
 import { CheckboxButton } from "../ui/checkbox-button"
 import { vanItems } from "../../lib/variables/variables"
-import { fetchHelperFunction } from "../../lib/fetch/json-fetch-data"
-import Dropdown from "react-dropdown"
 import { DownArrow } from "../ui/icons/arrows"
 import { format } from "date-fns"
-import { getAllUsers } from "../../lib/util/user-util"
 import { editItemforDropdownButton } from "../../lib/util/dropdown-util"
+import {
+	useGetStoreByIdQuery,
+	useAddStoreAsMutation,
+	useUpdateStoreMutation,
+	useGetAllItemsByUrlQuery,
+} from "../../query/api"
+import Dropdown from "react-dropdown"
 
-function StoreItemDetail(props) {
-	const { item, setItem, modalHandler, updateRowDataFunction } = props
+function StoreItemDetail({ storeId, modalHandler }) {
 	const today = new Date()
 	const formattedToday = format(today, "yyyy-MM-dd")
 	const { data: session } = useSession()
+
+	const { data } = useGetStoreByIdQuery({ storeId })
+	const item = data?.store
+
+	const [addStoreAs] = useAddStoreAsMutation()
+	const [updateStore] = useUpdateStoreMutation()
+	const { data: allUsersData } = useGetAllItemsByUrlQuery({ url: "user" })
+	const editedUsers = editItemforDropdownButton(allUsersData?.users)
 
 	const [isEditable, setIsEditable] = useState(false)
 	const [contractDate, setContractDate] = useState("2000-01-01")
@@ -39,31 +50,26 @@ function StoreItemDetail(props) {
 	const [closeDate, setCloseDate] = useState("")
 
 	useEffect(() => {
-		setVan(item.van)
-		setCity(item.city)
-		setUser(item.user)
-		setNote(item.note)
-		setAsNote(item.asNote)
-		setContractDate(item.contractDate)
-		setStoreName(item.storeName)
-		setBusinessNum(filteredBusinessNum(item.businessNum))
-		setAddress(item.address)
-		setContact(item.contact)
-		setVanId(item.vanId)
-		setVanCode(item.vanCode)
-		setCms(item.cms)
-		setProduct(item.product)
-		setOwner(item.owner)
-		setInOperation(item.inOperation)
-		setAsNoteDate(formattedToday)
-
-		const getUsers = async () => {
-			const users = await getAllUsers()
-			const editedUsers = editItemforDropdownButton(users)
-
+		if (item) {
+			setVan(item.van)
+			setCity(item.city)
+			setUser(item.user)
+			setNote(item.note)
+			setAsNote(item.asNote)
+			setContractDate(item.contractDate)
+			setStoreName(item.storeName)
+			setBusinessNum(filteredBusinessNum(item.businessNum))
+			setAddress(item.address)
+			setContact(item.contact)
+			setVanId(item.vanId)
+			setVanCode(item.vanCode)
+			setCms(item.cms)
+			setProduct(item.product)
+			setOwner(item.owner)
+			setInOperation(item.inOperation)
+			setAsNoteDate(formattedToday)
 			setUsers(editedUsers)
 		}
-		getUsers()
 
 		if (isEditable) {
 			if (item && item.inOperation === "폐업") {
@@ -134,12 +140,9 @@ function StoreItemDetail(props) {
 				closeDate,
 			}
 
-			const response = await fetchHelperFunction("PATCH", "/api/store", body)
+			const { data: response } = await updateStore(body)
 			if (response.success) {
 				alert(response.message)
-				// 기존 표에 새로운 데이터 업데이트
-				updateRowDataFunction(response.updatedStore)
-				setItem(response.updatedStore)
 				setIsEditable(!isEditable)
 			} else {
 				alert(response.message)
@@ -160,20 +163,16 @@ function StoreItemDetail(props) {
 				date: asNoteDate,
 				note: asNoteValue,
 			}
-			const response = await fetchHelperFunction("POST", "/api/store/as", body)
+			const { data: response } = await addStoreAs(body)
 			if (response.success) {
 				alert(response.message)
-
-				// 밑에는 다시 데이터를 불러오지 않고 수리내역이 보이게끔 하려고 만듬.
-				setAsNote([...asNote, body])
 				setAsNoteValue("")
-				item.asNote.push(body)
 			} else {
 				alert(response.message)
 			}
 		}
 	}
-	const testRef = useRef()
+
 	const onCloseStateHandler = (selectedItem) => {
 		const { value } = selectedItem
 		if (value === "폐업") {
@@ -253,7 +252,6 @@ function StoreItemDetail(props) {
 								options={inOperationItems}
 								disabled={!isEditable}
 								value={inOperation}
-								ref={testRef}
 								onChange={(item) => onCloseStateHandler(item)}
 							/>
 						</div>
@@ -405,7 +403,10 @@ function StoreItemDetail(props) {
 							<div>
 								<label className="input-label">수리내역</label>
 
-								<div className="mt-3 mb-3 border border-gray-300 rounded-md p-2 overflow-auto  max-h-60">
+								<div
+									className={`mt-3 mb-3   border-gray-300 rounded-md p-2 overflow-auto  max-h-60
+									${asNote.length < 1 ? "" : "border"}`}
+								>
 									{asNote &&
 										asNote
 											.slice()

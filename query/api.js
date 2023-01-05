@@ -2,7 +2,7 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react"
 
 export const api = createApi({
 	baseQuery: fetchBaseQuery({ baseUrl: "/api/" }),
-	tagTypes: ["RepairList", "RepairItem"],
+	tagTypes: ["RepairList", "RepairItem", "StoreDetail", "StoreList"],
 	endpoints: (builder) => ({
 		getAllItemsByUrl: builder.query({
 			query: ({ url }) => url,
@@ -14,6 +14,11 @@ export const api = createApi({
 				method,
 			}),
 		}),
+
+		/**
+		 * Repairs
+		 */
+
 		getRepairLog: builder.query({
 			query: ({ page, maxPosts, startDate, endDate }) =>
 				`repair/log?page=${page}&maxPosts=${maxPosts}&start=${startDate}&end=${endDate}`,
@@ -46,6 +51,11 @@ export const api = createApi({
 			},
 			invalidatesTags: ["RepairItem"],
 		}),
+
+		/**
+		 * Products
+		 */
+
 		getProductLog: builder.query({
 			query: ({ page, maxPosts, startDate, endDate }) =>
 				`product/log?page=${page}&maxPosts=${maxPosts}&start=${startDate}&end=${endDate}`,
@@ -59,17 +69,85 @@ export const api = createApi({
 				}
 			},
 		}),
+
+		/**
+		 * Stores
+		 */
+
+		getFilteredStores: builder.query({
+			query: ({ filter }) => {
+				return `store?filter=${filter}`
+			},
+			providesTags: ["StoreList"],
+		}),
+		getStoreById: builder.query({
+			query: ({ storeId }) => `store/${storeId}`,
+			providesTags: ["StoreDetail"],
+		}),
+		addStore: builder.mutation({
+			query: (body) => {
+				return {
+					url: "store",
+					method: "POST",
+					body,
+				}
+			},
+		}),
+		addStoreAs: builder.mutation({
+			query: (body) => {
+				return {
+					url: "store/as",
+					method: "POST",
+					body,
+				}
+			},
+			invalidatesTags: ["StoreDetail"],
+		}),
+		updateStore: builder.mutation({
+			query: (body) => {
+				return {
+					url: "store",
+					method: "PATCH",
+					body,
+				}
+			},
+			invalidatesTags: ["StoreDetail", "StoreList"],
+		}),
+		updateStoreCreditCount: builder.mutation({
+			query: (body) => {
+				return {
+					url: "store/creditcount",
+					method: "PATCH",
+					body,
+				}
+			},
+		}),
 	}),
 })
 
 export const {
+	useGetAllItemsByUrlQuery,
+	usePlainFetcherMutation,
+	/**
+	 * Products
+	 */
 	useGetProductLogQuery,
+	useAddProductMutation,
+	/**
+	 * Repairs
+	 */
 	useGetRepairLogQuery,
 	useGetRepairListByStateQuery,
 	useSetRepairListStateMutation,
 	useGetRepairItemByIdQuery,
 	useSetRepairReplyMutation,
-	useGetAllItemsByUrlQuery,
-	usePlainFetcherMutation,
-	useAddProductMutation,
+	/**
+	 * Stores
+	 */
+	useAddStoreMutation,
+	useLazyGetFilteredStoresQuery,
+	useUpdateStoreMutation,
+	useUpdateStoreCreditCountMutation,
+	useGetStoreByIdQuery,
+	useAddStoreAsMutation,
 } = api

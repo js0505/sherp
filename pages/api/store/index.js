@@ -24,14 +24,14 @@ handler.get(async function (req, res) {
 					{ van: { $regex: filter, $options: "i" } },
 					{ city: { $regex: filter, $options: "i" } },
 			  ]
-		const filterdStore = await Store.find()
+		const filteredStore = await Store.find()
 			.or(query)
 			.populate({
 				path: "product",
 				populate: { path: "productId", model: Product },
 			})
 			.exec()
-		res.status(200).json({ filterdStore, success: true })
+		res.status(200).json({ filteredStore, success: true })
 	} catch (e) {
 		console.log(e)
 		res.status(200).json({

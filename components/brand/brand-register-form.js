@@ -1,8 +1,9 @@
 import { useRef } from "react"
-import { fetchHelperFunction } from "../../lib/fetch/json-fetch-data"
+import { usePlainFetcherMutation } from "../../query/api"
 
 function BrandRegisterForm() {
 	const brandNameInputRef = useRef()
+	const [plainFetcher] = usePlainFetcherMutation()
 
 	async function submitHandler(e) {
 		e.preventDefault()
@@ -15,7 +16,11 @@ function BrandRegisterForm() {
 
 		const accept = confirm("등록 하시겠습니까?")
 		if (accept) {
-			const data = await fetchHelperFunction("POST", "/api/brand", body)
+			const { data } = await plainFetcher({
+				method: "POST",
+				url: "brand",
+				body,
+			})
 
 			if (!data.result) {
 				alert(`${data.message}`)

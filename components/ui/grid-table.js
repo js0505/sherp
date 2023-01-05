@@ -23,6 +23,7 @@ function GridTable(props, ref) {
 					<AgGridReact
 						ref={ref}
 						defaultColDef={{
+							resizable: true,
 							sortable: true,
 							filter: filter,
 							floatingFilter: floatingFilter,

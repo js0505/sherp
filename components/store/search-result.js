@@ -3,25 +3,28 @@ import { useRef, useEffect, useState } from "react"
 import GridTable from "../ui/grid-table"
 import Modal from "../ui/modal"
 import StoreItemDetail from "./item-detail"
+import { useUpdateStoreCreditCountMutation } from "../../query/api"
 
 const StoreSearchResult = (props) => {
-	const { searchedStore, updateStoreCreditCount } = props
+	const { searchedStore } = props
 
 	const [rowData, setRowData] = useState()
-	const [selectedStore, setSelectedStore] = useState({})
+	const [selectedStoreId, setSelectedStoreId] = useState({})
 	const [filterYear, setFilterYear] = useState()
 	const [showModal, setShowModal] = useState(false)
+	const [updateStoreCreditCount] = useUpdateStoreCreditCountMutation()
+
 	function modalHandler() {
 		setShowModal(!showModal)
 	}
+
+	const today = new Date()
+	const year = format(today, "yyyy")
 
 	useEffect(() => {
 		setFilterYear(year)
 		setRowData(searchedStore)
 	}, [searchedStore, year])
-
-	const today = new Date()
-	const year = format(today, "yyyy")
 
 	let countColumnData = []
 	for (let i = 1; i < 13; i++) {
@@ -81,7 +84,6 @@ const StoreSearchResult = (props) => {
 
 	const columns = [
 		{ headerName: "담당자", field: "user", width: 100, pinned: true },
-		{ headerName: "지역", field: "city", width: 100, pinned: true },
 		{ headerName: "가맹점명", field: "storeName", pinned: true },
 		{
 			headerName: "사업자번호",
@@ -98,6 +100,8 @@ const StoreSearchResult = (props) => {
 				return filteredNumber
 			},
 		},
+		{ headerName: "지역", field: "city", width: 100, pinned: true },
+		{ headerName: "주소", field: "address", pinned: true },
 		{ headerName: "VAN", field: "van", width: 100 },
 		{
 			headerName: "영업상태",
@@ -106,16 +110,13 @@ const StoreSearchResult = (props) => {
 		},
 		...countColumnData,
 	]
-	function onGridReady(params) {
-		// params.api.sizeColumnsToFit()
-	}
 
 	function onCellClick(params) {
 		if (
 			params.column.colId === "storeName" ||
 			params.column.colId === "businessNum"
 		) {
-			setSelectedStore(params.data)
+			setSelectedStoreId(params.data._id)
 			modalHandler()
 		}
 	}
@@ -179,36 +180,13 @@ const StoreSearchResult = (props) => {
 		return params.data._id
 	}
 	const gridRef = useRef()
-	const updateRowDataFunction = async (updatedStore) => {
-		// 업데이트 된 가맹점 id로 다시 정보를 받고, 기존 데이터에서 찾아서 업데이트
 
-		const newData = updatedStore
-
-		const itemsToUpdate = []
-		gridRef.current.api.forEachNodeAfterFilterAndSort(function (rowNode) {
-			if (!rowNode.data._id === newData._id) {
-				// 수정이 필요한 데이터가 아니면 그냥 배열에 추가
-				const data = rowNode.data
-				itemsToUpdate.push(data)
-			} else {
-				// 수정 대상인 데이터가 나타나면 변경 후 배열에 추가
-				const data = rowNode.data
-				data = newData
-				itemsToUpdate.push(data)
-			}
-		})
-		gridRef.current.api.applyTransaction({
-			update: itemsToUpdate,
-		})
-	}
 	return (
 		<>
 			{showModal && (
 				<Modal>
 					<StoreItemDetail
-						item={selectedStore}
-						setItem={setSelectedStore}
-						updateRowDataFunction={updateRowDataFunction}
+						storeId={selectedStoreId}
 						modalHandler={modalHandler}
 					/>
 				</Modal>
@@ -223,7 +201,6 @@ const StoreSearchResult = (props) => {
 						rowData={rowData}
 						readOnlyEdit={true}
 						getRowId={getRowId}
-						onGridReady={onGridReady}
 						onCellClicked={onCellClick}
 						onCellEditRequest={cellEditRequest}
 						filter={true}

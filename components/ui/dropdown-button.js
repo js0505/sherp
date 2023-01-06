@@ -1,12 +1,11 @@
 import { useEffect, useState } from "react"
 import { LeftArrow } from "./icons/arrows"
 
-function DropDownButton(props) {
+function DropDownButton({ items, label, handler, value, disabled = false }) {
 	// items : 전체 옵션이 들어있는 배열. {name, _id}
 	// value : 현재 선택된 값의 이름.
 	// handler : 선택된 데이터의 id 값을 상위 컴포넌트로 보내주는 함수.
 	// value가 변한다 -> items에서 찾아서 해당하는 item 하나를 상태에 집어넣는다 -> 그 상태를 보여준다.
-	const { items, label, handler, value, disabled = false } = props
 
 	const [selectedItem, setSelectedItem] = useState()
 	const [visibleAnimation, setVisibleAnimation] = useState(false)
@@ -15,8 +14,6 @@ function DropDownButton(props) {
 	const optionSelectHandler = (item) => {
 		handler(item._id)
 		setSelectedItem(item)
-		// if (item) {
-		// }
 	}
 
 	useEffect(() => {

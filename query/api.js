@@ -75,8 +75,8 @@ export const api = createApi({
 		 */
 
 		getFilteredStores: builder.query({
-			query: ({ filter }) => {
-				return `store?filter=${filter}`
+			query: ({ businessNum, storeName, van, city, user }) => {
+				return `store?businessNum=${businessNum}&storeName=${storeName}&van=${van}&city=${city}&user=${user}`
 			},
 			providesTags: ["StoreList"],
 		}),

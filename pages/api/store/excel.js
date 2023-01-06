@@ -77,7 +77,6 @@ handler.use(uploadFile).post(async function (req, res) {
 
 		workbook.eachSheet(function (worksheet) {
 			// 현재 작업하는 van
-			const van = worksheet.name
 
 			// 현재 시트의 사업자, 건수 배열로 저장
 			let businessNumArr = []

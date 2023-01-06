@@ -9,28 +9,38 @@ const handler = nextConnect()
 
 // 사업자번호, 상호명으로 필터링 된 데이터 전달
 handler.get(async function (req, res) {
-	const { filter, option } = req.query
-	await dbConnect()
-
-	// 10자리 숫자 정규표현식
-	const reg = /^\d{10}$/
-
 	try {
-		// 10자리 숫자가 맞으면 사업자검색, 아니면 다른 부분 검색 쿼리
-		const query = reg.test(filter)
-			? [{ businessNum: filter }]
-			: [
-					{ storeName: { $regex: filter, $options: "i" } },
-					{ van: { $regex: filter, $options: "i" } },
-					{ city: { $regex: filter, $options: "i" } },
-			  ]
+		const { businessNum, storeName, van, city, user } = req.query
+		let andQuery = []
+		if (van) {
+			andQuery.push({ van })
+		}
+		if (city) {
+			andQuery.push({ city })
+		}
+		if (user) {
+			andQuery.push({ user })
+		}
+
+		let orQuery = []
+		if (businessNum) {
+			orQuery.push({ businessNum: businessNum })
+		}
+		if (storeName) {
+			orQuery.push({ storeName: { $regex: storeName, $options: "i" } })
+		}
+
+		await dbConnect()
+
 		const filteredStore = await Store.find()
-			.or(query)
+			.or(orQuery.length < 1 ? {} : orQuery)
+			.and(andQuery.length < 1 ? {} : andQuery)
 			.populate({
 				path: "product",
 				populate: { path: "productId", model: Product },
 			})
 			.exec()
+
 		res.status(200).json({ filteredStore, success: true })
 	} catch (e) {
 		console.log(e)

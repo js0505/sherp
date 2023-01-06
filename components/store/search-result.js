@@ -9,7 +9,7 @@ const StoreSearchResult = (props) => {
 	const { searchedStore } = props
 
 	const [rowData, setRowData] = useState()
-	const [selectedStoreId, setSelectedStoreId] = useState({})
+	const [selectedStoreId, setSelectedStoreId] = useState("")
 	const [filterYear, setFilterYear] = useState()
 	const [showModal, setShowModal] = useState(false)
 	const [updateStoreCreditCount] = useUpdateStoreCreditCountMutation()
@@ -111,12 +111,13 @@ const StoreSearchResult = (props) => {
 		...countColumnData,
 	]
 
-	function onCellClick(params) {
+	const onCellClick = (params) => {
 		if (
 			params.column.colId === "storeName" ||
 			params.column.colId === "businessNum"
 		) {
-			setSelectedStoreId(params.data._id)
+			setSelectedStoreId(() => params.data._id)
+
 			modalHandler()
 		}
 	}
@@ -152,12 +153,12 @@ const StoreSearchResult = (props) => {
 		// 연, 월로 데이터 조회가 안되면 새로운 데이터 추가.
 
 		if (filteredCorrectField === undefined) {
-			await updateStoreCreditCount(body)
-
-			newData[field].push(body)
+			const test = await updateStoreCreditCount(body)
+			console.log(test)
+			// newData[field].push(body)
 		} else {
 			// 기존 데이터가 있을 때
-			const response = await updateStoreCreditCount(body)
+			const { data: response } = await updateStoreCreditCount(body)
 
 			if (response.success) {
 				const correctIndex = newData[field].findIndex(

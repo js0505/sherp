@@ -17,7 +17,6 @@ export const StoreSchema = new Schema(
 		},
 		businessNum: {
 			type: Number,
-			default: 0,
 		},
 		van: {
 			type: String,

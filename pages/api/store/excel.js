@@ -232,6 +232,16 @@ const makeStoreReport = async ({ year, res }) => {
 		const stores = await Store.find()
 
 		stores.forEach((item) => {
+			// 계약 연도가 요청한 연도보다 크면 그 해에는 없던 가맹점 이니까 제외.
+			if (item.contractDate && item.contractDate.slice(0, 4) > year) {
+				return
+			}
+
+			// 폐업 했는데 요청한 연도의 데이터가 아니면 필요 없으니 넘어감.
+			if (item.closeYear && item.closeYear !== year) {
+				return
+			}
+
 			const yearFilteredCount = item.creditCount.filter(
 				(item) => item.year === year,
 			)

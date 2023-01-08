@@ -14,30 +14,30 @@ function StoreSearchFilterForm() {
 	const { data: allUsersData } = useGetAllItemsByUrlQuery({ url: "user" })
 	const dropdownUsers = editItemforDropdownButton(allUsersData?.users)
 
-	const businessNumInputRef = useRef()
-	const storeNameInputRef = useRef()
+	const businessNumInputRef = useRef("")
+	const storeNameInputRef = useRef("")
 	const [van, setVan] = useState("")
 	const [city, setCity] = useState("")
 	const [user, setUser] = useState("")
+	const businessNum = businessNumInputRef.current.value
+	const storeName = storeNameInputRef.current.value
+	const query = {
+		businessNum,
+		storeName,
+		van: van.value ? van.value : "",
+		city: city.value ? city.value : "",
+		user: user.label ? user.label : "",
+	}
 
 	const submitHandler = async (e) => {
 		e.preventDefault()
-
-		const businessNum = businessNumInputRef.current.value
-		const storeName = storeNameInputRef.current.value
 
 		if (businessNum && storeName) {
 			alert("사업자번호와 상호명 중 한가지만 검색 가능합니다.")
 			return
 		}
 
-		await trigger({
-			businessNum,
-			storeName,
-			van: van.value ? van.value : "",
-			city: city.value ? city.value : "",
-			user: user.label ? user.label : "",
-		})
+		await trigger(query)
 	}
 
 	return (
@@ -111,7 +111,11 @@ function StoreSearchFilterForm() {
 			</div>
 
 			{result.data && (
-				<StoreSearchResult searchedStore={result.data.filteredStore} />
+				<StoreSearchResult
+					trigger={trigger}
+					query={query}
+					searchedStore={result.data.filteredStore}
+				/>
 			)}
 		</section>
 	)

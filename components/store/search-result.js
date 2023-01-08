@@ -5,9 +5,7 @@ import Modal from "../ui/modal"
 import StoreItemDetail from "./item-detail"
 import { useUpdateStoreCreditCountMutation } from "../../query/api"
 
-const StoreSearchResult = (props) => {
-	const { searchedStore } = props
-
+const StoreSearchResult = ({ searchedStore }) => {
 	const [rowData, setRowData] = useState()
 	const [selectedStoreId, setSelectedStoreId] = useState("")
 	const [filterYear, setFilterYear] = useState()
@@ -147,6 +145,7 @@ const StoreSearchResult = (props) => {
 
 	// 셀에서 직접 거래건수, cms 수정 시에 동작
 	const cellEditRequest = async (event) => {
+		// 수정 대상 데이터
 		const oldData = event.data
 
 		if (oldData.inOperation === "폐업") {
@@ -154,12 +153,12 @@ const StoreSearchResult = (props) => {
 			return
 		}
 
-		const field = event.colDef.field
+		// 현재 수정하는 연, 월, 수정 데이터 종류
 		const editItemYear = event.colDef.colId.year
 		const editItemMonth = event.colDef.colId.month
 		const isCountEdit = event.colDef.colId.data === "count" ? true : false
 		const newValue = parseInt(event.newValue)
-		const newData = { ...oldData }
+
 		const body = {
 			storeId: oldData._id,
 			year: editItemYear,
@@ -169,33 +168,7 @@ const StoreSearchResult = (props) => {
 			inOperation: oldData.inOperation,
 		}
 
-		let filteredCorrectField = newData[field].find(
-			(item) => item.year === editItemYear && item.month === editItemMonth,
-		)
-
-		// 연, 월로 데이터 조회가 안되면 새로운 데이터 추가.
-
-		if (filteredCorrectField === undefined) {
-			const test = await updateStoreCreditCount(body)
-		} else {
-			// 기존 데이터가 있을 때
-			const { data: response } = await updateStoreCreditCount(body)
-
-			if (response.success) {
-				const correctIndex = newData[field].findIndex(
-					(item) => item.year === editItemYear && item.month === editItemMonth,
-				)
-
-				isCountEdit
-					? (newData[field][correctIndex].count = newValue)
-					: (newData[field][correctIndex].cms = newValue)
-			}
-		}
-
-		const tx = {
-			update: [newData],
-		}
-		event.api.applyTransaction(tx)
+		await updateStoreCreditCount(body)
 	}
 
 	const getRowId = (params) => {

@@ -11,27 +11,25 @@ const StoreDataManagePage = () => {
 	const todayMonth = format(today, "MM")
 
 	const onReportDownloadHandler = async () => {
-		alert(
-			"이전 연도의 폐업 가맹점 정리가 필요하면 해당 기능 실행 후 다운로드 하셔야 정상적인 데이터가 출력됩니다.",
-		)
-
 		const year = prompt("연도를 입력하세요.", todayYear)
-		if (year && year <= todayYear - 2) {
-			alert("현재 혹은 폐업 가맹점 정리 이전의 작년 보고서만 출력 가능합니다.")
+		if (year === null) {
 			return
-		} else {
-			await axios
-				.get(`/api/store/excel?type=report&year=${year}`, {
-					responseType: "blob",
-				})
-				.then((res) => {
-					const blob = new Blob([res.data], {
-						type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-					})
-
-					saveAs(blob, "통합 가맹점 리스트.xlsx")
-				})
 		}
+		if (year < "2023") {
+			alert("2023년 데이터 부터 출력 가능합니다.")
+			return
+		}
+		await axios
+			.get(`/api/store/excel?type=report&year=${year}`, {
+				responseType: "blob",
+			})
+			.then((res) => {
+				const blob = new Blob([res.data], {
+					type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+				})
+
+				saveAs(blob, "통합 가맹점 리스트.xlsx")
+			})
 	}
 
 	const onCountUploadHandler = () => {
@@ -97,23 +95,23 @@ const StoreDataManagePage = () => {
 			})
 	}
 
-	const onClosedStoreFixHandler = async () => {
-		const year = prompt(
-			"폐업 가맹점을 삭제 할 연도를 입력하세요.",
-			todayYear - 1,
-		)
+	// const onClosedStoreFixHandler = async () => {
+	// 	const year = prompt(
+	// 		"폐업 가맹점을 삭제 할 연도를 입력하세요.",
+	// 		todayYear - 1,
+	// 	)
 
-		if (year && year === todayYear) {
-			alert("현재 연도의 데이터를 수정 할 수 없습니다.")
-			return
-		} else {
-			await axios.delete(`/api/store?year=${year}`).then((res) => {
-				if (res.data) {
-					alert(res.data.message)
-				}
-			})
-		}
-	}
+	// 	if (year && year === todayYear) {
+	// 		alert("현재 연도의 데이터를 수정 할 수 없습니다.")
+	// 		return
+	// 	} else {
+	// 		await axios.delete(`/api/store?year=${year}`).then((res) => {
+	// 			if (res.data) {
+	// 				alert(res.data.message)
+	// 			}
+	// 		})
+	// 	}
+	// }
 
 	useEffect(() => {
 		if (uploadFile) {
@@ -123,8 +121,8 @@ const StoreDataManagePage = () => {
 	return (
 		<>
 			<PageTitle title="가맹점 데이터 관리" />
-			<div className="w-full flex justify-left ml-32 mt-20">
-				<div className="flex flex-col justify-around h-96 w-1/5">
+			<div className="w-full flex justify-left ml-32 ">
+				<div className="flex flex-col justify-around h-30 w-1/5">
 					<button
 						className="input-button w-full"
 						type="button"
@@ -132,13 +130,13 @@ const StoreDataManagePage = () => {
 					>
 						보고서 다운로드
 					</button>
-					<button
+					{/* <button
 						className="input-button w-full mt-10"
 						type="button"
 						onClick={onClosedStoreFixHandler}
 					>
 						폐업 가맹점 정리
-					</button>
+					</button> */}
 
 					<button
 						className="input-button w-full mt-10"

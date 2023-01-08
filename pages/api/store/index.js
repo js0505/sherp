@@ -154,10 +154,10 @@ handler.patch(async function (req, res) {
 
 		if (inOperation === "폐업") {
 			console.log("폐업처리 시작")
-			const store = await Store.findById(_id)
 			const parsedCloseDate = parseISO(closeDate)
 			const year = format(parsedCloseDate, "yyyy")
 			const month = format(parsedCloseDate, "MM")
+			const store = await Store.findById(_id)
 
 			// 월 단위 정렬 후에 연 단위 정렬.
 			const sortCount = store.creditCount
@@ -188,6 +188,7 @@ handler.patch(async function (req, res) {
 
 				// 데이터 반영 후 저장
 				store.closeYear = year
+				store.closeDate = closeDate
 				store.creditCount = slicedCount
 				store.save()
 			} else {
@@ -199,12 +200,12 @@ handler.patch(async function (req, res) {
 					count: 0,
 					inOperation,
 				})
+				store.closeYear = year
+				store.closeDate = closeDate
 				store.save()
 			}
 		}
 
-		if (inOperation === "백업") {
-		}
 		// 가맹점 정보 수정 쿼리
 
 		await Store.findByIdAndUpdate(
@@ -221,7 +222,6 @@ handler.patch(async function (req, res) {
 					van,
 					vanId,
 					vanCode,
-					closeDate,
 					cms,
 					product,
 					owner,

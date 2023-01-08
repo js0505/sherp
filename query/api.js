@@ -133,6 +133,7 @@ export const api = createApi({
 					body,
 				}
 			},
+			invalidatesTags: ["StoreList"],
 		}),
 	}),
 })

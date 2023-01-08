@@ -197,7 +197,7 @@ function StoreItemDetail({ storeId, modalHandler }) {
 	}
 
 	return (
-		<div className=" lg:w-4/5 w-full  lg:container ">
+		<div className="w-full container ">
 			{item && (
 				<div
 					className="flex flex-col p-3 

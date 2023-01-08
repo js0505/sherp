@@ -41,10 +41,10 @@ function StoreSearchFilterForm() {
 	}
 
 	return (
-		<section className="container w-full flex flex-col">
+		<section className="lg:container lg:w-full flex flex-col">
 			<div className="">
 				<form className="flex justify-center" onSubmit={submitHandler}>
-					<div className=" w-1/2 grid  grid-cols-6 gap-3">
+					<div className=" lg:w-1/2 grid  grid-cols-6 gap-3">
 						<input
 							className="input-text  col-span-3 w-full mt-0 text-lg"
 							ref={businessNumInputRef}
@@ -84,12 +84,15 @@ function StoreSearchFilterForm() {
 							value={user}
 						/>
 						<div className="col-span-6">
-							<div className="flex justify-end">
-								<button className="input-button mr-3 w-[8rem] " type="submit">
+							<div className="flex lg:justify-end">
+								<button
+									className="input-button mr-3 lg:w-[8rem] "
+									type="submit"
+								>
 									검색
 								</button>
 								<button
-									className="input-button w-[8rem] "
+									className="input-button lg:w-[8rem] "
 									type="button"
 									onClick={() => {
 										businessNumInputRef.current.value = ""
@@ -106,11 +109,10 @@ function StoreSearchFilterForm() {
 					</div>
 				</form>
 			</div>
-			<div className="flex justify-center">
-				{result.data && (
-					<StoreSearchResult searchedStore={result.data.filteredStore} />
-				)}
-			</div>
+
+			{result.data && (
+				<StoreSearchResult searchedStore={result.data.filteredStore} />
+			)}
 		</section>
 	)
 }

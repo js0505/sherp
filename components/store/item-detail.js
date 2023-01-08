@@ -96,15 +96,7 @@ function StoreItemDetail({ storeId, modalHandler }) {
 		[isEditable],
 	)
 
-	const cancelSubmitHandler = () => {
-		const accept = confirm("수정을 취소 하시겠습니까?")
-
-		if (!accept) {
-			return
-		} else {
-			setIsEditable(!isEditable)
-		}
-	}
+	const cancelSubmitHandler = () => {}
 
 	const editStoreSubmitHandler = async (e) => {
 		e.preventDefault()
@@ -205,11 +197,17 @@ function StoreItemDetail({ storeId, modalHandler }) {
 	}
 
 	return (
-		<>
+		<div className=" lg:w-4/5 w-full  lg:container ">
 			{item && (
-				<div className="flex justify-between divide-x divide-gray-300  w-[80rem] p-3">
-					<div className="w-full p-3 grid grid-cols-5 gap-4">
-						<div className="col-span-2">
+				<div
+					className="flex flex-col p-3 
+					lg:flex-row lg:justify-between lg:divide-x lg:divide-gray-300  lg:w-[80rem]"
+				>
+					<div
+						className="w-full p-1 lg:m-3 grid grid-cols-5 gap-3
+									lg:gap-4"
+					>
+						<div className="col-span-3 lg:col-span-2">
 							<label className="input-label " htmlFor="contract-date">
 								계약일자
 							</label>
@@ -222,7 +220,7 @@ function StoreItemDetail({ storeId, modalHandler }) {
 								disabled={!isEditable}
 							/>
 						</div>
-						<div className="col-span-1">
+						<div className="col-span-2 lg:col-span-1">
 							<label className="input-label">담당자</label>
 							<Dropdown
 								arrowClosed={<DownArrow />}
@@ -233,7 +231,7 @@ function StoreItemDetail({ storeId, modalHandler }) {
 								onChange={setUser}
 							/>
 						</div>
-						<div className="col-span-1">
+						<div className="col-span-3 lg:col-span-1">
 							<label className="input-label">VAN</label>
 							<Dropdown
 								arrowClosed={<DownArrow />}
@@ -244,7 +242,7 @@ function StoreItemDetail({ storeId, modalHandler }) {
 								disabled={!isEditable}
 							/>
 						</div>
-						<div className="col-span-1">
+						<div className="col-span-2 lg:col-span-1">
 							<label className="input-label">영업상태</label>
 							<Dropdown
 								arrowClosed={<DownArrow />}
@@ -255,7 +253,7 @@ function StoreItemDetail({ storeId, modalHandler }) {
 								onChange={(item) => onCloseStateHandler(item)}
 							/>
 						</div>
-						<div className="col-span-3">
+						<div className="col-span-5 lg:col-span-3">
 							<label className="input-label">상호명</label>
 							<input
 								className="input-text"
@@ -265,7 +263,7 @@ function StoreItemDetail({ storeId, modalHandler }) {
 								disabled={!isEditable}
 							/>
 						</div>
-						<div className="col-span-2">
+						<div className="col-span-3 lg:col-span-2">
 							<label className="input-label">사업자번호</label>
 							<input
 								className="input-text"
@@ -276,7 +274,7 @@ function StoreItemDetail({ storeId, modalHandler }) {
 								disabled={!isEditable}
 							/>
 						</div>
-						<div className="col-span-1">
+						<div className="col-span-2 lg:col-span-1">
 							<label className="input-label">도시</label>
 							<Dropdown
 								arrowClosed={<DownArrow />}
@@ -287,7 +285,7 @@ function StoreItemDetail({ storeId, modalHandler }) {
 								disabled={!isEditable}
 							/>
 						</div>
-						<div className="col-span-4">
+						<div className="col-span-5 lg:col-span-4">
 							<label className="input-label">주소</label>
 							<input
 								className="input-text"
@@ -298,7 +296,7 @@ function StoreItemDetail({ storeId, modalHandler }) {
 							/>
 						</div>
 
-						<div className="col-span-2">
+						<div className="col-span-2 lg:col-span-2">
 							<label className="input-label">대표자명</label>
 							<input
 								className="input-text"
@@ -308,7 +306,7 @@ function StoreItemDetail({ storeId, modalHandler }) {
 								disabled={!isEditable}
 							/>
 						</div>
-						<div className="col-span-2">
+						<div className="col-span-3 lg:col-span-2">
 							<label className="input-label">연락처</label>
 							<input
 								className="input-text"
@@ -318,7 +316,7 @@ function StoreItemDetail({ storeId, modalHandler }) {
 								disabled={!isEditable}
 							/>
 						</div>
-						<div>
+						<div className="col-span-5 lg:col-span-1">
 							<label className="input-label">CMS</label>
 							<input
 								className="input-text"
@@ -399,9 +397,11 @@ function StoreItemDetail({ storeId, modalHandler }) {
 								className="input-textarea"
 							></textarea>
 						</div>
-						<div className="col-span-5">
+						<div className="col-span-5 flex flex-col justify-between ">
 							<div>
-								<label className="input-label">수리내역</label>
+								<label className="input-label  border-b-2 border-gray-transparent">
+									수리내역
+								</label>
 
 								<div
 									className={`mt-3 mb-3   border-gray-300 rounded-md p-2 overflow-auto  max-h-60
@@ -428,64 +428,67 @@ function StoreItemDetail({ storeId, modalHandler }) {
 												</div>
 											))}
 								</div>
-								<div>
-									<form className="flex" onSubmit={asNoteSubmitHandler}>
-										<input
-											className="input-text h-9 w-1/3 mr-2"
-											id="asNote-date"
-											type="date"
-											value={asNoteDate}
-											onChange={(event) => setAsNoteDate(event.target.value)}
-											required
-										/>
-										<input
-											type="text"
-											value={asNoteValue}
-											onChange={(event) => setAsNoteValue(event.target.value)}
-											className="px-4 h-9 my-1 block w-full  rounded-md border border-gray-300 
-								shadow-lg lg:text-sm focus:border-primary focus:ring-2  
-								focus:ring-primary focus:outline-none"
-										/>
-									</form>
+							</div>
+							<div>
+								<form
+									className="flex flex-col lg:flex-row"
+									onSubmit={asNoteSubmitHandler}
+								>
+									<input
+										className="input-text h-9 w-full lg:w-1/3 mr-2"
+										id="asNote-date"
+										type="date"
+										value={asNoteDate}
+										onChange={(event) => setAsNoteDate(event.target.value)}
+										required
+									/>
+									<input
+										type="text"
+										value={asNoteValue}
+										onChange={(event) => setAsNoteValue(event.target.value)}
+										className="px-4 h-9 my-1 block w-full  rounded-md border border-gray-300 
+												shadow-lg lg:text-sm focus:border-primary focus:ring-2  
+												focus:ring-primary focus:outline-none"
+									/>
+								</form>
+							</div>
+							<div className="col-span-5 flex items-end h-fit">
+								<div className="w-full mr-1 mb-2">
+									<button
+										className={`input-button w-full  `}
+										onClick={
+											isEditable
+												? (e) => editStoreSubmitHandler(e)
+												: () => setIsEditable(!isEditable)
+										}
+									>
+										{isEditable ? "수정완료" : "정보수정"}
+									</button>
 								</div>
-							</div>
-						</div>
-						<div className="col-span-5 flex">
-							<div className="w-full mr-1">
-								<button
-									className={`input-button w-full `}
-									onClick={
-										isEditable
-											? (e) => editStoreSubmitHandler(e)
-											: () => setIsEditable(!isEditable)
-									}
-								>
-									{isEditable ? "수정완료" : "정보수정"}
-								</button>
-							</div>
-							<div className="w-full ml-1">
-								<button
-									className={`input-button w-full ${
-										isEditable ? "hidden" : "block"
-									}`}
-									onClick={modalHandler}
-								>
-									확인
-								</button>
-								<button
-									className={`input-button w-full ${
-										isEditable ? "block" : "hidden"
-									}`}
-									onClick={cancelSubmitHandler}
-								>
-									취소
-								</button>
+								<div className="w-full ml-1 mb-2">
+									<button
+										className={`input-button w-full ${
+											isEditable ? "hidden" : "block"
+										}`}
+										onClick={modalHandler}
+									>
+										확인
+									</button>
+									<button
+										className={`input-button w-full ${
+											isEditable ? "block" : "hidden"
+										}`}
+										onClick={() => setIsEditable(!isEditable)}
+									>
+										취소
+									</button>
+								</div>
 							</div>
 						</div>
 					</div>
 				</div>
 			)}
-		</>
+		</div>
 	)
 }
 

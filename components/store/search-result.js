@@ -38,7 +38,8 @@ const StoreSearchResult = (props) => {
 				month: monthNum,
 				data: "count",
 			},
-			width: 150,
+			minWidth: 100,
+			maxWidth: 150,
 			cellStyle: { textAlign: "right" },
 			valueGetter: (params) => {
 				const yearFiltered = params.data.creditCount
@@ -83,12 +84,18 @@ const StoreSearchResult = (props) => {
 	}
 
 	const columns = [
-		{ headerName: "담당자", field: "user", width: 100, pinned: true },
-		{ headerName: "가맹점명", field: "storeName", pinned: true },
+		{
+			headerName: "가맹점명",
+			field: "storeName",
+			pinned: true,
+			minWidth: 100,
+			maxWidth: 250,
+		},
 		{
 			headerName: "사업자번호",
 			field: "businessNum",
-			pinned: true,
+			minWidth: 100,
+			maxWidth: 150,
 			valueGetter: (params) => {
 				const plainNumber = params.data.businessNum
 				const parsedPlainNumber = String(plainNumber)
@@ -100,13 +107,29 @@ const StoreSearchResult = (props) => {
 				return filteredNumber
 			},
 		},
-		{ headerName: "지역", field: "city", width: 100, pinned: true },
-		{ headerName: "주소", field: "address", pinned: true },
-		{ headerName: "VAN", field: "van", width: 100 },
+		{
+			headerName: "담당자",
+			field: "user",
+			maxWidth: 150,
+		},
+		{
+			headerName: "지역",
+			field: "city",
+			minWidth: 100,
+			maxWidth: 150,
+		},
+		{
+			headerName: "주소",
+			field: "address",
+			minWidth: 100,
+			maxWidth: 150,
+		},
+		{ headerName: "VAN", field: "van", minWidth: 100, maxWidth: 150 },
 		{
 			headerName: "영업상태",
 			field: "inOperation",
-			width: 120,
+			minWidth: 100,
+			maxWidth: 150,
 		},
 		...countColumnData,
 	]
@@ -154,8 +177,6 @@ const StoreSearchResult = (props) => {
 
 		if (filteredCorrectField === undefined) {
 			const test = await updateStoreCreditCount(body)
-			console.log(test)
-			// newData[field].push(body)
 		} else {
 			// 기존 데이터가 있을 때
 			const { data: response } = await updateStoreCreditCount(body)
@@ -192,23 +213,17 @@ const StoreSearchResult = (props) => {
 					/>
 				</Modal>
 			)}
-			<div className="w-full  mt-10">
-				<div className=" text-center text-xl mb-10">검색결과</div>
-
-				<div className="w-full h-full">
-					<GridTable
-						ref={gridRef}
-						columnDefs={columns}
-						rowData={rowData}
-						readOnlyEdit={true}
-						getRowId={getRowId}
-						onCellClicked={onCellClick}
-						onCellEditRequest={cellEditRequest}
-						filter={true}
-						floatingFilter={true}
-					/>
-				</div>
-			</div>
+			<GridTable
+				ref={gridRef}
+				columnDefs={columns}
+				rowData={rowData}
+				readOnlyEdit={true}
+				getRowId={getRowId}
+				onCellClicked={onCellClick}
+				onCellEditRequest={cellEditRequest}
+				filter={true}
+				floatingFilter={true}
+			/>
 		</>
 	)
 }

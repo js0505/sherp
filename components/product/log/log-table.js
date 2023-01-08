@@ -27,32 +27,35 @@ function ProductLogTable(props) {
 	// 표시 할 데이터
 	// 제품명, 입출고, 개수, 유저, 내용, 일자
 	const columns = [
-		{ headerName: "법인명", field: "product.brand.name" },
-		{ headerName: "제품명", field: "product.name" },
-		{ headerName: "카테고리", field: "product.category" },
-		{ headerName: "VAN", field: "product.van" },
+		{ headerName: "법인명", field: "product.brand.name", minWidth: 150 },
+		{ headerName: "제품명", field: "product.name", minWidth: 150 },
+		{ headerName: "카테고리", field: "product.category", minWidth: 100 },
+		{ headerName: "VAN", field: "product.van", minWidth: 100 },
 		{
 			headerName: "내용",
 			field: "note",
-			width: 350,
+			maxWidth: 350,
 			cellStyle: { textAlign: "left" },
+			minWidth: 150,
 		},
 		{
 			headerName: "수량",
 			valueGetter: (params) => {
 				return `${params.data.quantity}대`
 			},
-			width: 100,
+			maxWidth: 100,
+			minWidth: 100,
 		},
 		{
 			headerName: "입,출고",
 			field: "calc",
-			width: 100,
+			minWidth: 100,
+			maxWidth: 100,
 			cellRenderer: calcRenderer,
 		},
 
-		{ headerName: "등록자", field: "user.name", width: 100 },
-		{ headerName: "등록일자", field: "date" },
+		{ headerName: "등록자", field: "user.name", minWidth: 100, maxWidth: 100 },
+		{ headerName: "등록일자", field: "date", minWidth: 100, maxWidth: 100 },
 	]
 
 	function onGridReady(params) {

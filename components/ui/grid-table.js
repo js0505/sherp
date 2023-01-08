@@ -19,7 +19,7 @@ function GridTable(props, ref) {
 	return (
 		<>
 			<div className="mt-5 mb-3">
-				<div className="ag-theme-alpine h-65vh">
+				<div className="ag-theme-alpine h-50vh lg:h-65vh">
 					<AgGridReact
 						ref={ref}
 						defaultColDef={{

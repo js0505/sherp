@@ -8,15 +8,36 @@ const handler = nextConnect()
 
 // 모든 등록된 장비 불러오기
 handler.get(async function (req, res) {
+	const { van, name, category, brand } = req.query
+
+	let orQuery = []
+	if (name) {
+		orQuery.push({ name })
+	}
+
+	let andQuery = []
+	if (van) {
+		andQuery.push({ van })
+	}
+	if (category) {
+		andQuery.push({ category })
+	}
+	if (brand) {
+		andQuery.push({ brand })
+	}
+
+
 	await dbConnect()
 
 	try {
-		const getAllProducts = await Product.find({})
+		const filteredProduct = await Product.find()
+			.or(orQuery.length < 1 ? {} : orQuery)
+			.and(andQuery.length < 1 ? {} : andQuery)
 			.populate({ path: "productCompany", model: ProductCompany })
 			.populate({ path: "brand", model: Brand })
 			.exec()
 
-		res.status(200).json({ products: getAllProducts, success: true })
+		res.status(200).json({ products: filteredProduct, success: true })
 	} catch (e) {
 		console.log(e)
 		res.status(200).json({

@@ -93,9 +93,9 @@ function StoreRegisterForm() {
 	}
 
 	return (
-		<section className="container w-2/5 ">
+		<section className="container lg:w-2/5 ">
 			<form onSubmit={submitHandler} className="grid grid-cols-4 gap-4">
-				<div className="col-span-1">
+				<div className="col-span-4 lg:col-span-1">
 					<label className="input-label" htmlFor="contract-date">
 						계약일자
 					</label>
@@ -108,7 +108,7 @@ function StoreRegisterForm() {
 						required
 					/>
 				</div>
-				<div className="col-span-2">
+				<div className="col-span-4 lg:col-span-2">
 					<label className="input-label" htmlFor="store-name">
 						가맹점명
 					</label>
@@ -120,7 +120,7 @@ function StoreRegisterForm() {
 						required
 					/>
 				</div>
-				<div className="col-span-1">
+				<div className="col-span-4 lg:col-span-1">
 					<label className="input-label" htmlFor="business-number">
 						사업자번호
 					</label>
@@ -133,7 +133,7 @@ function StoreRegisterForm() {
 						maxLength={10}
 					/>
 				</div>
-				<div className="col-span-1">
+				<div className="col-span-2 lg:col-span-1">
 					<label className="input-label" htmlFor="owner">
 						대표자명
 					</label>
@@ -145,7 +145,7 @@ function StoreRegisterForm() {
 						required
 					/>
 				</div>
-				<div className="col-span-1">
+				<div className="col-span-2 lg:col-span-1">
 					<label className="input-label" htmlFor="user">
 						담당자
 					</label>
@@ -157,7 +157,7 @@ function StoreRegisterForm() {
 						onChange={setSelectedUser}
 					/>
 				</div>
-				<div className="col-span-1">
+				<div className="col-span-2 lg:col-span-1">
 					<label className="input-label" htmlFor="contact">
 						연락처
 					</label>
@@ -168,7 +168,7 @@ function StoreRegisterForm() {
 						ref={contactInputRef}
 					/>
 				</div>
-				<div className="col-span-1">
+				<div className="col-span-2 lg:col-span-1">
 					<label className="input-label" htmlFor="cms">
 						CMS
 					</label>
@@ -181,7 +181,7 @@ function StoreRegisterForm() {
 					/>
 				</div>
 
-				<div className="col-span-1">
+				<div className="col-span-2 lg:col-span-1">
 					<label className="input-label" htmlFor="city">
 						주소(도시)
 					</label>
@@ -193,7 +193,7 @@ function StoreRegisterForm() {
 						onChange={setSelectedCity}
 					/>
 				</div>
-				<div className="col-span-3">
+				<div className="col-span-4 lg:col-span-3">
 					<label className="input-label" htmlFor="address">
 						주소
 					</label>
@@ -206,7 +206,7 @@ function StoreRegisterForm() {
 					/>
 				</div>
 
-				<div className="col-span-1">
+				<div className="col-span-2 lg:col-span-1">
 					<label className="input-label" htmlFor="isbackup">
 						메인/백업
 					</label>
@@ -219,7 +219,7 @@ function StoreRegisterForm() {
 					/>
 				</div>
 
-				<div className="col-span-1">
+				<div className="col-span-2 lg:col-span-1">
 					<label className="input-label" htmlFor="van">
 						VAN
 					</label>
@@ -231,7 +231,7 @@ function StoreRegisterForm() {
 						onChange={setSelectedVANName}
 					/>
 				</div>
-				<div className="col-span-1">
+				<div className="col-span-2 lg:col-span-1">
 					<label className="input-label" htmlFor="van-id">
 						VAN CODE
 					</label>
@@ -243,7 +243,7 @@ function StoreRegisterForm() {
 						required
 					/>
 				</div>
-				<div className="col-span-1">
+				<div className="col-span-2 lg:col-span-1">
 					<label className="input-label" htmlFor="van-id">
 						VAN ID
 					</label>

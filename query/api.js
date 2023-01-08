@@ -2,7 +2,13 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react"
 
 export const api = createApi({
 	baseQuery: fetchBaseQuery({ baseUrl: "/api/" }),
-	tagTypes: ["RepairList", "RepairItem", "StoreDetail", "StoreList"],
+	tagTypes: [
+		"RepairList",
+		"RepairItem",
+		"StoreDetail",
+		"StoreList",
+		"ProductList",
+	],
 	endpoints: (builder) => ({
 		getAllItemsByUrl: builder.query({
 			query: ({ url }) => url,
@@ -69,6 +75,12 @@ export const api = createApi({
 				}
 			},
 		}),
+		getFilteredProduct: builder.query({
+			query: ({ van, name, category, brand }) => {
+				return `product?van=${van}&name=${name}&category=${category}&brand=${brand}`
+			},
+			// providesTags: ["ProductList"],
+		}),
 
 		/**
 		 * Stores
@@ -133,6 +145,7 @@ export const {
 	 */
 	useGetProductLogQuery,
 	useAddProductMutation,
+	useLazyGetFilteredProductQuery,
 	/**
 	 * Repairs
 	 */

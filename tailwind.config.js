@@ -23,6 +23,9 @@ module.exports = {
 			beige: "#3A4F7A",
 		},
 		extend: {
+			transitionProperty: {
+				height: "height",
+			},
 			keyframes: {
 				dropdownFadeIn: {
 					"0%": { transform: "translateY(-100%)" },
@@ -38,8 +41,10 @@ module.exports = {
 				dropdownFadeOut: "dropdownFadeOut 0.4s ease",
 			},
 			height: {
+				"50vh": "50vh",
 				"65vh": "65vh",
 				"70vh": "70vh",
+				"90vh": "90vh",
 			},
 		},
 	},

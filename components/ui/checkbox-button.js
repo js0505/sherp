@@ -37,7 +37,9 @@ export const CheckboxButton = ({
 						})
 					}}
 				/>
-				<p className={`${isChecked ? "text-white" : ""} text-lg`}>{title}</p>
+				<p className={`${isChecked ? "text-white" : ""} text-sm lg:text-lg`}>
+					{title}
+				</p>
 			</label>
 		</>
 	)

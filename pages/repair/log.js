@@ -48,36 +48,39 @@ const RepairLogPage = () => {
 	return (
 		<div>
 			<PageTitle title="처리 완료된 수리 내역" />
-			<div className=" w-5/6  container ">
+			<div className=" lg:w-5/6 w-full  container ">
 				{data && (
 					<>
 						<form
 							onSubmit={onDateFilterHandler}
-							className="flex justify-center w-full px-3"
+							className="flex w-full flex-col
+							lg:justify-center lg:px-3 lg:flex-row"
 						>
-							<div className="w-full mr-3">
-								<label className="input-label" htmlFor="date">
-									시작 일자
-								</label>
-								<input
-									className="input-text"
-									id="date"
-									type="date"
-									ref={startDateInputRef}
-								/>
+							<div className="flex lg:w-full">
+								<div className="w-full mr-3">
+									<label className="input-label" htmlFor="date">
+										시작 일자
+									</label>
+									<input
+										className="input-text"
+										id="date"
+										type="date"
+										ref={startDateInputRef}
+									/>
+								</div>
+								<div className="w-full lg:mr-3">
+									<label className="input-label" htmlFor="date">
+										종료 일자
+									</label>
+									<input
+										className="input-text"
+										id="date"
+										type="date"
+										ref={endDateInputRef}
+									/>
+								</div>
 							</div>
-							<div className="w-full mr-3">
-								<label className="input-label" htmlFor="date">
-									종료 일자
-								</label>
-								<input
-									className="input-text"
-									id="date"
-									type="date"
-									ref={endDateInputRef}
-								/>
-							</div>
-							<div className="mt-4 flex w-full">
+							<div className="mt-4 flex w-full lg:w-1/2">
 								<button className="input-button w-full mr-2" type="submit">
 									검색
 								</button>

@@ -19,22 +19,28 @@ function StoreSearchFilterForm() {
 	const [van, setVan] = useState("")
 	const [city, setCity] = useState("")
 	const [user, setUser] = useState("")
-	const businessNum = businessNumInputRef.current.value
-	const storeName = storeNameInputRef.current.value
-	const query = {
-		businessNum,
-		storeName,
-		van: van.value ? van.value : "",
-		city: city.value ? city.value : "",
-		user: user.label ? user.label : "",
-	}
 
 	const submitHandler = async (e) => {
 		e.preventDefault()
 
+		const businessNum = businessNumInputRef.current.value
+		const storeName = storeNameInputRef.current.value
+
+		if (Number.isNaN(Number(businessNum))) {
+			alert("사업자번호는 숫자만 입력 가능합니다.")
+			return
+		}
 		if (businessNum && storeName) {
 			alert("사업자번호와 상호명 중 한가지만 검색 가능합니다.")
 			return
+		}
+
+		const query = {
+			businessNum,
+			storeName,
+			van: van.value ? van.value : "",
+			city: city.value ? city.value : "",
+			user: user.label ? user.label : "",
 		}
 
 		await trigger(query)
@@ -47,8 +53,11 @@ function StoreSearchFilterForm() {
 					<div className=" lg:w-1/2 grid  grid-cols-6 gap-3">
 						<input
 							className="input-text  col-span-3 w-full mt-0 text-lg"
+							type="text"
 							ref={businessNumInputRef}
 							placeholder="사업자번호"
+							maxLength={10}
+							onChange={(e) => e.target.value.replace(/[^0-9]/g, "")}
 						/>
 						<input
 							className="input-text  col-span-3 w-full mt-0 text-lg"
@@ -111,11 +120,7 @@ function StoreSearchFilterForm() {
 			</div>
 
 			{result.data && (
-				<StoreSearchResult
-					trigger={trigger}
-					query={query}
-					searchedStore={result.data.filteredStore}
-				/>
+				<StoreSearchResult searchedStore={result.data.filteredStore} />
 			)}
 		</section>
 	)

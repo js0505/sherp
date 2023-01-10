@@ -3,6 +3,7 @@ import dbConnect from "../../../lib/mongoose/dbConnect"
 import Store from "../../../models/Store"
 import { Workbook } from "exceljs"
 import multer from "multer"
+import fs from "fs"
 
 const handler = nextConnect()
 
@@ -77,6 +78,8 @@ handler.use(uploadFile).post(async function (req, res) {
 
 		workbook.eachSheet(function (worksheet) {
 			// 현재 작업하는 van
+			const van = worksheet.name
+			// 밴 이름 찾아서 검색할때 밴 이름도 같이 검색 해야됨.
 
 			// 현재 시트의 사업자, 건수 배열로 저장
 			let businessNumArr = []
@@ -98,7 +101,7 @@ handler.use(uploadFile).post(async function (req, res) {
 			businessNumArr.forEach(async (businessNum, index) => {
 				const count = countArr[index]
 
-				const store = await Store.findOne({ businessNum })
+				const store = await Store.findOne({ businessNum, van })
 
 				// 기존에 입력된 데이터가 있는지 확인
 				const findCreditCountIdx = store.creditCount.findIndex(function (
@@ -109,6 +112,7 @@ handler.use(uploadFile).post(async function (req, res) {
 
 				if (findCreditCountIdx === -1) {
 					// 연, 월 데이터가 기록된 적 없는 경우. 새로운 객체 생성
+
 					const newCount = {
 						year,
 						month: parseMonth,
@@ -127,7 +131,7 @@ handler.use(uploadFile).post(async function (req, res) {
 		})
 
 		// todo: public/upload/countTest.xlsx 파일 삭제기능 추가
-
+		fs.unlinkSync("public/upload/countTest.xlsx")
 		res.status(200).json({ success: true, message: "건수 입력 성공." })
 	} catch (e) {
 		console.log(e)
@@ -232,15 +236,15 @@ const makeStoreReport = async ({ year, res }) => {
 		const stores = await Store.find()
 
 		stores.forEach((item) => {
-			// 계약 연도가 요청한 연도보다 크면 그 해에는 없던 가맹점 이니까 제외.
-			if (item.contractDate && item.contractDate.slice(0, 4) > year) {
-				return
-			}
+			// // 계약 연도가 요청한 연도보다 크면 그 해에는 없던 가맹점 이니까 제외.
+			// if (item.contractDate && item.contractDate.slice(0, 4) > year) {
+			// 	return
+			// }
 
-			// 폐업 했는데 요청한 연도의 데이터가 아니면 필요 없으니 넘어감.
-			if (item.closeYear && item.closeYear !== year) {
-				return
-			}
+			// // 폐업 했는데 요청한 연도의 데이터가 아니면 필요 없으니 넘어감.
+			// if (item.closeYear && item.closeYear !== year) {
+			// 	return
+			// }
 
 			const yearFilteredCount = item.creditCount.filter(
 				(item) => item.year === year,

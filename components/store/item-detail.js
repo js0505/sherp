@@ -40,7 +40,7 @@ function StoreItemDetail({ storeId, modalHandler }) {
 	const [vanId, setVanId] = useState("")
 	const [vanCode, setVanCode] = useState("")
 	const [inOperation, setInOperation] = useState("")
-	const [cms, setCms] = useState("")
+	const [cms, setCms] = useState(0)
 	const [product, setProduct] = useState({})
 	const [owner, setOwner] = useState("")
 	const [note, setNote] = useState("")
@@ -197,11 +197,12 @@ function StoreItemDetail({ storeId, modalHandler }) {
 	}
 
 	return (
-		<div className="w-full container ">
+		<div className="w-full container">
 			{item && (
 				<div
 					className="flex flex-col p-3 
 					lg:flex-row lg:justify-between lg:divide-x lg:divide-gray-300  lg:w-[80rem]"
+					onKeyDown={(e) => console.log(e)}
 				>
 					<div
 						className="w-full p-1 lg:m-3 grid grid-cols-5 gap-3
@@ -320,7 +321,7 @@ function StoreItemDetail({ storeId, modalHandler }) {
 							<label className="input-label">CMS</label>
 							<input
 								className="input-text"
-								value={cms || ""}
+								value={cms}
 								onChange={(e) => setCms(e.target.value)}
 								required
 								disabled={!isEditable}

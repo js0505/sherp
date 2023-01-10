@@ -8,17 +8,22 @@ import Dropdown from "react-dropdown"
 import { DownArrow } from "../ui/icons/arrows"
 import { cityItems, vanItems } from "../../lib/variables/variables"
 import { editItemforDropdownButton } from "../../lib/util/dropdown-util"
+import { format } from "date-fns"
 
 function StoreSearchFilterForm() {
 	const [trigger, result] = useLazyGetFilteredStoresQuery()
 	const { data: allUsersData } = useGetAllItemsByUrlQuery({ url: "user" })
 	const dropdownUsers = editItemforDropdownButton(allUsersData?.users)
 
+	const today = new Date()
+	const todayYear = format(today, "yyyy")
+
 	const businessNumInputRef = useRef("")
 	const storeNameInputRef = useRef("")
 	const [van, setVan] = useState("")
 	const [city, setCity] = useState("")
 	const [user, setUser] = useState("")
+	const [year, setYear] = useState(todayYear)
 
 	const submitHandler = async (e) => {
 		e.preventDefault()
@@ -96,6 +101,20 @@ function StoreSearchFilterForm() {
 							<div className="flex lg:justify-end">
 								<button
 									className="input-button mr-3 lg:w-[8rem] "
+									type="button"
+									onClick={() => setYear("2022")}
+								>
+									2022
+								</button>
+								<button
+									className="input-button mr-3 lg:w-[8rem] "
+									type="button"
+									onClick={() => setYear("2023")}
+								>
+									2023
+								</button>
+								<button
+									className="input-button mr-3 lg:w-[8rem] "
 									type="submit"
 								>
 									검색
@@ -120,7 +139,10 @@ function StoreSearchFilterForm() {
 			</div>
 
 			{result.data && (
-				<StoreSearchResult searchedStore={result.data.filteredStore} />
+				<StoreSearchResult
+					year={year}
+					searchedStore={result.data.filteredStore}
+				/>
 			)}
 		</section>
 	)

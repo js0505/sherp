@@ -1,11 +1,10 @@
-import { format } from "date-fns"
 import { useRef, useEffect, useState } from "react"
 import GridTable from "../ui/grid-table"
 import Modal from "../ui/modal"
 import StoreItemDetail from "./item-detail"
 import { useUpdateStoreCreditCountMutation } from "../../query/api"
 
-const StoreSearchResult = ({ searchedStore }) => {
+const StoreSearchResult = ({ searchedStore, year }) => {
 	const [rowData, setRowData] = useState()
 	const [selectedStoreId, setSelectedStoreId] = useState("")
 	const [filterYear, setFilterYear] = useState()
@@ -15,9 +14,6 @@ const StoreSearchResult = ({ searchedStore }) => {
 	function modalHandler() {
 		setShowModal(!showModal)
 	}
-
-	const today = new Date()
-	const year = format(today, "yyyy")
 
 	useEffect(() => {
 		setFilterYear(year)

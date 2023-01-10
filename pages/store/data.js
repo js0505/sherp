@@ -44,18 +44,18 @@ const StoreDataManagePage = () => {
 	const onUploadHandler = useCallback(async () => {
 		const year = prompt("연도를 입력하세요.", todayYear)
 		if (year === null) {
-			setFile(null)
+			setUploadFile(null)
 			return
 		}
 		const month = prompt("월을 입력하세요.", todayMonth)
 		if (month === null) {
-			setFile(null)
+			setUploadFile(null)
 			return
 		}
 
 		if (Number(year) === NaN && Number(month) === NaN) {
 			alert("숫자만 입력 해주세요.")
-			setFile(null)
+			setUploadFile(null)
 			return
 		}
 
@@ -78,7 +78,7 @@ const StoreDataManagePage = () => {
 			},
 		)
 		if (response.data) {
-			setFile(null)
+			setUploadFile(null)
 			alert(response.data.message)
 		}
 	}, [todayYear, todayMonth, uploadFile])

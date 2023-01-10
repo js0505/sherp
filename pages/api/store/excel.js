@@ -140,19 +140,19 @@ handler.use(uploadFile).post(async function (req, res) {
 })
 
 const makeStoreReport = async ({ year, res }) => {
-	const firstRowFill = {
-		type: "pattern",
-		pattern: "solid",
-		fgColor: { argb: "deebf9" },
-	}
-	const firstRowAlign = { vertical: "middle", horizontal: "center" }
+	// const firstRowFill = {
+	// 	type: "pattern",
+	// 	pattern: "solid",
+	// 	fgColor: { argb: "deebf9" },
+	// }
+	// const firstRowAlign = { vertical: "middle", horizontal: "center" }
 
-	const firstRowBorder = {
-		bottom: { style: "thin" },
-		left: { style: "thin" },
-	}
+	// const firstRowBorder = {
+	// 	bottom: { style: "thin" },
+	// 	left: { style: "thin" },
+	// }
 
-	const firstRowHeight = 33
+	// const firstRowHeight = 33
 
 	const sheetColumns = [
 		{ header: "담당자", key: "user" },
@@ -225,10 +225,10 @@ const makeStoreReport = async ({ year, res }) => {
 		 */
 		workbook.eachSheet((worksheet) => {
 			if (worksheet.id !== 1) {
-				worksheet.getRow(1).fill = firstRowFill
-				worksheet.getRow(1).alignment = firstRowAlign
-				worksheet.getRow(1).border = firstRowBorder
-				worksheet.getRow(1).height = firstRowHeight
+				// worksheet.getRow(1).fill = firstRowFill
+				// worksheet.getRow(1).alignment = firstRowAlign
+				// worksheet.getRow(1).border = firstRowBorder
+				// worksheet.getRow(1).height = firstRowHeight
 				worksheet.columns = sheetColumns
 			}
 		})
@@ -236,15 +236,10 @@ const makeStoreReport = async ({ year, res }) => {
 		const stores = await Store.find()
 
 		stores.forEach((item) => {
-			// // 계약 연도가 요청한 연도보다 크면 그 해에는 없던 가맹점 이니까 제외.
-			// if (item.contractDate && item.contractDate.slice(0, 4) > year) {
-			// 	return
-			// }
-
-			// // 폐업 했는데 요청한 연도의 데이터가 아니면 필요 없으니 넘어감.
-			// if (item.closeYear && item.closeYear !== year) {
-			// 	return
-			// }
+			// 계약 연도가 요청한 연도보다 크면 그 해에는 없던 가맹점 이니까 제외.
+			if (item.contractDate && item.contractDate.slice(0, 4) > year) {
+				return
+			}
 
 			const yearFilteredCount = item.creditCount.filter(
 				(item) => item.year === year,

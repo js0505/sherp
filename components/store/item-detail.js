@@ -72,10 +72,10 @@ function StoreItemDetail({ storeId, modalHandler }) {
 		}
 
 		if (isEditable) {
-			if (item && item.inOperation === "폐업") {
-				alert("폐업 가맹점은 수정 할 수 없습니다.")
-				setIsEditable(false)
-			}
+			// if (item && item.inOperation === "폐업") {
+			// 	alert("폐업 가맹점은 수정 할 수 없습니다.")
+			// 	setIsEditable(false)
+			// }
 			// 수정모드 들어갈 때 사업자번호 안에 - 값 제거
 			setBusinessNum(businessNum.replace(/-/g, ""))
 		}
@@ -168,9 +168,7 @@ function StoreItemDetail({ storeId, modalHandler }) {
 	const onCloseStateHandler = (selectedItem) => {
 		const { value } = selectedItem
 		if (value === "폐업") {
-			const accept = confirm(
-				"폐업으로 변경하면 다시 변경 할 수 없습니다. 변경 하시겠습니까?",
-			)
+			const accept = confirm("폐업으로 변경 하시겠습니까?")
 
 			if (!accept) {
 				// 폐업 변경 안할시에 다시 원래대로 돌아가게 해야 하는데 어쩌지..

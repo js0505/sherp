@@ -144,10 +144,10 @@ const StoreSearchResult = ({ searchedStore, year }) => {
 		// 수정 대상 데이터
 		const oldData = event.data
 
-		if (oldData.inOperation === "폐업") {
-			alert("폐업 가맹점은 데이터를 변경 할 수 없습니다.")
-			return
-		}
+		// if (oldData.inOperation === "폐업") {
+		// 	alert("폐업 가맹점은 데이터를 변경 할 수 없습니다.")
+		// 	return
+		// }
 
 		// 현재 수정하는 연, 월, 수정 데이터 종류
 		const editItemYear = event.colDef.colId.year

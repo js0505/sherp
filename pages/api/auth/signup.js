@@ -1,7 +1,7 @@
 import nextConnect from "next-connect"
 import { hashPassword } from "../../../lib/auth/password"
 import User from "../../../models/User"
-import dbConnect from "../../../lib/mongoose/dbConnect"
+
 
 const handler = nextConnect()
 

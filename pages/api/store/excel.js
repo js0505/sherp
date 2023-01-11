@@ -78,16 +78,23 @@ handler.use(uploadFile).post(async function (req, res) {
 
 		workbook.eachSheet(function (worksheet) {
 			// 현재 작업하는 van
-			const van = worksheet.name
 			// 밴 이름 찾아서 검색할때 밴 이름도 같이 검색 해야됨.
+			const van = worksheet.name
 
 			// 현재 시트의 사업자, 건수 배열로 저장
 			let businessNumArr = []
 			let countArr = []
+			let storeNameArr = []
 
 			worksheet.getColumn(1).eachCell(function (cell, rowNum) {
 				if (rowNum !== 1) {
 					businessNumArr.push(cell.value)
+				}
+			})
+
+			worksheet.getColumn(2).eachCell(function (cell, rowNum) {
+				if (rowNum !== 1) {
+					storeNameArr.push(cell.value)
 				}
 			})
 
@@ -100,8 +107,9 @@ handler.use(uploadFile).post(async function (req, res) {
 			// 저장된 사업자로 데이터 입력 시작
 			businessNumArr.forEach(async (businessNum, index) => {
 				const count = countArr[index]
+				const storeName = storeNameArr[index]
 
-				const store = await Store.findOne({ businessNum, van })
+				const store = await Store.findOne({ van, businessNum, storeName })
 
 				// 기존에 입력된 데이터가 있는지 확인
 				const findCreditCountIdx = store.creditCount.findIndex(function (
@@ -110,27 +118,30 @@ handler.use(uploadFile).post(async function (req, res) {
 					return value.year === year && value.month === parseMonth
 				})
 
+				const newCount = {
+					year,
+					month: parseMonth,
+					count,
+					cms: store.cms === null ? 0 : store.cms,
+					inOperation: store.inOperation,
+				}
 				if (findCreditCountIdx === -1) {
-					// 연, 월 데이터가 기록된 적 없는 경우. 새로운 객체 생성
-
-					const newCount = {
-						year,
-						month: parseMonth,
-						count,
-						cms: store.cms,
-						inOperation: store.inOperation,
-					}
+					// null값 있으면 바로잡기 위해 로직 생성
+					store.cms = store.cms === null ? 0 : store.cms
+					// 연, 월 데이터가 기록된 적 없는 경우. 새로운 객체 추가
 					store.creditCount.push(newCount)
 					store.save()
 				} else {
-					// 기록된 데이터가 있는 경우, count 값만 변경.
-					store.creditCount[findCreditCountIdx].count = count
+					// null값 있으면 바로잡기 위해 로직 생성
+					store.cms = store.cms === null ? 0 : store.cms
+					// 기록된 데이터가 있는 경우, 전체 덮어쓰기
+					store.creditCount[findCreditCountIdx] = newCount
 					store.save()
 				}
 			})
 		})
 
-		// todo: public/upload/countTest.xlsx 파일 삭제기능 추가
+		// 처리하고 남은 파일 삭제
 		fs.unlinkSync("public/upload/countTest.xlsx")
 		res.status(200).json({ success: true, message: "건수 입력 성공." })
 	} catch (e) {
@@ -448,6 +459,9 @@ const makeStoreReport = async ({ year, res }) => {
 				worksheet.spliceRows(2, 1)
 			}
 		})
+
+		// 파일 실행 후 수식 활성화?
+		workbook.calcProperties.fullCalcOnLoad = true
 
 		await workbook.xlsx.write(res).then(() => {
 			res.status(200)

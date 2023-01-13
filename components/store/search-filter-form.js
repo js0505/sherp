@@ -52,10 +52,10 @@ function StoreSearchFilterForm() {
 	}
 
 	return (
-		<section className="lg:container lg:w-full flex flex-col">
+		<section className="lg:container lg:w-5/6 w-full flex flex-col">
 			<div className="">
 				<form className="flex justify-center" onSubmit={submitHandler}>
-					<div className=" lg:w-1/2 grid  grid-cols-6 gap-3">
+					<div className=" lg:w-2/3 grid  grid-cols-6 gap-3">
 						<input
 							className="input-text  col-span-3 w-full mt-0 text-lg"
 							type="text"
@@ -99,7 +99,7 @@ function StoreSearchFilterForm() {
 						/>
 						<div className="col-span-6">
 							<div className="flex lg:justify-end">
-								<button
+								{/* <button
 									className="input-button mr-3 lg:w-[8rem] "
 									type="button"
 									onClick={() => setYear("2022")}
@@ -112,7 +112,7 @@ function StoreSearchFilterForm() {
 									onClick={() => setYear("2023")}
 								>
 									2023
-								</button>
+								</button> */}
 								<button
 									className="input-button mr-3 lg:w-[8rem] "
 									type="submit"

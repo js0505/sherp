@@ -60,24 +60,28 @@ a {
 	@apply text-primary bg-secondary bg-opacity-10 
 	font-bold cursor-pointer;
 }
-
-.ag-header-row-column {
-	@apply bg-secondary;
+.ag-theme-alpine .ag-header-cell-text {
+	@apply text-lg;
 }
+/*
+.ag-header-row-column {
+	@apply bg-white;
+}
+
+.ag-header-row {
+	@apply bg-white border-t-0;
+} */
 
 /* .ag-header-cell {
 	@apply border-r-2 border-white;
 } */
-.ag-header-cell-label {
+/* .ag-header-cell-label {
 	@apply text-left;
-}
-.ag-theme-alpine .ag-header-cell-text {
-	@apply text-lg text-white;
 }
 
 .ag-theme-alpine .ag-row-no-animation .ag-row {
 	@apply transition-none;
-}
+} */
 
 .Dropdown-root {
 	@apply relative;

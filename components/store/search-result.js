@@ -88,8 +88,7 @@ const StoreSearchResult = ({ searchedStore, year }) => {
 		{
 			headerName: "사업자번호",
 			field: "businessNum",
-			minWidth: 100,
-			maxWidth: 150,
+			minWidth: 200,
 			valueGetter: (params) => {
 				const plainNumber = params.data.businessNum
 				const parsedPlainNumber = String(plainNumber)

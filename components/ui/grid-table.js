@@ -27,8 +27,15 @@ function GridTable(props, ref) {
 							sortable: true,
 							filter: filter,
 							floatingFilter: floatingFilter,
-							cellStyle: { textAlign: "left", fontSize: "17px" },
+							cellStyle: {
+								textAlign: "left",
+								fontSize: "17px",
+								paddingTop: "17px",
+							},
+							autoHeight: true,
 						}}
+						rowHeight={60}
+						headerHeight={50}
 						readOnlyEdit={readOnlyEdit}
 						columnDefs={columnDefs}
 						rowData={rowData}

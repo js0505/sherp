@@ -136,13 +136,15 @@ const FilterProductList = () => {
 				</form>
 			</div>
 			{result.data && (
-				<GridTable
-					columnDefs={columns}
-					rowData={result.data.products}
-					onGridReady={onGridReady}
-					filter={true}
-					floatingFilter={true}
-				/>
+				<div className="lg:w-5/6 lg:container">
+					<GridTable
+						columnDefs={columns}
+						rowData={result.data.products}
+						onGridReady={onGridReady}
+						filter={true}
+						floatingFilter={true}
+					/>
+				</div>
 			)}
 		</>
 	)

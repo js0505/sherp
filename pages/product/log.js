@@ -21,7 +21,7 @@ function ProductLogPage() {
 		startDate: dateFilter.startDate,
 		endDate: dateFilter.endDate,
 	})
-
+	
 	const pageHandleFunction = async (e) => {
 		const { selected } = e
 		setPage(selected + 1)

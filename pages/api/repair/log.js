@@ -63,8 +63,8 @@ handler.get(async function (req, res) {
 				.populate({ path: "completeUser", model: User })
 				.populate({ path: "user", model: User })
 				.exec()
-
-			res.status(200).json({ success: true, repairs })
+			const totalPosts = await Repair.countDocuments(query)
+			res.status(200).json({ success: true, repairs, totalPosts })
 		}
 	} else {
 		if (parsedPage === 1) {
@@ -108,8 +108,8 @@ handler.get(async function (req, res) {
 				.populate({ path: "completeUser", model: User })
 				.populate({ path: "user", model: User })
 				.exec()
-
-			res.status(200).json({ success: true, repairs })
+			const totalPosts = await Repair.countDocuments(query)
+			res.status(200).json({ success: true, repairs, totalPosts })
 		}
 	}
 })

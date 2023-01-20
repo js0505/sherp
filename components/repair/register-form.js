@@ -162,7 +162,7 @@ function RepairRegisterForm() {
 					</label>
 
 					<textarea
-						className="input-textarea h-12"
+						className="input-textarea h-10"
 						id="product-num"
 						maxLength={200}
 						rows={1}

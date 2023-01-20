@@ -1,15 +1,17 @@
 import Link from "next/link"
 import NavBarIcon from "../icons/nav-bar-icon"
+import Image from "next/image"
+import waveposImg from "../../public/wavepos.png"
 
 const TopNavigation = (props) => {
 	return (
-		<header className="flex justify-between h-10 z-30  w-full text-primary bg-white px-2 fixed ">
+		<header className="lg:hidden flex justify-between h-10 z-30  w-full text-white bg-primary px-2 pt-1 ">
 			<Link href="/">
 				<a>
-					<div className="text-3xl font-bold">SHerp</div>
+					<Image src={waveposImg} width={170} alt="wavepos" />
 				</a>
 			</Link>
-			<div className="md:hidden" onClick={props.sideBarHandler}>
+			<div className="lg:hidden" onClick={props.sideBarHandler}>
 				<NavBarIcon />
 			</div>
 		</header>

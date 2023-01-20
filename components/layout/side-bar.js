@@ -1,5 +1,6 @@
-import { signOut, useSession } from "next-auth/react"
 import Link from "next/link"
+import Image from "next/image"
+import { signOut, useSession } from "next-auth/react"
 import { useState } from "react"
 import RepairIcon from "../icons/repair-icon"
 import ProductIcon from "../icons/product-icon"
@@ -8,6 +9,7 @@ import DownChevronIcon from "../icons/down-chevron"
 import UpChevronIcon from "../icons/up-chevron"
 import UserIcon from "../icons/user-icon"
 import StoreIcon from "../icons/store-icon"
+import waveposImg from "../../public/wavepos.png"
 
 const sidebarData = [
 	{
@@ -129,30 +131,34 @@ const SideBar = (props) => {
 	}
 
 	const logoutHandler = () => {
-		const accept = confirm("로그아웃 하시겠습니까?")
+		return
+		// const accept = confirm("로그아웃 하시겠습니까?")
 
-		if (!accept) {
-			return
-		} else {
-			signOut({
-				callbackUrl: `${window.location.origin}/auth`,
-			})
-		}
+		// if (!accept) {
+		// 	return
+		// } else {
+		// 	signOut({
+		// 		callbackUrl: `${window.location.origin}/auth`,
+		// 	})
+		// }
 	}
 
 	const closeSideBarHandler = () => {
 		sideBarHandler()
 	}
+
 	return (
 		<>
 			{session && (
 				<div
-					className={` z-10 absolute text-white bg-primary  transition-height duration-200 ease-in-out pt-10  w-full
-					lg:relative lg:basis-1/6 lg:h-full
-					${props.showSideBar ? " h-full lg:w-1/6" : "h-0 lg:w-full"}`}
+					className={` z-10  text-white bg-primary absolute w-full 
+					lg:w-1/6 lg:h-full lg:relative ${props.showSideBar ? "" : "hidden lg:block"} `}
 				>
-					<div className={`${!props.showSideBar ? "hidden md:block" : ""}`}>
-						<div>
+					<div>
+						<div className="lg:mt-1">
+							<div className="hidden lg:block">
+								<Image src={waveposImg} width={170} alt="wavepos" />
+							</div>
 							<SubMenu data={userData} isLogout={logoutHandler} />
 						</div>
 						{sidebarData &&

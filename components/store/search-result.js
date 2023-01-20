@@ -115,7 +115,6 @@ const StoreSearchResult = ({ searchedStore, year }) => {
 			headerName: "주소",
 			field: "address",
 			minWidth: 100,
-			maxWidth: 150,
 		},
 		{ headerName: "VAN", field: "van", minWidth: 100, maxWidth: 150 },
 		{

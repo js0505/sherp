@@ -12,6 +12,7 @@ const MyApp = ({ Component, pageProps }) => {
 			<SessionProvider session={pageProps.session}>
 				<Head>
 					<title>웨이브포스 시흥영업팀</title>
+					<link rel="icon" href="/favicon-96x96.png" />
 				</Head>
 				<Layout>
 					<Component {...pageProps} />

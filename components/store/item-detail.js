@@ -6,12 +6,12 @@ import { vanItems } from "../../lib/variables/variables"
 import { DownArrow } from "../ui/icons/arrows"
 import { format } from "date-fns"
 import { editItemforDropdownButton } from "../../lib/util/dropdown-util"
+import { useGetAllItemsByUrlQuery } from "../../query/api"
 import {
 	useGetStoreByIdQuery,
 	useAddStoreAsMutation,
 	useUpdateStoreMutation,
-	useGetAllItemsByUrlQuery,
-} from "../../query/api"
+} from "../../query/storeApi"
 import Dropdown from "react-dropdown"
 
 function StoreItemDetail({ storeId, modalHandler }) {

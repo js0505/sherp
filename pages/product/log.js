@@ -2,7 +2,7 @@ import { useRef, useState } from "react"
 import PageTitle from "../../components/ui/page-title"
 import ProductLogTable from "../../components/product/log/log-table"
 import PagenationUi from "../../components/ui/pagenation-lib"
-import { api } from "../../query/api"
+import { useGetProductLogQuery } from "../../query/productApi"
 
 function ProductLogPage() {
 	const [page, setPage] = useState(1) // 현재 페이지네이션 번호
@@ -15,13 +15,13 @@ function ProductLogPage() {
 	const startDateInputRef = useRef()
 	const endDateInputRef = useRef()
 
-	const { data, isLoading } = api.useGetProductLogQuery({
+	const { data, isLoading } = useGetProductLogQuery({
 		page,
 		maxPosts,
 		startDate: dateFilter.startDate,
 		endDate: dateFilter.endDate,
 	})
-	
+
 	const pageHandleFunction = async (e) => {
 		const { selected } = e
 		setPage(selected + 1)

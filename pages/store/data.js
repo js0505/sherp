@@ -121,7 +121,7 @@ const StoreDataManagePage = () => {
 	return (
 		<>
 			<PageTitle title="가맹점 데이터 관리" />
-			<div className="w-full flex justify-left ml-32 ">
+			<div className="w-full flex justify-left pl-28 ">
 				<div className="flex flex-col justify-around h-30 w-1/5">
 					<button
 						className="input-button w-full"
@@ -148,7 +148,7 @@ const StoreDataManagePage = () => {
 						className="hidden"
 						ref={uploadFileInputRef}
 						type="file"
-						onChange={onChangeFileHandler}
+						onChange={onChangeFileHandler}ㅁ
 					/>
 					<button
 						className="input-button w-full mt-10"

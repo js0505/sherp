@@ -1,9 +1,7 @@
 import { useRef, useState } from "react"
 import { editItemforDropdownButton } from "../../lib/util/dropdown-util"
-import {
-	useGetAllItemsByUrlQuery,
-	useLazyGetFilteredProductQuery,
-} from "../../query/api"
+import { useGetAllItemsByUrlQuery } from "../../query/api"
+import { useLazyGetFilteredProductQuery } from "../../query/productApi"
 import GridTable from "../ui/grid-table"
 import { DownArrow } from "../ui/icons/arrows"
 import Dropdown from "react-dropdown"

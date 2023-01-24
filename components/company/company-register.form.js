@@ -1,12 +1,12 @@
 import { useRef } from "react"
-import { api } from "../../query/api"
+import { usePlainFetcherMutation } from "../../query/api"
 
 function CompanyRegisterForm() {
 	const companyNameInputRef = useRef()
 	const companyContactInputRef = useRef()
 	const companyAddressInputRef = useRef()
 
-	const [plainFetcher] = api.usePlainFetcherMutation()
+	const [plainFetcher] = usePlainFetcherMutation()
 
 	const submitHandler = async (e) => {
 		e.preventDefault()

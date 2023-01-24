@@ -2,7 +2,8 @@ import { useRef, useEffect, useState } from "react"
 import GridTable from "../ui/grid-table"
 import Modal from "../ui/modal"
 import StoreItemDetail from "./item-detail"
-import { useUpdateStoreCreditCountMutation } from "../../query/api"
+import { useUpdateStoreCreditCountMutation } from "../../query/storeApi"
+import { format, isAfter, isBefore, parseISO } from "date-fns"
 
 const StoreSearchResult = ({ searchedStore, year }) => {
 	const [rowData, setRowData] = useState()
@@ -153,6 +154,14 @@ const StoreSearchResult = ({ searchedStore, year }) => {
 		const isCountEdit = event.colDef.colId.data === "count" ? true : false
 		const newValue = parseInt(event.newValue)
 
+		if (oldData.contractDate) {
+			const editItemDate = parseISO(`${editItemYear}-${editItemMonth}`)
+			const test = parseISO(oldData.contractDate)
+			const checkIsAfter = isBefore(editItemDate, test)
+			console.log(oldData.contractDate)
+			console.log(checkIsAfter)
+		}
+
 		const body = {
 			storeId: oldData._id,
 			year: editItemYear,
@@ -161,8 +170,10 @@ const StoreSearchResult = ({ searchedStore, year }) => {
 			cms: isCountEdit ? null : newValue,
 			inOperation: oldData.inOperation,
 		}
+		// console.log(oldData)
 
-		await updateStoreCreditCount(body)
+		// todo: 계약일 이전의 데이터에는 접근 할 수 없도록 로직 생성.
+		// await updateStoreCreditCount(body)
 	}
 
 	const getRowId = (params) => {

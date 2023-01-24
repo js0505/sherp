@@ -14,7 +14,7 @@ const AuthPage = () => {
 				router.replace(`${window.location.origin}/`)
 			}
 		})
-	}, [router])
+	}, [])
 	return <AuthForm />
 }
 

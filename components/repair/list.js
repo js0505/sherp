@@ -1,10 +1,10 @@
 import RepairCardItem from "./card-item"
-import { api } from "../../query/api"
+import { useGetRepairListByStateQuery } from "../../query/repairApi"
 import { getRepairProductListByState } from "../../lib/util/repair-util"
 
 function RepairList(props) {
 	const { state } = props
-	const { data } = api.useGetRepairListByStateQuery({ state })
+	const { data } = useGetRepairListByStateQuery({ state })
 
 	const items = getRepairProductListByState({
 		repairs: data ? data.repairs : undefined,

@@ -3,12 +3,12 @@ import { useSession } from "next-auth/react"
 import { DatalistInput } from "react-datalist-input"
 import { useRouter } from "next/router"
 import { getAllProductsForDatalist } from "../../lib/util/product-util"
-import { api } from "../../query/api"
+import { usePlainFetcherMutation } from "../../query/api"
 import { format } from "date-fns"
 
 function RepairRegisterForm() {
 	const productList = getAllProductsForDatalist()
-	const [plainFetcher] = api.usePlainFetcherMutation()
+	const [plainFetcher] = usePlainFetcherMutation()
 
 	const today = new Date()
 	const year = format(today, "yyyy")

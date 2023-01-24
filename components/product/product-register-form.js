@@ -3,7 +3,8 @@ import Dropdown from "react-dropdown"
 import { categoryItems, vanItems } from "../../lib/variables/variables"
 import { editItemforDropdownButton } from "../../lib/util/dropdown-util"
 import { DownArrow } from "../ui/icons/arrows"
-import { api } from "../../query/api"
+import { useGetAllItemsByUrlQuery } from "../../query/api"
+import { useAddProductMutation } from "../../query/productApi"
 
 function ProductRegisterForm() {
 	const [selectedVANName, setSelectedVANName] = useState()
@@ -13,11 +14,11 @@ function ProductRegisterForm() {
 
 	const productNameInputRef = useRef()
 
-	const [addProduct] = api.useAddProductMutation()
-	const { data: companyData } = api.useGetAllItemsByUrlQuery({
+	const [addProduct] = useAddProductMutation()
+	const { data: companyData } = useGetAllItemsByUrlQuery({
 		url: "company",
 	})
-	const { data: brandData } = api.useGetAllItemsByUrlQuery({
+	const { data: brandData } = useGetAllItemsByUrlQuery({
 		url: "brand",
 	})
 	const companyList = editItemforDropdownButton(companyData?.company)

@@ -5,9 +5,7 @@
 	"scripts": {
 		"dev": "next dev",
 		"build": "cross-env next build",
-		"start": "cross-env next start",
-		"pm2dev": "pm2 start npm --name `sherp` -- run dev",
-		"pm2prod": "pm2 start npm --name `sherp` -- start"
+		"start": "cross-env next start"
 	},
 	"dependencies": {
 		"@next-auth/mongodb-adapter": "^1.0.4",
@@ -26,7 +24,6 @@
 		"next": "12.2.5",
 		"next-auth": "^4.10.3",
 		"next-connect": "^0.13.0",
-		"pm2": "^5.2.0",
 		"react": "18.2.0",
 		"react-datalist-input": "^3.1.0",
 		"react-dom": "18.2.0",

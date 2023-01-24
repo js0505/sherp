@@ -2,7 +2,11 @@ import { useRef } from "react"
 import { useSession } from "next-auth/react"
 import { format } from "date-fns"
 import DetailListItem from "../ui/detail-list-item"
-import { api } from "../../query/api"
+import {
+	useSetRepairListStateMutation,
+	useSetRepairReplyMutation,
+	useGetRepairItemByIdQuery,
+} from "../../query/repairApi"
 function RepairItemDetail({ repairId, modalHandler, state }) {
 	// item : 상세 수리정보 데이터
 	// modalHandler : 모달 창 켜고 끄는 상태변경 함수
@@ -17,9 +21,9 @@ function RepairItemDetail({ repairId, modalHandler, state }) {
 	const today = new Date()
 	const formattedToday = format(today, "yyyy-MM-dd")
 
-	const [setRepairListState] = api.useSetRepairListStateMutation()
-	const [setRepairReply] = api.useSetRepairReplyMutation()
-	const { data } = api.useGetRepairItemByIdQuery({ repairId })
+	const [setRepairListState] = useSetRepairListStateMutation()
+	const [setRepairReply] = useSetRepairReplyMutation()
+	const { data } = useGetRepairItemByIdQuery({ repairId })
 
 	const item = data?.repair
 

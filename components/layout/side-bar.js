@@ -131,16 +131,15 @@ const SideBar = (props) => {
 	}
 
 	const logoutHandler = () => {
-		return
-		// const accept = confirm("로그아웃 하시겠습니까?")
+		const accept = confirm("로그아웃 하시겠습니까?")
 
-		// if (!accept) {
-		// 	return
-		// } else {
-		// 	signOut({
-		// 		callbackUrl: `${window.location.origin}/auth`,
-		// 	})
-		// }
+		if (!accept) {
+			return
+		} else {
+			signOut({
+				callbackUrl: `${window.location.origin}/auth`,
+			})
+		}
 	}
 
 	const closeSideBarHandler = () => {

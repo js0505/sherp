@@ -10,7 +10,8 @@ import { editItemforDropdownButton } from "../../lib/util/dropdown-util"
 import Dropdown from "react-dropdown"
 import { DownArrow } from "../ui/icons/arrows"
 import { CheckboxButton } from "../ui/checkbox-button"
-import { useAddStoreMutation, useGetAllItemsByUrlQuery } from "../../query/api"
+import { useAddStoreMutation } from "../../query/storeApi"
+import { useGetAllItemsByUrlQuery } from "../../query/api"
 function StoreRegisterForm() {
 	const today = new Date()
 	const formattedToday = format(today, "yyyy-MM-dd")

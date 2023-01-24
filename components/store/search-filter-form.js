@@ -1,9 +1,7 @@
 import { useRef, useState } from "react"
 import StoreSearchResult from "./search-result"
-import {
-	useGetAllItemsByUrlQuery,
-	useLazyGetFilteredStoresQuery,
-} from "../../query/api"
+import { useGetAllItemsByUrlQuery } from "../../query/api"
+import { useLazyGetFilteredStoresQuery } from "../../query/storeApi"
 import Dropdown from "react-dropdown"
 import { DownArrow } from "../ui/icons/arrows"
 import { cityItems, vanItems } from "../../lib/variables/variables"

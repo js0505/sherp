@@ -77,8 +77,8 @@ export default function EditStoreComponent({ storeId, modalHandler }) {
 
 	useEffect(() => {
 		if (item) {
-			// setAsNote(item.asNote)
-			// setAsNoteDate(formattedToday)
+			setAsNote(item.asNote)
+			setAsNoteDate(formattedToday)
 
 			setUsers(editedUsers)
 
@@ -406,8 +406,17 @@ export default function EditStoreComponent({ storeId, modalHandler }) {
 										onChange={(event) => setAsNoteValue(event.target.value)}
 										className="px-4 h-9 my-1 block w-full  rounded-md border border-gray-300 
 												shadow-lg lg:text-sm focus:border-primary focus:ring-2  
-												focus:ring-primary focus:outline-none"
+												focus:ring-primary focus:outline-none mr-1"
 									/>
+									<button
+										className={`input-button mt-1 h-9 ${
+											isEditable ? "hidden" : "block"
+										}  `}
+										type="button"
+										onClick={asNoteSubmitHandler}
+									>
+										등록
+									</button>
 								</div>
 							</div>
 							<div className="col-span-5 flex items-end h-fit">

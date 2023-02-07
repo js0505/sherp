@@ -8,11 +8,12 @@ import Dropdown from "react-dropdown"
 import { DownArrow } from "../ui/icons/icons"
 import { cityItems, vanItems } from "../../lib/variables/variables"
 import { editItemforDropdownButton } from "../../lib/util/dropdown-util"
-import { format } from "date-fns"
+import { format, isBefore, parseISO } from "date-fns"
 import Modal from "../ui/modal"
 import GridTable from "../ui/grid-table"
 import Loader from "../ui/loader"
 import EditStoreComponent from "./store-edit"
+import { toast } from "react-toastify"
 
 export default function StoreSearchComponent() {
 	const [trigger, result] = useLazyGetFilteredStoresQuery()
@@ -159,6 +160,7 @@ function StoreSearchResult({ searchedStore, year }) {
 	const [selectedStoreId, setSelectedStoreId] = useState("")
 	const [filterYear, setFilterYear] = useState()
 	const [showModal, setShowModal] = useState(false)
+	const [isLoading, setIsLoading] = useState(false)
 
 	const [updateStoreCreditCount] = useUpdateStoreCreditCountMutation()
 
@@ -315,13 +317,14 @@ function StoreSearchResult({ searchedStore, year }) {
 		const isCountEdit = event.colDef.colId.data === "count" ? true : false
 		const newValue = parseInt(event.newValue)
 
-		if (oldData.contractDate) {
-			const editItemDate = parseISO(`${editItemYear}-${editItemMonth}`)
-			const test = parseISO(oldData.contractDate)
-			const checkIsAfter = isBefore(editItemDate, test)
-			console.log(oldData.contractDate)
-			console.log(checkIsAfter)
-		}
+		// todo: 계약일 이전의 데이터에는 접근 할 수 없도록 로직 생성.
+		// if (oldData.contractDate) {
+		// 	const editItemDate = parseISO(`${editItemYear}-${editItemMonth}`)
+		// 	const test = parseISO(oldData.contractDate)
+		// 	const checkIsAfter = isBefore(editItemDate, test)
+		// 	console.log(oldData.contractDate)
+		// 	console.log(checkIsAfter)
+		// }
 
 		const body = {
 			storeId: oldData._id,
@@ -333,8 +336,16 @@ function StoreSearchResult({ searchedStore, year }) {
 		}
 		// console.log(oldData)
 
-		// todo: 계약일 이전의 데이터에는 접근 할 수 없도록 로직 생성.
-		await updateStoreCreditCount(body)
+
+		setIsLoading(true)
+		const response = await updateStoreCreditCount(body)
+
+		setIsLoading(false)
+		if (response.data.success) {
+			toast.success(response.data.message)
+		} else {
+			toast.error(response.data.message)
+		}
 	}
 
 	const getRowId = (params) => {

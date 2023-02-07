@@ -64,6 +64,9 @@ let uploadFile = upload.single("file")
  *
  */
 handler.use(uploadFile).post(async function (req, res) {
+
+//todo: public/upload 폴더 없으면 만드는 로직 생성
+
 	try {
 		await dbConnect()
 		// 요청 받으면서 업로드 된 파일을 처리할 연, 월 값

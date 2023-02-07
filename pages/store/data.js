@@ -1,34 +1,46 @@
 import axios from "axios"
 import { useCallback, useEffect, useRef, useState } from "react"
 import PageTitle from "../../components/ui/page-title"
+import Loader from "../../components/ui/loader"
 import { format } from "date-fns"
 import { saveAs } from "file-saver"
 const StoreDataManagePage = () => {
 	const [uploadFile, setUploadFile] = useState(null)
+	const [isLoading, setIsLoading] = useState(false)
 	const uploadFileInputRef = useRef()
 	const today = new Date()
 	const todayYear = format(today, "yyyy")
 	const todayMonth = format(today, "MM")
 
 	const onReportDownloadHandler = async () => {
-		const year = prompt("연도를 입력하세요.", todayYear)
-		if (year === null) {
+		// const year = prompt("연도를 입력하세요.", todayYear)
+		// if (year === null) {
+		// 	return
+		// }
+		// if (year < "2023") {
+		// 	alert("2023년 데이터 부터 출력 가능합니다.")
+		// 	return
+		// }
+
+		const accept = confirm(
+			`${todayYear}년 보고서를 다운로드 합니다. 계속 하시겠습니까?`,
+		)
+
+		if (!accept) {
 			return
 		}
-		if (year < "2023") {
-			alert("2023년 데이터 부터 출력 가능합니다.")
-			return
-		}
+
+		setIsLoading(true)
 		await axios
-			.get(`/api/store/excel?type=report&year=${year}`, {
+			.get(`/api/store/excel?type=report&year=${todayYear}`, {
 				responseType: "blob",
 			})
 			.then((res) => {
 				const blob = new Blob([res.data], {
 					type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
 				})
-
 				saveAs(blob, "통합 가맹점 리스트.xlsx")
+				setIsLoading(false)
 			})
 	}
 
@@ -68,6 +80,7 @@ const StoreDataManagePage = () => {
 		const formData = new FormData()
 		formData.append("file", uploadFile)
 
+		setIsLoading(true)
 		const response = await axios.post(
 			`/api/store/excel?year=${year}&month=${month}`,
 			formData,
@@ -77,6 +90,7 @@ const StoreDataManagePage = () => {
 				},
 			},
 		)
+		setIsLoading(false)
 		if (response.data) {
 			setUploadFile(null)
 			alert(response.data.message)
@@ -84,6 +98,7 @@ const StoreDataManagePage = () => {
 	}, [todayYear, todayMonth, uploadFile])
 
 	const onSampleDownloadHandler = async () => {
+		setIsLoading(true)
 		await axios
 			.get("/api/store/excel?type=countUp", { responseType: "blob" })
 			.then((res) => {
@@ -92,6 +107,7 @@ const StoreDataManagePage = () => {
 				})
 
 				saveAs(blob, "가맹점 건수입력 샘플.xlsx")
+				setIsLoading(false)
 			})
 	}
 
@@ -118,8 +134,10 @@ const StoreDataManagePage = () => {
 			onUploadHandler()
 		}
 	}, [uploadFile, onUploadHandler])
+
 	return (
 		<>
+			{isLoading && <Loader />}
 			<PageTitle title="가맹점 데이터 관리" />
 			<div className="w-full flex justify-left pl-28 ">
 				<div className="flex flex-col justify-around h-30 w-1/5">
@@ -148,7 +166,8 @@ const StoreDataManagePage = () => {
 						className="hidden"
 						ref={uploadFileInputRef}
 						type="file"
-						onChange={onChangeFileHandler}ㅁ
+						onChange={onChangeFileHandler}
+						ㅁ
 					/>
 					<button
 						className="input-button w-full mt-10"

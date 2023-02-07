@@ -1,6 +1,6 @@
 import { useState } from "react"
 import Modal from "../../ui/modal"
-import RepairItemDetail from "../card-item-detail"
+import { RepairItemDetail } from "../repair-item"
 import GridTable from "../../ui/grid-table"
 
 function CompleteRepairTable(props) {
@@ -57,7 +57,7 @@ function CompleteRepairTable(props) {
 	return (
 		<>
 			{showModal && (
-				<Modal>
+				<Modal isOpen={showModal} onClose={modalHandler}>
 					<RepairItemDetail
 						state={selectedItemState}
 						modalHandler={modalHandler}

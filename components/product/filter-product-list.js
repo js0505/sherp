@@ -3,7 +3,7 @@ import { editItemforDropdownButton } from "../../lib/util/dropdown-util"
 import { useGetAllItemsByUrlQuery } from "../../query/api"
 import { useLazyGetFilteredProductQuery } from "../../query/productApi"
 import GridTable from "../ui/grid-table"
-import { DownArrow } from "../ui/icons/arrows"
+import { DownArrow } from "../ui/icons/icons"
 import Dropdown from "react-dropdown"
 import { categoryItems, vanItems } from "../../lib/variables/variables"
 

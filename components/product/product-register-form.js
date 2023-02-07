@@ -2,7 +2,7 @@ import { useRef, useState } from "react"
 import Dropdown from "react-dropdown"
 import { categoryItems, vanItems } from "../../lib/variables/variables"
 import { editItemforDropdownButton } from "../../lib/util/dropdown-util"
-import { DownArrow } from "../ui/icons/arrows"
+import { DownArrow } from "../ui/icons/icons"
 import { useGetAllItemsByUrlQuery } from "../../query/api"
 import { useAddProductMutation } from "../../query/productApi"
 

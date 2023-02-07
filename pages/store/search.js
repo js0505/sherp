@@ -1,4 +1,4 @@
-import StoreSearchFilterForm from "../../components/store/search-filter-form"
+import StoreSearchFilterForm from "../../components/store/store-search"
 import PageTitle from "../../components/ui/page-title"
 
 const StoreSearchPage = () => {

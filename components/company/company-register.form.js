@@ -1,24 +1,17 @@
-import { useRef } from "react"
 import { usePlainFetcherMutation } from "../../query/api"
+import { useForm } from "react-hook-form"
 
 function CompanyRegisterForm() {
-	const companyNameInputRef = useRef()
-	const companyContactInputRef = useRef()
-	const companyAddressInputRef = useRef()
-
 	const [plainFetcher] = usePlainFetcherMutation()
 
-	const submitHandler = async (e) => {
-		e.preventDefault()
+	const { register, handleSubmit, reset } = useForm({
+		mode: "onSubmit",
+		defaultValues: { name: "", contact: "", address: "" },
+	})
 
-		const companyName = companyNameInputRef.current.value
-		const companyContact = companyContactInputRef.current.value
-		const companyAddress = companyAddressInputRef.current.value
-
+	const submitHandler = async (formData) => {
 		const body = {
-			name: companyName,
-			contact: companyContact,
-			address: companyAddress,
+			...formData,
 		}
 
 		const accept = confirm("등록 하시겠습니까?")
@@ -35,26 +28,33 @@ function CompanyRegisterForm() {
 			}
 
 			alert(`${response.result.name} 등록완료.`)
-			companyNameInputRef.current.value = ""
-			companyContactInputRef.current.value = ""
-			companyAddressInputRef.current.value = ""
+			reset()
 		}
 	}
 
 	return (
 		<section className="container lg:w-3/6">
-			<form className="grid gap-4" onSubmit={submitHandler}>
+			<form className="grid gap-4" onSubmit={handleSubmit(submitHandler)}>
 				<div>
 					<label className="input-label">제조사명</label>
-					<input className="input-text" required ref={companyNameInputRef} />
+					<input
+						className="input-text"
+						{...register("name", { required: true })}
+					/>
 				</div>
 				<div>
 					<label className="input-label">연락처</label>
-					<input className="input-text" required ref={companyContactInputRef} />
+					<input
+						className="input-text"
+						{...register("contact", { required: true })}
+					/>
 				</div>
 				<div>
 					<label className="input-label">주소</label>
-					<input className="input-text" required ref={companyAddressInputRef} />
+					<input
+						className="input-text"
+						{...register("address", { required: true })}
+					/>
 				</div>
 				<div>
 					<button className="input-button">등록</button>

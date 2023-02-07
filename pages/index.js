@@ -1,6 +1,7 @@
 import { getSession } from "next-auth/react"
 import { useRouter } from "next/router"
 import { useEffect, useState } from "react"
+import Loader from "../components/ui/loader"
 
 const Home = () => {
 	const [isLoading, setIsLoading] = useState(true)
@@ -8,16 +9,18 @@ const Home = () => {
 	const router = useRouter()
 
 	useEffect(() => {
+		setIsLoading(true)
 		getSession().then((session) => {
 			if (!session) {
 				router.replace(`${window.location.origin}/auth`)
+				setIsLoading(false)
 			} else {
 				setIsLoading(false)
 			}
 		})
 	}, [router])
 
-	return <>{isLoading ? <div>Loading</div> : <div>home</div>}</>
+	return <>{isLoading && <Loader />}</>
 }
 
 export default Home

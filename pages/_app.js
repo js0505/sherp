@@ -6,6 +6,7 @@ import { api } from "../query/api"
 import Head from "next/head"
 import { useEffect } from "react"
 import { useRouter } from "next/router"
+import { ToastMessageComponent } from "../components/ui/toast-message"
 
 const MyApp = ({ Component, pageProps }) => {
 	const router = useRouter()
@@ -24,6 +25,7 @@ const MyApp = ({ Component, pageProps }) => {
 					<title>웨이브포스 시흥영업팀</title>
 					<link rel="icon" href="/favicon-96x96.png" />
 				</Head>
+				<ToastMessageComponent />
 				<Layout>
 					<Component {...pageProps} />
 				</Layout>

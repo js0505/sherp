@@ -1,5 +1,5 @@
 import Link from "next/link"
-import NavBarIcon from "../icons/nav-bar-icon"
+import { NavBarIcon } from "../ui/icons/icons"
 import Image from "next/image"
 import waveposImg from "../../public/wavepos.png"
 

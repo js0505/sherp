@@ -11,6 +11,7 @@ const PagenationUi = ({ onPageChange, pageRangeDisplayed, pageCount }) => {
 		<ReactPaginate
 			breakLabel="..."
 			nextLabel=">"
+			
 			onPageChange={onPageChange}
 			pageRangeDisplayed={pageRangeDisplayed}
 			pageCount={pageCount / pageRangeDisplayed}

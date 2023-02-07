@@ -1,4 +1,4 @@
-import RepairRegisterForm from "../../components/repair/register-form"
+import RepairRegisterForm from "../../components/repair/repair-register"
 import PageTitle from "../../components/ui/page-title"
 
 const RepairRegisterPage = () => {

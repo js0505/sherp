@@ -1,10 +1,11 @@
-import { useRef, useState } from "react"
+import { useState } from "react"
 import { useSession } from "next-auth/react"
 import { DatalistInput } from "react-datalist-input"
-import { useRouter } from "next/router"
 import { getAllProductsForDatalist } from "../../lib/util/product-util"
 import { usePlainFetcherMutation } from "../../query/api"
 import { format } from "date-fns"
+import { useForm } from "react-hook-form"
+import { toast } from "react-toastify"
 
 function RepairRegisterForm() {
 	const productList = getAllProductsForDatalist()
@@ -17,69 +18,68 @@ function RepairRegisterForm() {
 	const dateString = year + "-" + month + "-" + day
 
 	const { data: session } = useSession()
-	const router = useRouter()
+
+	const { register, reset, handleSubmit } = useForm({
+		mode: "onSubmit",
+		defaultValues: {
+			qty: "",
+			storeName: "",
+			productNum: "",
+			invoiceNum: "",
+			symptom: "",
+			note: "",
+		},
+	})
 
 	const [dateInput, setDateInput] = useState(dateString)
 	const [selectedCompanyName, setSelectedCompanyName] = useState(null)
 	const [selectedProductCompany, setSelectedProductCompany] = useState(null)
 	const [selectedProductId, setSelectedProductId] = useState()
 	const [selectedBrand, setSelectedBrand] = useState(null)
+	const [datalistValue, setDatalistValue] = useState()
 
-	const productQtyInputRef = useRef()
-	const storeNameInputRef = useRef()
-	const productNumInputRef = useRef()
-	const invoiceNumInputRef = useRef()
-	const noteInputRef = useRef()
-	const symptomInputRef = useRef()
-
-	async function submitHandler(e) {
-		e.preventDefault()
-
-		const productQtyRefvalue = productQtyInputRef.current.value
-		const storeNameRefValue = storeNameInputRef.current.value
-		const productNumRefValue = productNumInputRef.current.value
-		const invoiceNumRefValue = invoiceNumInputRef.current.value || ""
-		const symptomRefValue = symptomInputRef.current.value
-		const noteRefValue = noteInputRef.current.value
+	async function submitHandler(formData) {
 		const userId = session.user.image._id
 
 		const date = dateInput
 		const product = selectedProductId
 		const user = userId
 		const productCompany = selectedProductCompany
-		const qty = productQtyRefvalue
-		const storeName = storeNameRefValue
-		const productNum = productNumRefValue
-		const invoiceNum = invoiceNumRefValue
-		const note = noteRefValue
 		const brand = selectedBrand
-		const symptom = symptomRefValue
 
 		const body = {
 			date,
 			product,
 			user,
 			productCompany,
-			qty,
-			storeName,
-			productNum,
-			invoiceNum,
-			note,
-			symptom,
 			brand,
+			...formData,
 		}
 		const accept = confirm("등록 하시겠습니까?")
 		if (!accept) {
 			return
 		}
 
-		const { data } = await plainFetcher({ url: "repair", method: "POST", body })
+		const { data: response } = await plainFetcher({
+			url: "repair",
+			method: "POST",
+			body,
+		})
 
-		alert(data.message)
-
-		if (data.success) {
-			router.reload()
+		if (!response.success) {
+			toast.error(response.message)
+			console.log(response.error)
+			return
 		}
+		toast.success(response.message)
+
+		reset()
+		setSelectedBrand(null)
+		setSelectedProductId(null)
+		setSelectedProductCompany(null)
+		setSelectedCompanyName(null)
+		setDateInput(dateString)
+		setDatalistValue("")
 	}
 
 	function dataListSelectHandler(item) {
@@ -89,8 +89,11 @@ function RepairRegisterForm() {
 		setSelectedBrand(item.brand)
 	}
 	return (
-		<section className="container lg:w-2/5 ">
-			<form onSubmit={submitHandler} className="grid grid-cols-4 gap-4">
+		<section className="container lg:w-1/2 ">
+			<form
+				onSubmit={handleSubmit(submitHandler)}
+				className="grid grid-cols-4 gap-4"
+			>
 				<div className="col-span-4">
 					<label className="input-label" htmlFor="date">
 						날짜
@@ -110,6 +113,8 @@ function RepairRegisterForm() {
 						label={<div className="input-label">제품선택</div>}
 						onSelect={(item) => dataListSelectHandler(item)}
 						items={productList}
+						value={datalistValue}
+						onChange={(e) => setDatalistValue(e.target.value)}
 						required
 						inputProps={{ className: " input-text " }}
 						listboxOptionProps={{
@@ -127,8 +132,7 @@ function RepairRegisterForm() {
 						className="input-text"
 						id="qty"
 						type="number"
-						ref={productQtyInputRef}
-						required
+						{...register("qty", { required: true })}
 					/>
 				</div>
 				<div className="col-span-2 lg:col-span-1">
@@ -152,8 +156,7 @@ function RepairRegisterForm() {
 						className="input-text"
 						id="store-name"
 						type="text"
-						ref={storeNameInputRef}
-						required
+						{...register("storeName", { required: true })}
 					/>
 				</div>
 				<div className="col-span-2">
@@ -166,7 +169,7 @@ function RepairRegisterForm() {
 						id="product-num"
 						maxLength={200}
 						rows={1}
-						ref={productNumInputRef}
+						{...register("productNum", { required: true })}
 					></textarea>
 				</div>
 
@@ -178,7 +181,7 @@ function RepairRegisterForm() {
 						className="input-text"
 						id="invoice-num"
 						type="text"
-						ref={invoiceNumInputRef}
+						{...register("invoiceNum")}
 					/>
 				</div>
 				<div className="col-span-4">
@@ -190,7 +193,7 @@ function RepairRegisterForm() {
 						id="symptom"
 						maxLength={200}
 						rows={3}
-						ref={symptomInputRef}
+						{...register("symptom")}
 					></textarea>
 				</div>
 				<div className="col-span-4">
@@ -202,7 +205,7 @@ function RepairRegisterForm() {
 						id="note"
 						maxLength={200}
 						rows={3}
-						ref={noteInputRef}
+						{...register("note")}
 						placeholder={"내용과 수리처를 남겨주세요 "}
 					></textarea>
 				</div>

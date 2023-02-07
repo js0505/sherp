@@ -1,6 +1,6 @@
 import { useRef, useState } from "react"
 import PageTitle from "../../components/ui/page-title"
-import CompleteRepairTable from "../../components/repair/log/log-table"
+import CompleteRepairTable from "../../components/repair/log/repair-log"
 import PagenationUi from "../../components/ui/pagenation-lib"
 import { api } from "../../query/api"
 

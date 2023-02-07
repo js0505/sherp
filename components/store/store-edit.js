@@ -1,9 +1,9 @@
 import { useCallback, useEffect, useState } from "react"
 import { useSession } from "next-auth/react"
 import { cityItems, inOperationItems } from "../../lib/variables/variables"
-import { CheckboxButton } from "../ui/checkbox-button"
+
 import { vanItems } from "../../lib/variables/variables"
-import { DownArrow } from "../ui/icons/arrows"
+import { DownArrow } from "../ui/icons/icons"
 import { format } from "date-fns"
 import { editItemforDropdownButton } from "../../lib/util/dropdown-util"
 import { useGetAllItemsByUrlQuery } from "../../query/api"
@@ -13,13 +13,16 @@ import {
 	useUpdateStoreMutation,
 } from "../../query/storeApi"
 import Dropdown from "react-dropdown"
+import Loader from "../ui/loader"
+import { useController, useForm } from "react-hook-form"
+import { StoreProductCheckbox } from "../ui/store-product-checkbox"
 
-function StoreItemDetail({ storeId, modalHandler }) {
+export default function EditStoreComponent({ storeId, modalHandler }) {
 	const today = new Date()
 	const formattedToday = format(today, "yyyy-MM-dd")
 	const { data: session } = useSession()
 
-	const { data } = useGetStoreByIdQuery({ storeId })
+	const { data, isLoading } = useGetStoreByIdQuery({ storeId })
 	const item = data?.store
 
 	const [addStoreAs] = useAddStoreAsMutation()
@@ -27,59 +30,77 @@ function StoreItemDetail({ storeId, modalHandler }) {
 	const { data: allUsersData } = useGetAllItemsByUrlQuery({ url: "user" })
 	const editedUsers = editItemforDropdownButton(allUsersData?.users)
 
+	const { register, reset, control, watch, handleSubmit } = useForm({
+		mode: "onSubmit",
+		defaultValues: {
+			contractDate: "",
+			note: "",
+			storeName: "",
+			businessNum: "",
+			address: "",
+			owner: "",
+			contact: "",
+			vanId: "",
+			vanCode: "",
+			cms: "",
+		},
+	})
+	// console.log(watch())
+	const { field: city } = useController({
+		name: "city",
+		control,
+		defaultValue: "",
+	})
+	const { field: user } = useController({
+		name: "user",
+		control,
+		defaultValue: "",
+	})
+	const { field: inOperation } = useController({
+		name: "inOperation",
+		control,
+		defaultValue: "",
+	})
+	const { field: van } = useController({
+		name: "van",
+		control,
+		defaultValue: "",
+	})
+
 	const [isEditable, setIsEditable] = useState(false)
-	const [contractDate, setContractDate] = useState("2000-01-01")
-	const [storeName, setStoreName] = useState("")
-	const [businessNum, setBusinessNum] = useState(0)
-	const [city, setCity] = useState("")
-	const [address, setAddress] = useState("")
-	const [contact, setContact] = useState("")
-	const [user, setUser] = useState("")
+	const [closeDate, setCloseDate] = useState("")
 	const [users, setUsers] = useState([])
-	const [van, setVan] = useState("")
-	const [vanId, setVanId] = useState("")
-	const [vanCode, setVanCode] = useState("")
-	const [inOperation, setInOperation] = useState("")
-	const [cms, setCms] = useState(0)
-	const [product, setProduct] = useState({})
-	const [owner, setOwner] = useState("")
-	const [note, setNote] = useState("")
+
 	const [asNote, setAsNote] = useState([])
 	const [asNoteDate, setAsNoteDate] = useState("")
 	const [asNoteValue, setAsNoteValue] = useState("")
-	const [closeDate, setCloseDate] = useState("")
 
 	useEffect(() => {
 		if (item) {
-			setVan(item.van)
-			setCity(item.city)
-			setUser(item.user)
-			setNote(item.note)
-			setAsNote(item.asNote)
-			setContractDate(item.contractDate)
-			setStoreName(item.storeName)
-			setBusinessNum(filteredBusinessNum(item.businessNum))
-			setAddress(item.address)
-			setContact(item.contact)
-			setVanId(item.vanId)
-			setVanCode(item.vanCode)
-			setCms(item.cms)
-			setProduct(item.product)
-			setOwner(item.owner)
-			setInOperation(item.inOperation)
-			setAsNoteDate(formattedToday)
-			setUsers(editedUsers)
-		}
+			// setAsNote(item.asNote)
+			// setAsNoteDate(formattedToday)
 
-		if (isEditable) {
-			// if (item && item.inOperation === "폐업") {
-			// 	alert("폐업 가맹점은 수정 할 수 없습니다.")
-			// 	setIsEditable(false)
-			// }
-			// 수정모드 들어갈 때 사업자번호 안에 - 값 제거
-			setBusinessNum(businessNum.replace(/-/g, ""))
+			setUsers(editedUsers)
+
+			reset({
+				contractDate: item.contractDate,
+				note: item.note,
+				storeName: item.storeName,
+				businessNum: item.businessNum,
+				address: item.address,
+				owner: item.owner,
+				contact: item.contact,
+				vanId: item.vanId,
+				vanCode: item.vanCode,
+				cms: item.cms,
+				van: item.van,
+				city: item.city,
+				user: item.user,
+				product: item.product,
+				inOperation: item.inOperation,
+			})
 		}
-	}, [item, isEditable, filteredBusinessNum, formattedToday])
+	}, [item])
 
 	const filteredBusinessNum = useCallback(
 		(plainNumber) => {
@@ -96,13 +117,8 @@ function StoreItemDetail({ storeId, modalHandler }) {
 		[isEditable],
 	)
 
-	const cancelSubmitHandler = () => {}
-
-	const editStoreSubmitHandler = async (e) => {
-		e.preventDefault()
-
-		// todo : 사업자번호 10자리 값 확인.
-		if (businessNum.length != 10) {
+	const editStoreSubmitHandler = async (formData) => {
+		if (String(formData.businessNum).length != 10) {
 			alert("사업자번호는 10자리 입니다.")
 			return
 		}
@@ -111,35 +127,19 @@ function StoreItemDetail({ storeId, modalHandler }) {
 
 		if (!accept) {
 			return
-		} else {
-			const body = {
-				_id: item._id,
-				user: user.label,
-				storeName,
-				contractDate,
-				businessNum,
-				city: city.value,
-				address,
-				contact,
-				van: van.value,
-				vanId,
-				vanCode,
-				inOperation,
-				cms,
-				product,
-				owner,
-				note,
-				closeDate,
-			}
-
-			const { data: response } = await updateStore(body)
-			if (response.success) {
-				alert(response.message)
-				setIsEditable(!isEditable)
-			} else {
-				alert(response.message)
-			}
 		}
+
+		const body = {
+			_id: item._id,
+			closeDate,
+			...formData,
+		}
+
+		const { data: response } = await updateStore(body)
+		if (response.success) {
+			setIsEditable(!isEditable)
+		}
+		alert(response.message)
 	}
 
 	const asNoteSubmitHandler = async (e) => {
@@ -196,11 +196,12 @@ function StoreItemDetail({ storeId, modalHandler }) {
 
 	return (
 		<div className="w-full container">
+			{isLoading && <Loader />}
 			{item && (
-				<div
+				<form
+					onSubmit={handleSubmit(editStoreSubmitHandler)}
 					className="flex flex-col p-3 
 					lg:flex-row lg:justify-between lg:divide-x lg:divide-gray-300  lg:w-[80rem]"
-					onKeyDown={(e) => console.log(e)}
 				>
 					<div
 						className="w-full p-1 lg:m-3 grid grid-cols-5 gap-3
@@ -214,8 +215,7 @@ function StoreItemDetail({ storeId, modalHandler }) {
 								className="input-text"
 								id="contract-date"
 								type="date"
-								value={contractDate || ""}
-								onChange={(event) => setContractDate(event.target.value)}
+								{...register("contractDate")}
 								disabled={!isEditable}
 							/>
 						</div>
@@ -226,8 +226,8 @@ function StoreItemDetail({ storeId, modalHandler }) {
 								arrowOpen={<DownArrow />}
 								options={users}
 								disabled={!isEditable}
-								value={user}
-								onChange={setUser}
+								onChange={(data) => user.onChange(data.value)}
+								value={user.value}
 							/>
 						</div>
 						<div className="col-span-3 lg:col-span-1">
@@ -236,8 +236,8 @@ function StoreItemDetail({ storeId, modalHandler }) {
 								arrowClosed={<DownArrow />}
 								arrowOpen={<DownArrow />}
 								options={vanItems}
-								onChange={setVan}
-								value={van}
+								onChange={(data) => van.onChange(data.value)}
+								value={van.value}
 								disabled={!isEditable}
 							/>
 						</div>
@@ -248,16 +248,15 @@ function StoreItemDetail({ storeId, modalHandler }) {
 								arrowOpen={<DownArrow />}
 								options={inOperationItems}
 								disabled={!isEditable}
-								value={inOperation}
-								onChange={(item) => onCloseStateHandler(item)}
+								onChange={(data) => inOperation.onChange(data.value)}
+								value={inOperation.value}
 							/>
 						</div>
 						<div className="col-span-5 lg:col-span-3">
 							<label className="input-label">상호명</label>
 							<input
 								className="input-text"
-								value={storeName}
-								onChange={(e) => setStoreName(e.target.value)}
+								{...register("storeName")}
 								required
 								disabled={!isEditable}
 							/>
@@ -266,9 +265,8 @@ function StoreItemDetail({ storeId, modalHandler }) {
 							<label className="input-label">사업자번호</label>
 							<input
 								className="input-text"
-								value={businessNum}
 								maxLength={10}
-								onChange={(e) => setBusinessNum(e.target.value)}
+								{...register("businessNum")}
 								required
 								disabled={!isEditable}
 							/>
@@ -279,17 +277,16 @@ function StoreItemDetail({ storeId, modalHandler }) {
 								arrowClosed={<DownArrow />}
 								arrowOpen={<DownArrow />}
 								options={cityItems}
-								value={city}
-								onChange={setCity}
 								disabled={!isEditable}
+								onChange={(data) => city.onChange(data.value)}
+								value={city.value}
 							/>
 						</div>
 						<div className="col-span-5 lg:col-span-4">
 							<label className="input-label">주소</label>
 							<input
 								className="input-text"
-								value={address}
-								onChange={(e) => setAddress(e.target.value)}
+								{...register("address")}
 								required
 								disabled={!isEditable}
 							/>
@@ -299,8 +296,7 @@ function StoreItemDetail({ storeId, modalHandler }) {
 							<label className="input-label">대표자명</label>
 							<input
 								className="input-text"
-								value={owner}
-								onChange={(e) => setOwner(e.target.value)}
+								{...register("owner")}
 								required
 								disabled={!isEditable}
 							/>
@@ -309,9 +305,7 @@ function StoreItemDetail({ storeId, modalHandler }) {
 							<label className="input-label">연락처</label>
 							<input
 								className="input-text"
-								value={contact || ""}
-								onChange={(e) => setContact(e.target.value)}
-								required
+								{...register("contact")}
 								disabled={!isEditable}
 							/>
 						</div>
@@ -319,8 +313,7 @@ function StoreItemDetail({ storeId, modalHandler }) {
 							<label className="input-label">CMS</label>
 							<input
 								className="input-text"
-								value={cms}
-								onChange={(e) => setCms(e.target.value)}
+								{...register("cms")}
 								required
 								disabled={!isEditable}
 							/>
@@ -328,40 +321,10 @@ function StoreItemDetail({ storeId, modalHandler }) {
 						<div className="col-span-5">
 							<div className="input-label">장비</div>
 							<div className="flex">
-								<CheckboxButton
-									id="pos"
+								<StoreProductCheckbox
+									control={control}
+									name="product"
 									disabled={!isEditable}
-									value={product}
-									onChangeFunction={setProduct}
-									title="포스"
-								/>
-								<CheckboxButton
-									id="kiosk"
-									value={product}
-									disabled={!isEditable}
-									onChangeFunction={setProduct}
-									title="키오스크"
-								/>
-								<CheckboxButton
-									id="printer"
-									value={product}
-									disabled={!isEditable}
-									onChangeFunction={setProduct}
-									title="주방프린터"
-								/>
-								<CheckboxButton
-									id="cat"
-									value={product}
-									disabled={!isEditable}
-									onChangeFunction={setProduct}
-									title="단말기"
-								/>
-								<CheckboxButton
-									id="router"
-									value={product}
-									disabled={!isEditable}
-									onChangeFunction={setProduct}
-									title="라우터"
 								/>
 							</div>
 						</div>
@@ -370,8 +333,7 @@ function StoreItemDetail({ storeId, modalHandler }) {
 							<label className="input-label">VAN Code</label>
 							<input
 								className="input-text"
-								value={vanCode || ""}
-								onChange={(e) => setVanCode(e.target.value)}
+								{...register("vanCode")}
 								disabled={!isEditable}
 							/>
 						</div>
@@ -379,8 +341,7 @@ function StoreItemDetail({ storeId, modalHandler }) {
 							<label className="input-label">VAN ID</label>
 							<input
 								className="input-text"
-								value={vanId || ""}
-								onChange={(e) => setVanId(e.target.value)}
+								{...register("vanId")}
 								disabled={!isEditable}
 							/>
 						</div>
@@ -390,8 +351,7 @@ function StoreItemDetail({ storeId, modalHandler }) {
 							<label className="input-label">비고</label>
 							<textarea
 								rows={6}
-								value={note || ""}
-								onChange={(e) => setNote(e.target.value)}
+								{...register("note")}
 								disabled={!isEditable}
 								className="input-textarea"
 							></textarea>
@@ -429,7 +389,7 @@ function StoreItemDetail({ storeId, modalHandler }) {
 								</div>
 							</div>
 							<div>
-								<form
+								<div
 									className="flex flex-col lg:flex-row"
 									onSubmit={asNoteSubmitHandler}
 								>
@@ -439,7 +399,6 @@ function StoreItemDetail({ storeId, modalHandler }) {
 										type="date"
 										value={asNoteDate}
 										onChange={(event) => setAsNoteDate(event.target.value)}
-										required
 									/>
 									<input
 										type="text"
@@ -449,19 +408,26 @@ function StoreItemDetail({ storeId, modalHandler }) {
 												shadow-lg lg:text-sm focus:border-primary focus:ring-2  
 												focus:ring-primary focus:outline-none"
 									/>
-								</form>
+								</div>
 							</div>
 							<div className="col-span-5 flex items-end h-fit">
 								<div className="w-full mr-1 mb-2">
 									<button
-										className={`input-button w-full  `}
-										onClick={
-											isEditable
-												? (e) => editStoreSubmitHandler(e)
-												: () => setIsEditable(!isEditable)
-										}
+										className={`input-button w-full ${
+											isEditable ? "block" : "hidden"
+										} `}
+										type="submit"
 									>
-										{isEditable ? "수정완료" : "정보수정"}
+										수정완료
+									</button>
+									<button
+										className={`input-button w-full ${
+											isEditable ? "hidden" : "block"
+										}  `}
+										type="button"
+										onClick={() => setIsEditable(!isEditable)}
+									>
+										정보수정
 									</button>
 								</div>
 								<div className="w-full ml-1 mb-2">
@@ -485,10 +451,8 @@ function StoreItemDetail({ storeId, modalHandler }) {
 							</div>
 						</div>
 					</div>
-				</div>
+				</form>
 			)}
 		</div>
 	)
 }
-
-export default StoreItemDetail

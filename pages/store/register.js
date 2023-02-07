@@ -1,4 +1,4 @@
-import StoreRegisterForm from "../../components/store/register-form"
+import StoreRegisterForm from "../../components/store/store-register"
 import PageTitle from "../../components/ui/page-title"
 
 const StoreRegisterPage = () => {

@@ -1,8 +1,8 @@
-import RepairCardItem from "./card-item"
+import RepairCardItem from "./repair-item"
 import { useGetRepairListByStateQuery } from "../../query/repairApi"
 import { getRepairProductListByState } from "../../lib/util/repair-util"
 
-function RepairList(props) {
+export default function RepairListComponent(props) {
 	const { state } = props
 	const { data } = useGetRepairListByStateQuery({ state })
 
@@ -52,5 +52,3 @@ function RepairList(props) {
 		</section>
 	)
 }
-
-export default RepairList

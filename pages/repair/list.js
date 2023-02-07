@@ -1,6 +1,6 @@
 import { useRouter } from "next/router"
-import RepairList from "../../../components/repair/list"
-import PageTitle from "../../../components/ui/page-title"
+import RepairListComponent from "../../components/repair/repair-list"
+import PageTitle from "../../components/ui/page-title"
 
 function RepairListPage() {
 	const router = useRouter()
@@ -15,7 +15,7 @@ function RepairListPage() {
 	return (
 		<>
 			<PageTitle title={title} />
-			<RepairList state={state} />
+			<RepairListComponent state={state} />
 		</>
 	)
 }

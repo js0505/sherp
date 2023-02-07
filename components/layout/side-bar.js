@@ -2,14 +2,16 @@ import Link from "next/link"
 import Image from "next/image"
 import { signOut, useSession } from "next-auth/react"
 import { useState } from "react"
-import RepairIcon from "../icons/repair-icon"
-import ProductIcon from "../icons/product-icon"
-import AdminIcon from "../icons/admin-icon"
-import DownChevronIcon from "../icons/down-chevron"
-import UpChevronIcon from "../icons/up-chevron"
-import UserIcon from "../icons/user-icon"
-import StoreIcon from "../icons/store-icon"
 import waveposImg from "../../public/wavepos.png"
+import {
+	AdminIcon,
+	DownChevronIcon,
+	ProductIcon,
+	RepairIcon,
+	StoreIcon,
+	UpChevronIcon,
+	UserIcon,
+} from "../ui/icons/icons"
 
 const sidebarData = [
 	{
@@ -120,7 +122,7 @@ function SubMenu(props) {
 	)
 }
 
-const SideBar = (props) => {
+export default function SideBar(props) {
 	const { sideBarHandler } = props
 	const { data: session } = useSession()
 
@@ -154,7 +156,7 @@ const SideBar = (props) => {
 					lg:w-1/6 lg:h-full lg:relative ${props.showSideBar ? "" : "hidden lg:block"} `}
 				>
 					<div>
-						<div className="lg:mt-1">
+						<div className="lg:my-2">
 							<div className="hidden lg:block">
 								<Image src={waveposImg} width={170} alt="wavepos" />
 							</div>
@@ -170,5 +172,3 @@ const SideBar = (props) => {
 		</>
 	)
 }
-
-export default SideBar

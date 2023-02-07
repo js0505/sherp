@@ -70,7 +70,7 @@ function ProductLogTable(props) {
 	return (
 		<>
 			{showModal && (
-				<Modal>
+				<Modal isOpen={showModal} onClose={modalHandler}>
 					<ProductLogItemDetail
 						modalHandler={modalHandler}
 						item={selectedItem}

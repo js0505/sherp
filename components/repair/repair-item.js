@@ -1,4 +1,5 @@
-import { useRef } from "react"
+import { useState, useRef } from "react"
+import Modal from "../ui/modal"
 import { useSession } from "next-auth/react"
 import { format } from "date-fns"
 import DetailListItem from "../ui/detail-list-item"
@@ -7,7 +8,45 @@ import {
 	useSetRepairReplyMutation,
 	useGetRepairItemByIdQuery,
 } from "../../query/repairApi"
-function RepairItemDetail({ repairId, modalHandler, state }) {
+
+export default function RepairCardItem({ item, state }) {
+	const [showModal, setShowModal] = useState(false)
+	function modalHandler() {
+		setShowModal(!showModal)
+	}
+
+	return (
+		<>
+			{showModal && (
+				<Modal isOpen={showModal} onClose={modalHandler}>
+					<RepairItemDetail
+						state={state}
+						modalHandler={modalHandler}
+						repairId={item._id}
+					/>
+				</Modal>
+			)}
+			<div
+				className=" cursor-pointer h-16 pt-3 lg:py-2 px-2 mb-3 border border-gray-transparent 
+				rounded-md shadow-md hover:bg-gray-300 hover:bg-opacity-10"
+				onClick={modalHandler}
+			>
+				<div className=" w-full text-lg lg:text-base flex font-medium">
+					<div className="mr-2">{item.storeName} </div>
+					<span className="mr-2">{item.product.name} </span>
+					<span className="mr-1">{item.qty}대</span>
+					{item.reply.length > 0 && <span> ({item.reply.length})</span>}
+				</div>
+				<div className="text-gray-300 text-xs lg:text-base  flex lg:justify-end w-full p-0 ">
+					<div className="mr-2">{item.user.name}</div>
+					<div>{item.date}</div>
+				</div>
+			</div>
+		</>
+	)
+}
+
+export function RepairItemDetail({ repairId, modalHandler, state }) {
 	// item : 상세 수리정보 데이터
 	// modalHandler : 모달 창 켜고 끄는 상태변경 함수
 	// state : 상태 값. 이 값으로 로그 창에서 다르게 핸들링 필요?
@@ -176,5 +215,3 @@ function RepairItemDetail({ repairId, modalHandler, state }) {
 		</div>
 	)
 }
-
-export default RepairItemDetail

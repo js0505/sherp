@@ -326,15 +326,24 @@ function StoreSearchResult({ searchedStore, year }) {
 		// 	console.log(checkIsAfter)
 		// }
 
+		// console.log(oldData.creditCount)
+
+		const oldDataCms = oldData.creditCount.find(
+			(item) => item.year === editItemYear && item.month === editItemMonth,
+		).cms
+
+		const oldDataCount = oldData.creditCount.find(
+			(item) => item.year === editItemYear && item.month === editItemMonth,
+		).count
+
 		const body = {
 			storeId: oldData._id,
 			year: editItemYear,
 			month: editItemMonth,
-			count: isCountEdit ? newValue : null,
-			cms: isCountEdit ? null : newValue,
+			count: isCountEdit ? newValue : oldDataCount,
+			cms: isCountEdit ? oldDataCms : newValue,
 			inOperation: oldData.inOperation,
 		}
-		// console.log(oldData)
 
 
 		setIsLoading(true)

@@ -10,15 +10,11 @@ handler.patch(async function (req, res) {
 
 	try {
 		const query = {
-			$set: count
-				? {
-						"creditCount.$.count": count,
-						"creditCount.$.inOperation": inOperation,
-				  }
-				: {
-						"creditCount.$.cms": cms,
-						"creditCount.$.inOperation": inOperation,
-				  },
+			$set: {
+				"creditCount.$.count": count,
+				"creditCount.$.inOperation": inOperation,
+				"creditCount.$.cms": cms,
+			},
 		}
 		const filterdStore = await Store.updateOne(
 			{

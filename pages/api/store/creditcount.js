@@ -43,7 +43,7 @@ handler.patch(async function (req, res) {
 
 			res.status(200).json({
 				success: true,
-				message: "새로운 연, 월 데이터 생성",
+				message: "새로운 연, 월 데이터 생성완료",
 			})
 		} else {
 			res.status(200).json({

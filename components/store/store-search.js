@@ -328,13 +328,15 @@ function StoreSearchResult({ searchedStore, year }) {
 
 		// console.log(oldData.creditCount)
 
-		const oldDataCms = oldData.creditCount.find(
-			(item) => item.year === editItemYear && item.month === editItemMonth,
-		).cms
+		const oldDataCms =
+			oldData.creditCount.find(
+				(item) => item.year === editItemYear && item.month === editItemMonth,
+			)?.cms || 0
 
-		const oldDataCount = oldData.creditCount.find(
-			(item) => item.year === editItemYear && item.month === editItemMonth,
-		).count
+		const oldDataCount =
+			oldData.creditCount.find(
+				(item) => item.year === editItemYear && item.month === editItemMonth,
+			)?.count || 0
 
 		const body = {
 			storeId: oldData._id,
@@ -344,7 +346,6 @@ function StoreSearchResult({ searchedStore, year }) {
 			cms: isCountEdit ? oldDataCms : newValue,
 			inOperation: oldData.inOperation,
 		}
-
 
 		setIsLoading(true)
 		const response = await updateStoreCreditCount(body)

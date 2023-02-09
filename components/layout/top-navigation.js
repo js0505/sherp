@@ -5,13 +5,13 @@ import waveposImg from "../../public/wavepos.png"
 
 const TopNavigation = (props) => {
 	return (
-		<header className="lg:hidden flex justify-between h-10 z-30  w-full text-white bg-primary px-2 pt-1 ">
+		<header className="lg:hidden flex justify-between h-14 z-30  w-full text-white bg-primary px-2 pt-1 ">
 			<Link href="/">
-				<a>
+				<a className="mt-2">
 					<Image src={waveposImg} width={170} alt="wavepos" />
 				</a>
 			</Link>
-			<div className="lg:hidden" onClick={props.sideBarHandler}>
+			<div className="lg:hidden " onClick={props.sideBarHandler}>
 				<NavBarIcon />
 			</div>
 		</header>

@@ -12,6 +12,7 @@ export function ToastMessageComponent() {
 				closeOnClick
 				rtl={false}
 				draggable
+				pauseOnFocusLoss={false}
 				theme="light"
 			/>
 		</>

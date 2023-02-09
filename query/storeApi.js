@@ -51,6 +51,15 @@ const storeApi = api.injectEndpoints({
 			},
 			invalidatesTags: ["StoreList"],
 		}),
+		deleteStore: builder.mutation({
+			query: ({ storeId }) => {
+				return {
+					url: `store?storeId=${storeId}`,
+					method: "DELETE",
+				}
+			},
+			invalidatesTags: ["StoreList"],
+		}),
 	}),
 })
 
@@ -61,4 +70,5 @@ export const {
 	useUpdateStoreCreditCountMutation,
 	useGetStoreByIdQuery,
 	useAddStoreAsMutation,
+	useDeleteStoreMutation,
 } = storeApi

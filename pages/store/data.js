@@ -111,6 +111,9 @@ const StoreDataManagePage = () => {
 			})
 	}
 
+	//
+	// 혹시 이거 필요하면 api 주소 변경해야 함.
+	//
 	// const onClosedStoreFixHandler = async () => {
 	// 	const year = prompt(
 	// 		"폐업 가맹점을 삭제 할 연도를 입력하세요.",

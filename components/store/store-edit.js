@@ -11,11 +11,13 @@ import {
 	useGetStoreByIdQuery,
 	useAddStoreAsMutation,
 	useUpdateStoreMutation,
+	useDeleteStoreMutation,
 } from "../../query/storeApi"
 import Dropdown from "react-dropdown"
 import Loader from "../ui/loader"
 import { useController, useForm } from "react-hook-form"
 import { StoreProductCheckbox } from "../ui/store-product-checkbox"
+import { toast } from "react-toastify"
 
 export default function EditStoreComponent({ storeId, modalHandler }) {
 	const today = new Date()
@@ -27,6 +29,7 @@ export default function EditStoreComponent({ storeId, modalHandler }) {
 
 	const [addStoreAs] = useAddStoreAsMutation()
 	const [updateStore] = useUpdateStoreMutation()
+	const [deleteStore] = useDeleteStoreMutation()
 	const { data: allUsersData } = useGetAllItemsByUrlQuery({ url: "user" })
 	const editedUsers = editItemforDropdownButton(allUsersData?.users)
 
@@ -63,7 +66,7 @@ export default function EditStoreComponent({ storeId, modalHandler }) {
 		defaultValue: "",
 	})
 
-	const [isEditable, setIsEditable] = useState(false)
+	// const [isEditable, setIsEditable] = useState(false)
 	const [closeDate, setCloseDate] = useState("")
 	const [users, setUsers] = useState([])
 	const [inOperation, setInOperation] = useState("")
@@ -98,20 +101,20 @@ export default function EditStoreComponent({ storeId, modalHandler }) {
 		}
 	}, [item])
 
-	const filteredBusinessNum = useCallback(
-		(plainNumber) => {
-			if (!isEditable) {
-				const parsedPlainNumber = String(plainNumber)
-				const filteredNumber = `${parsedPlainNumber.slice(
-					0,
-					3,
-				)}-${parsedPlainNumber.slice(3, 5)}-${parsedPlainNumber.slice(5, 10)}`
+	// const filteredBusinessNum = useCallback(
+	// 	(plainNumber) => {
+	// 		if (!isEditable) {
+	// 			const parsedPlainNumber = String(plainNumber)
+	// 			const filteredNumber = `${parsedPlainNumber.slice(
+	// 				0,
+	// 				3,
+	// 			)}-${parsedPlainNumber.slice(3, 5)}-${parsedPlainNumber.slice(5, 10)}`
 
-				return filteredNumber
-			}
-		},
-		[isEditable],
-	)
+	// 			return filteredNumber
+	// 		}
+	// 	},
+	// 	[isEditable],
+	// )
 
 	const editStoreSubmitHandler = async (formData) => {
 		if (String(formData.businessNum).length != 10) {
@@ -119,7 +122,7 @@ export default function EditStoreComponent({ storeId, modalHandler }) {
 			return
 		}
 
-		const accept = confirm("정보를 수정 하시겠습니까?")
+		const accept = confirm("변경된 정보를 저장 하시겠습니까?")
 
 		if (!accept) {
 			return
@@ -134,9 +137,10 @@ export default function EditStoreComponent({ storeId, modalHandler }) {
 
 		const { data: response } = await updateStore(body)
 		if (response.success) {
-			setIsEditable(!isEditable)
+			toast.success(response.message)
+		} else {
+			toast.error(response.message)
 		}
-		alert(response.message)
 	}
 
 	const asNoteSubmitHandler = async (e) => {
@@ -191,6 +195,27 @@ export default function EditStoreComponent({ storeId, modalHandler }) {
 		return
 	}
 
+	const onStoreDeleteHandler = async () => {
+		const accept = confirm(
+			"가맹점을 삭제하면 복구할 수 없습니다. 진행 하시겠습니까?",
+		)
+
+		if (!accept) {
+			return
+		}
+
+		const storeId = item._id
+
+		const response = await deleteStore({ storeId })
+
+		if (response.data.success) {
+			toast.success(response.data.message)
+			modalHandler()
+		} else {
+			alert(response.data.message)
+		}
+	}
+
 	return (
 		<div className="w-full container">
 			{isLoading && <Loader />}
@@ -213,7 +238,6 @@ export default function EditStoreComponent({ storeId, modalHandler }) {
 								id="contract-date"
 								type="date"
 								{...register("contractDate")}
-								disabled={!isEditable}
 							/>
 						</div>
 						<div className="col-span-2 lg:col-span-1">
@@ -222,7 +246,6 @@ export default function EditStoreComponent({ storeId, modalHandler }) {
 								arrowClosed={<DownArrow />}
 								arrowOpen={<DownArrow />}
 								options={users}
-								disabled={!isEditable}
 								onChange={(data) => user.onChange(data.value)}
 								value={user.value}
 							/>
@@ -235,7 +258,6 @@ export default function EditStoreComponent({ storeId, modalHandler }) {
 								options={vanItems}
 								onChange={(data) => van.onChange(data.value)}
 								value={van.value}
-								disabled={!isEditable}
 							/>
 						</div>
 						<div className="col-span-2 lg:col-span-1">
@@ -244,7 +266,6 @@ export default function EditStoreComponent({ storeId, modalHandler }) {
 								arrowClosed={<DownArrow />}
 								arrowOpen={<DownArrow />}
 								options={inOperationItems}
-								disabled={!isEditable}
 								onChange={(item) => onCloseStateHandler(item)}
 								value={inOperation}
 							/>
@@ -255,7 +276,6 @@ export default function EditStoreComponent({ storeId, modalHandler }) {
 								className="input-text"
 								{...register("storeName")}
 								required
-								disabled={!isEditable}
 							/>
 						</div>
 						<div className="col-span-3 lg:col-span-2">
@@ -265,7 +285,6 @@ export default function EditStoreComponent({ storeId, modalHandler }) {
 								maxLength={10}
 								{...register("businessNum")}
 								required
-								disabled={!isEditable}
 							/>
 						</div>
 						<div className="col-span-2 lg:col-span-1">
@@ -274,73 +293,41 @@ export default function EditStoreComponent({ storeId, modalHandler }) {
 								arrowClosed={<DownArrow />}
 								arrowOpen={<DownArrow />}
 								options={cityItems}
-								disabled={!isEditable}
 								onChange={(data) => city.onChange(data.value)}
 								value={city.value}
 							/>
 						</div>
 						<div className="col-span-5 lg:col-span-4">
 							<label className="input-label">주소</label>
-							<input
-								className="input-text"
-								{...register("address")}
-								required
-								disabled={!isEditable}
-							/>
+							<input className="input-text" {...register("address")} required />
 						</div>
 
 						<div className="col-span-2 lg:col-span-2">
 							<label className="input-label">대표자명</label>
-							<input
-								className="input-text"
-								{...register("owner")}
-								required
-								disabled={!isEditable}
-							/>
+							<input className="input-text" {...register("owner")} required />
 						</div>
 						<div className="col-span-3 lg:col-span-2">
 							<label className="input-label">연락처</label>
-							<input
-								className="input-text"
-								{...register("contact")}
-								disabled={!isEditable}
-							/>
+							<input className="input-text" {...register("contact")} />
 						</div>
 						<div className="col-span-5 lg:col-span-1">
 							<label className="input-label">CMS</label>
-							<input
-								className="input-text"
-								{...register("cms")}
-								required
-								disabled={!isEditable}
-							/>
+							<input className="input-text" {...register("cms")} required />
 						</div>
 						<div className="col-span-5">
 							<div className="input-label">장비</div>
 							<div className="flex">
-								<StoreProductCheckbox
-									control={control}
-									name="product"
-									disabled={!isEditable}
-								/>
+								<StoreProductCheckbox control={control} name="product" />
 							</div>
 						</div>
 
 						<div className="col-span-2">
 							<label className="input-label">VAN Code</label>
-							<input
-								className="input-text"
-								{...register("vanCode")}
-								disabled={!isEditable}
-							/>
+							<input className="input-text" {...register("vanCode")} />
 						</div>
 						<div className="col-span-3">
 							<label className="input-label">VAN ID</label>
-							<input
-								className="input-text"
-								{...register("vanId")}
-								disabled={!isEditable}
-							/>
+							<input className="input-text" {...register("vanId")} />
 						</div>
 					</div>
 					<div className="w-full  p-3 grid grid-cols-5 gap-3">
@@ -349,7 +336,6 @@ export default function EditStoreComponent({ storeId, modalHandler }) {
 							<textarea
 								rows={6}
 								{...register("note")}
-								disabled={!isEditable}
 								className="input-textarea"
 							></textarea>
 						</div>
@@ -406,52 +392,35 @@ export default function EditStoreComponent({ storeId, modalHandler }) {
 												focus:ring-primary focus:outline-none mr-1"
 									/>
 									<button
-										className={`input-button mt-1 h-9 ${
-											isEditable ? "hidden" : "block"
-										}  `}
+										className="input-button mt-1 w-32 h-9"
 										type="button"
 										onClick={asNoteSubmitHandler}
 									>
-										등록
+										내역등록
 									</button>
 								</div>
 							</div>
 							<div className="col-span-5 flex items-end h-fit">
 								<div className="w-full mr-1 mb-2">
-									<button
-										className={`input-button w-full ${
-											isEditable ? "block" : "hidden"
-										} `}
-										type="submit"
-									>
-										수정완료
+									<button className="input-button w-full" type="submit">
+										저장
 									</button>
+								</div>
+								<div className="w-full mb-2">
 									<button
-										className={`input-button w-full ${
-											isEditable ? "hidden" : "block"
-										}  `}
+										className="input-button w-full"
 										type="button"
-										onClick={() => setIsEditable(!isEditable)}
+										onClick={onStoreDeleteHandler}
 									>
-										정보수정
+										가맹점 삭제
 									</button>
 								</div>
 								<div className="w-full ml-1 mb-2">
 									<button
-										className={`input-button w-full ${
-											isEditable ? "hidden" : "block"
-										}`}
+										className="input-button w-full"
 										onClick={modalHandler}
 									>
-										확인
-									</button>
-									<button
-										className={`input-button w-full ${
-											isEditable ? "block" : "hidden"
-										}`}
-										onClick={() => setIsEditable(!isEditable)}
-									>
-										취소
+										닫기
 									</button>
 								</div>
 							</div>

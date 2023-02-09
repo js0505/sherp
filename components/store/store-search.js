@@ -104,20 +104,6 @@ export default function StoreSearchComponent() {
 						/>
 						<div className="col-span-6">
 							<div className="flex lg:justify-end">
-								{/* <button
-									className="input-button mr-3 lg:w-[8rem] "
-									type="button"
-									onClick={() => setYear("2022")}
-								>
-									2022
-								</button>
-								<button
-									className="input-button mr-3 lg:w-[8rem] "
-									type="button"
-									onClick={() => setYear("2023")}
-								>
-									2023
-								</button> */}
 								<button
 									className="input-button mr-3 lg:w-[8rem] "
 									type="submit"
@@ -303,6 +289,7 @@ function StoreSearchResult({ searchedStore, year }) {
 
 	// 셀에서 직접 거래건수, cms 수정 시에 동작
 	const cellEditRequest = async (event) => {
+		setIsLoading(true)
 		// 수정 대상 데이터
 		const oldData = event.data
 
@@ -347,15 +334,14 @@ function StoreSearchResult({ searchedStore, year }) {
 			inOperation: oldData.inOperation,
 		}
 
-		setIsLoading(true)
 		const response = await updateStoreCreditCount(body)
 
-		setIsLoading(false)
 		if (response.data.success) {
 			toast.success(response.data.message)
 		} else {
 			toast.error(response.data.message)
 		}
+		setIsLoading(false)
 	}
 
 	const getRowId = (params) => {
@@ -373,6 +359,7 @@ function StoreSearchResult({ searchedStore, year }) {
 					/>
 				</Modal>
 			)}
+			{isLoading && <Loader />}
 			<GridTable
 				ref={gridRef}
 				columnDefs={columns}

@@ -246,46 +246,64 @@ handler.patch(async function (req, res) {
 	}
 })
 
-/**
- * 현재 연도를 제외하고 쿼리로 입력된 연도의 폐업 가맹점 삭제 및 이동
- */
-
 handler.delete(async function (req, res) {
-	await dbConnect()
+	const { storeId } = req.query
 
-	const { year } = req.query
+	try {
+		const deleteStore = await Store.findByIdAndDelete(storeId)
+		console.log(deleteStore)
 
-	const today = new Date()
-	const todayYear = format(today, "yyyy")
-
-	if (year === todayYear) {
-		res.status(200).json({
-			success: false,
-			message: "현재 연도의 데이터를 수정 할 수 없습니다.",
-		})
-		return
+		res
+			.status(200)
+			.json({ message: "가맹점 삭제 완료", success: true, deleteStore })
+	} catch (e) {
+		console.log(e)
+		res
+			.status(500)
+			.json({ message: "가맹점 정보 삭제 중 오류", error: e, success: false })
 	}
-
-	const filterdClosedStore = await Store.find({})
-		.and([
-			{ closeDate: { $regex: year, $options: "i" } },
-			{ inOperation: { $regex: "폐업" } },
-		])
-		.exec()
-
-	let filterdClosedStoreIds = []
-	filterdClosedStore.forEach((item) => filterdClosedStoreIds.push(item._id))
-
-	const moveToClosedStoreItems = await ClosedStore.insertMany(
-		filterdClosedStore,
-	)
-
-	await Store.deleteMany({ _id: { $in: filterdClosedStoreIds } })
-
-	res.status(200).json({
-		success: true,
-		message: `${moveToClosedStoreItems.length}개 가맹점 처리완료.`,
-	})
 })
+
+// /**
+//  * 현재 연도를 제외하고 쿼리로 입력된 연도의 폐업 가맹점 삭제 및 이동
+//  */
+
+// handler.delete(async function (req, res) {
+// 	await dbConnect()
+
+// 	const { year } = req.query
+
+// 	const today = new Date()
+// 	const todayYear = format(today, "yyyy")
+
+// 	if (year === todayYear) {
+// 		res.status(200).json({
+// 			success: false,
+// 			message: "현재 연도의 데이터를 수정 할 수 없습니다.",
+// 		})
+// 		return
+// 	}
+
+// 	const filterdClosedStore = await Store.find({})
+// 		.and([
+// 			{ closeDate: { $regex: year, $options: "i" } },
+// 			{ inOperation: { $regex: "폐업" } },
+// 		])
+// 		.exec()
+
+// 	let filterdClosedStoreIds = []
+// 	filterdClosedStore.forEach((item) => filterdClosedStoreIds.push(item._id))
+
+// 	const moveToClosedStoreItems = await ClosedStore.insertMany(
+// 		filterdClosedStore,
+// 	)
+
+// 	await Store.deleteMany({ _id: { $in: filterdClosedStoreIds } })
+
+// 	res.status(200).json({
+// 		success: true,
+// 		message: `${moveToClosedStoreItems.length}개 가맹점 처리완료.`,
+// 	})
+// })
 
 export default handler

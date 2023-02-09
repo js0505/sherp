@@ -56,11 +56,7 @@ export default function EditStoreComponent({ storeId, modalHandler }) {
 		control,
 		defaultValue: "",
 	})
-	const { field: inOperation } = useController({
-		name: "inOperation",
-		control,
-		defaultValue: "",
-	})
+
 	const { field: van } = useController({
 		name: "van",
 		control,
@@ -70,6 +66,7 @@ export default function EditStoreComponent({ storeId, modalHandler }) {
 	const [isEditable, setIsEditable] = useState(false)
 	const [closeDate, setCloseDate] = useState("")
 	const [users, setUsers] = useState([])
+	const [inOperation, setInOperation] = useState("")
 
 	const [asNote, setAsNote] = useState([])
 	const [asNoteDate, setAsNoteDate] = useState("")
@@ -79,7 +76,7 @@ export default function EditStoreComponent({ storeId, modalHandler }) {
 		if (item) {
 			setAsNote(item.asNote)
 			setAsNoteDate(formattedToday)
-
+			setInOperation(item.inOperation)
 			setUsers(editedUsers)
 
 			reset({
@@ -97,7 +94,6 @@ export default function EditStoreComponent({ storeId, modalHandler }) {
 				city: item.city,
 				user: item.user,
 				product: item.product,
-				inOperation: item.inOperation,
 			})
 		}
 	}, [item])
@@ -132,6 +128,7 @@ export default function EditStoreComponent({ storeId, modalHandler }) {
 		const body = {
 			_id: item._id,
 			closeDate,
+			inOperation,
 			...formData,
 		}
 
@@ -248,8 +245,8 @@ export default function EditStoreComponent({ storeId, modalHandler }) {
 								arrowOpen={<DownArrow />}
 								options={inOperationItems}
 								disabled={!isEditable}
-								onChange={(data) => inOperation.onChange(data.value)}
-								value={inOperation.value}
+								onChange={(item) => onCloseStateHandler(item)}
+								value={inOperation}
 							/>
 						</div>
 						<div className="col-span-5 lg:col-span-3">

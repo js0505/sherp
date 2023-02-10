@@ -1,7 +1,5 @@
-import { useCallback, useEffect, useState } from "react"
-import { useSession } from "next-auth/react"
+import { useEffect, useState } from "react"
 import { cityItems, inOperationItems } from "../../lib/variables/variables"
-
 import { vanItems } from "../../lib/variables/variables"
 import { DownArrow } from "../ui/icons/icons"
 import { format } from "date-fns"
@@ -9,7 +7,6 @@ import { editItemforDropdownButton } from "../../lib/util/dropdown-util"
 import { useGetAllItemsByUrlQuery } from "../../query/api"
 import {
 	useGetStoreByIdQuery,
-	useAddStoreAsMutation,
 	useUpdateStoreMutation,
 	useDeleteStoreMutation,
 } from "../../query/storeApi"
@@ -22,18 +19,16 @@ import { toast } from "react-toastify"
 export default function EditStoreComponent({ storeId, modalHandler }) {
 	const today = new Date()
 	const formattedToday = format(today, "yyyy-MM-dd")
-	const { data: session } = useSession()
 
 	const { data, isLoading } = useGetStoreByIdQuery({ storeId })
 	const item = data?.store
 
-	const [addStoreAs] = useAddStoreAsMutation()
 	const [updateStore] = useUpdateStoreMutation()
 	const [deleteStore] = useDeleteStoreMutation()
 	const { data: allUsersData } = useGetAllItemsByUrlQuery({ url: "user" })
 	const editedUsers = editItemforDropdownButton(allUsersData?.users)
 
-	const { register, reset, control, watch, handleSubmit } = useForm({
+	const { register, reset, control, handleSubmit } = useForm({
 		mode: "onSubmit",
 		defaultValues: {
 			contractDate: "",
@@ -48,7 +43,7 @@ export default function EditStoreComponent({ storeId, modalHandler }) {
 			cms: "",
 		},
 	})
-	// console.log(watch())
+
 	const { field: city } = useController({
 		name: "city",
 		control,
@@ -66,19 +61,15 @@ export default function EditStoreComponent({ storeId, modalHandler }) {
 		defaultValue: "",
 	})
 
-	// const [isEditable, setIsEditable] = useState(false)
 	const [closeDate, setCloseDate] = useState("")
 	const [users, setUsers] = useState([])
 	const [inOperation, setInOperation] = useState("")
-
 	const [asNote, setAsNote] = useState([])
-	const [asNoteDate, setAsNoteDate] = useState("")
-	const [asNoteValue, setAsNoteValue] = useState("")
+	const [isStoreEditLoading, setIsStoreEditLoading] = useState(false)
 
 	useEffect(() => {
 		if (item) {
 			setAsNote(item.asNote)
-			setAsNoteDate(formattedToday)
 			setInOperation(item.inOperation)
 			setUsers(editedUsers)
 
@@ -101,22 +92,8 @@ export default function EditStoreComponent({ storeId, modalHandler }) {
 		}
 	}, [item])
 
-	// const filteredBusinessNum = useCallback(
-	// 	(plainNumber) => {
-	// 		if (!isEditable) {
-	// 			const parsedPlainNumber = String(plainNumber)
-	// 			const filteredNumber = `${parsedPlainNumber.slice(
-	// 				0,
-	// 				3,
-	// 			)}-${parsedPlainNumber.slice(3, 5)}-${parsedPlainNumber.slice(5, 10)}`
-
-	// 			return filteredNumber
-	// 		}
-	// 	},
-	// 	[isEditable],
-	// )
-
 	const editStoreSubmitHandler = async (formData) => {
+		setIsStoreEditLoading(true)
 		if (String(formData.businessNum).length != 10) {
 			alert("사업자번호는 10자리 입니다.")
 			return
@@ -136,34 +113,13 @@ export default function EditStoreComponent({ storeId, modalHandler }) {
 		}
 
 		const { data: response } = await updateStore(body)
+
 		if (response.success) {
 			toast.success(response.message)
 		} else {
 			toast.error(response.message)
 		}
-	}
-
-	const asNoteSubmitHandler = async (e) => {
-		const accept = confirm("수리내역을 저장 하시겠습니까?")
-		if (!accept) {
-			return
-		} else {
-			e.preventDefault()
-
-			const body = {
-				storeId: item._id,
-				writerName: session.user.name,
-				date: asNoteDate,
-				note: asNoteValue,
-			}
-			const { data: response } = await addStoreAs(body)
-			if (response.success) {
-				alert(response.message)
-				setAsNoteValue("")
-			} else {
-				alert(response.message)
-			}
-		}
+		setIsStoreEditLoading(false)
 	}
 
 	const onCloseStateHandler = (selectedItem) => {
@@ -219,6 +175,7 @@ export default function EditStoreComponent({ storeId, modalHandler }) {
 	return (
 		<div className="w-full container">
 			{isLoading && <Loader />}
+			{isStoreEditLoading && <Loader />}
 			{item && (
 				<form
 					onSubmit={handleSubmit(editStoreSubmitHandler)}

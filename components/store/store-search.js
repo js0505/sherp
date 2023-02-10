@@ -135,8 +135,9 @@ export default function StoreSearchComponent() {
 
 				{result.data && (
 					<StoreSearchResult
+						isDataLoading={result.isLoading}
 						year={year}
-						searchedStore={result.data.filteredStore}
+						rowData={result.data.filteredStore}
 					/>
 				)}
 			</section>
@@ -144,8 +145,7 @@ export default function StoreSearchComponent() {
 	)
 }
 
-function StoreSearchResult({ searchedStore, year }) {
-	const [rowData, setRowData] = useState()
+function StoreSearchResult({ rowData, year, isDataLoading }) {
 	const [selectedStoreId, setSelectedStoreId] = useState("")
 	const [filterYear, setFilterYear] = useState()
 	const [showModal, setShowModal] = useState(false)
@@ -159,10 +159,10 @@ function StoreSearchResult({ searchedStore, year }) {
 
 	useEffect(() => {
 		setFilterYear(year)
-		setRowData(searchedStore)
-	}, [searchedStore, year])
+	}, [year])
 
 	let countColumnData = []
+
 	for (let i = 1; i < 13; i++) {
 		const monthNum = i < 10 ? `0${i}` : `${i}`
 		const countItem = {
@@ -284,13 +284,14 @@ function StoreSearchResult({ searchedStore, year }) {
 	]
 
 	const onCellClick = (params) => {
-		if (
-			params.column.colId === "storeName" ||
-			params.column.colId === "businessNum"
-		) {
+		if (params.column.colId === "storeName") {
 			setSelectedStoreId(() => params.data._id)
 
 			setShowModal(true)
+		}
+		if (params.column.colId === "businessNum") {
+			navigator.clipboard.writeText(params.data.businessNum)
+			toast.success("클립보드에 사업자번호가 복사 되었습니다.")
 		}
 	}
 
@@ -366,6 +367,7 @@ function StoreSearchResult({ searchedStore, year }) {
 					/>
 				</Modal>
 			)}
+			{isDataLoading && <Loader />}
 			{isLoading && <Loader />}
 			<GridTable
 				ref={gridRef}

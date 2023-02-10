@@ -57,87 +57,90 @@ export default function StoreSearchComponent() {
 	}
 
 	return (
-		<section className="lg:container lg:w-5/6 w-full flex flex-col">
-			<div className="">
-				<form className="flex justify-center" onSubmit={submitHandler}>
-					<div className=" lg:w-2/3 grid  grid-cols-6 gap-3">
-						<input
-							className="input-text  col-span-3 w-full mt-0 text-lg"
-							type="text"
-							ref={businessNumInputRef}
-							placeholder="사업자번호"
-							maxLength={10}
-							onChange={(e) => e.target.value.replace(/[^0-9]/g, "")}
-						/>
-						<input
-							className="input-text  col-span-3 w-full mt-0 text-lg"
-							ref={storeNameInputRef}
-							placeholder="가맹점명"
-						/>
+		<>
+			{result.isLoading && <Loader />}
+			<section className="lg:container lg:w-5/6 w-full flex flex-col">
+				<div className="">
+					<form className="flex justify-center" onSubmit={submitHandler}>
+						<div className=" lg:w-2/3 grid  grid-cols-6 gap-3">
+							<input
+								className="input-text  col-span-3 w-full mt-0 text-lg"
+								type="text"
+								ref={businessNumInputRef}
+								placeholder="사업자번호"
+								maxLength={10}
+								onChange={(e) => e.target.value.replace(/[^0-9]/g, "")}
+							/>
+							<input
+								className="input-text  col-span-3 w-full mt-0 text-lg"
+								ref={storeNameInputRef}
+								placeholder="가맹점명"
+							/>
 
-						<Dropdown
-							className=" col-span-2"
-							placeholder="VAN"
-							arrowClosed={<DownArrow />}
-							arrowOpen={<DownArrow />}
-							options={vanItems.slice(1, vanItems.length)}
-							onChange={setVan}
-							value={van}
-						/>
-						<Dropdown
-							className=" col-span-2"
-							placeholder="도시"
-							arrowClosed={<DownArrow />}
-							arrowOpen={<DownArrow />}
-							options={cityItems}
-							onChange={setCity}
-							value={city}
-						/>
-						<Dropdown
-							className=" col-span-2"
-							placeholder="담당자"
-							arrowClosed={<DownArrow />}
-							arrowOpen={<DownArrow />}
-							options={dropdownUsers}
-							onChange={setUser}
-							value={user}
-						/>
-						<div className="col-span-6">
-							<div className="flex lg:justify-end">
-								<button
-									className="input-button mr-3 lg:w-[8rem] "
-									type="submit"
-								>
-									검색
-								</button>
-								<button
-									className="input-button lg:w-[8rem] "
-									type="button"
-									onClick={() => {
-										businessNumInputRef.current.value = ""
-										storeNameInputRef.current.value = ""
-										setVan("")
-										setCity("")
-										setUser("")
-									}}
-								>
-									초기화
-								</button>
+							<Dropdown
+								className=" col-span-2"
+								placeholder="VAN"
+								arrowClosed={<DownArrow />}
+								arrowOpen={<DownArrow />}
+								options={vanItems.slice(1, vanItems.length)}
+								onChange={setVan}
+								value={van}
+							/>
+							<Dropdown
+								className=" col-span-2"
+								placeholder="도시"
+								arrowClosed={<DownArrow />}
+								arrowOpen={<DownArrow />}
+								options={cityItems}
+								onChange={setCity}
+								value={city}
+							/>
+							<Dropdown
+								className=" col-span-2"
+								placeholder="담당자"
+								arrowClosed={<DownArrow />}
+								arrowOpen={<DownArrow />}
+								options={dropdownUsers}
+								onChange={setUser}
+								value={user}
+							/>
+							<div className="col-span-6">
+								<div className="flex lg:justify-end">
+									<button
+										className="input-button mr-3 lg:w-[8rem] "
+										type="submit"
+									>
+										검색
+									</button>
+									<button
+										className="input-button lg:w-[8rem] "
+										type="button"
+										onClick={() => {
+											businessNumInputRef.current.value = ""
+											storeNameInputRef.current.value = ""
+											setVan("")
+											setCity("")
+											setUser("")
+										}}
+									>
+										초기화
+									</button>
+								</div>
 							</div>
 						</div>
-					</div>
-				</form>
-			</div>
+					</form>
+				</div>
 
-			{result.isLoading && <Loader />}
+				{result.isLoading && <Loader />}
 
-			{result.data && (
-				<StoreSearchResult
-					year={year}
-					searchedStore={result.data.filteredStore}
-				/>
-			)}
-		</section>
+				{result.data && (
+					<StoreSearchResult
+						year={year}
+						searchedStore={result.data.filteredStore}
+					/>
+				)}
+			</section>
+		</>
 	)
 }
 
@@ -265,7 +268,11 @@ function StoreSearchResult({ searchedStore, year }) {
 				return (
 					<span
 						className={`${
-							props.value === "폐업" ? "text-red" : "text-primary"
+							props.value === "폐업"
+								? "text-red"
+								: props.value === "영업중"
+								? "text-green"
+								: "text-primary"
 						} font-semibold`}
 					>
 						{props.value}

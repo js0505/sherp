@@ -330,99 +330,58 @@ export default function EditStoreComponent({ storeId, modalHandler }) {
 							<input className="input-text" {...register("vanId")} />
 						</div>
 					</div>
-					<div className="w-full  p-3 grid grid-cols-5 gap-3">
-						<div className="col-span-5">
+					<div className="w-full p-3  flex flex-col justify-between ">
+						<div className="col-span-5 h-full">
 							<label className="input-label">비고</label>
 							<textarea
 								rows={6}
 								{...register("note")}
-								className="input-textarea"
+								className="input-textarea h-full"
 							></textarea>
 						</div>
-						<div className="col-span-5 flex flex-col justify-between ">
-							<div>
-								<label className="input-label  border-b-2 border-gray-transparent">
-									수리내역
-								</label>
-
-								<div
-									className={`mt-3 mb-3   border-gray-300 rounded-md p-2 overflow-auto  max-h-60
-									${asNote.length < 1 ? "" : "border"}`}
-								>
-									{asNote &&
-										asNote
-											.slice()
-											.reverse()
-											.map((item, index) => (
-												<div
-													key={index}
-													className="flex-col justify-between mb-2"
-												>
-													<div className="mb-1">
-														<span className=" text-sm ">
-															{item.writerName}{" "}
-														</span>
-														<span className="text-sm text-gray-300">
-															{item.date}
-														</span>
-													</div>
-													<div className="pl-2">{item.note}</div>
+						<div className="col-span-5 flex flex-col ">
+							<div
+								className={`mt-3 mb-3   border-gray-300 rounded-md p-2 overflow-auto `}
+							>
+								{asNote &&
+									asNote
+										.slice()
+										.reverse()
+										.map((item, index) => (
+											<div
+												key={index}
+												className="flex-col justify-between mb-2"
+											>
+												<div className="mb-1">
+													<span className=" text-sm ">{item.writerName} </span>
+													<span className="text-sm text-gray-300">
+														{item.date}
+													</span>
 												</div>
-											))}
-								</div>
+												<div className="pl-2">{item.note}</div>
+											</div>
+										))}
 							</div>
-							<div>
-								<div
-									className="flex flex-col lg:flex-row"
-									onSubmit={asNoteSubmitHandler}
+						</div>
+						<div className="col-span-5 flex items-end h-fit">
+							<div className="w-full mr-1 mb-2">
+								<button className="input-button w-full" type="submit">
+									저장
+								</button>
+							</div>
+							<div className={`w-full mb-2 hidden lg:block`}>
+								<button
+									className="input-button w-full"
+									type="button"
+									onClick={onStoreDeleteHandler}
 								>
-									<input
-										className="input-text h-9 w-full lg:w-1/3 mr-2"
-										id="asNote-date"
-										type="date"
-										value={asNoteDate}
-										onChange={(event) => setAsNoteDate(event.target.value)}
-									/>
-									<input
-										type="text"
-										value={asNoteValue}
-										onChange={(event) => setAsNoteValue(event.target.value)}
-										className="px-4 h-9 my-1 block w-full  rounded-md border border-gray-300 
-												shadow-lg lg:text-sm focus:border-primary focus:ring-2  
-												focus:ring-primary focus:outline-none mr-1"
-									/>
-									<button
-										className="input-button mt-1 w-32 h-9"
-										type="button"
-										onClick={asNoteSubmitHandler}
-									>
-										내역등록
-									</button>
-								</div>
+									가맹점 삭제
+								</button>
 							</div>
-							<div className="col-span-5 flex items-end h-fit">
-								<div className="w-full mr-1 mb-2">
-									<button className="input-button w-full" type="submit">
-										저장
-									</button>
-								</div>
-								<div className="w-full mb-2">
-									<button
-										className="input-button w-full"
-										type="button"
-										onClick={onStoreDeleteHandler}
-									>
-										가맹점 삭제
-									</button>
-								</div>
-								<div className="w-full ml-1 mb-2">
-									<button
-										className="input-button w-full"
-										onClick={modalHandler}
-									>
-										닫기
-									</button>
-								</div>
+							<div className="w-full ml-1 mb-2">
+								<button className="input-button w-full" onClick={modalHandler}>
+									닫기
+								</button>
 							</div>
 						</div>
 					</div>

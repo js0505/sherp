@@ -100,8 +100,8 @@ export default function EditStoreComponent({ storeId, modalHandler }) {
 		}
 
 		const accept = confirm("변경된 정보를 저장 하시겠습니까?")
-
 		if (!accept) {
+			setIsStoreEditLoading(false)
 			return
 		}
 

@@ -32,7 +32,6 @@ export default function StoreSearchComponent() {
 
 	const submitHandler = async (e) => {
 		e.preventDefault()
-
 		const businessNum = businessNumInputRef.current.value
 		const storeName = storeNameInputRef.current.value
 
@@ -283,14 +282,30 @@ function StoreSearchResult({ rowData, year, isDataLoading }) {
 		...countColumnData,
 	]
 
-	const onCellClick = (params) => {
+	const onCellClick = async (params) => {
 		if (params.column.colId === "storeName") {
 			setSelectedStoreId(() => params.data._id)
-
 			setShowModal(true)
 		}
 		if (params.column.colId === "businessNum") {
-			navigator.clipboard.writeText(params.data.businessNum)
+			if (navigator.clipboard) {
+				await navigator.clipboard.writeText(params.data.businessNum)
+				toast.success("클립보드에 사업자번호가 복사 되었습니다.")
+				return
+			}
+
+			const textArea = document.createElement("textarea")
+			textArea.value = params.data.businessNum
+			document.body.appendChild(textArea)
+			textArea.select()
+			textArea.setSelectionRange(0, 99999)
+			try {
+				document.execCommand("copy")
+			} catch (err) {
+				console.error("복사 실패", err)
+			}
+			textArea.setSelectionRange(0, 0)
+			document.body.removeChild(textArea)
 			toast.success("클립보드에 사업자번호가 복사 되었습니다.")
 		}
 	}
@@ -369,6 +384,7 @@ function StoreSearchResult({ rowData, year, isDataLoading }) {
 			)}
 			{isDataLoading && <Loader />}
 			{isLoading && <Loader />}
+
 			<GridTable
 				ref={gridRef}
 				columnDefs={columns}

@@ -4,6 +4,7 @@ import Store from "../../../models/Store"
 import { Workbook } from "exceljs"
 import multer from "multer"
 import fs from "fs"
+import path from "path"
 
 const handler = nextConnect()
 
@@ -37,7 +38,11 @@ export const config = {
 
 let storage = multer.diskStorage({
 	destination: function (req, file, cb) {
-		cb(null, "public/upload")
+		const dir = path.resolve
+		if (!fs.existsSync(dir)) {
+			fs.mkdirSync(dir)
+		}
+		cb(null, dir)
 	},
 	filename: function (req, file, cb) {
 		cb(null, "countTest.xlsx")
@@ -64,8 +69,6 @@ let uploadFile = upload.single("file")
  *
  */
 handler.use(uploadFile).post(async function (req, res) {
-
-//todo: public/upload 폴더 없으면 만드는 로직 생성
 
 	try {
 		await dbConnect()

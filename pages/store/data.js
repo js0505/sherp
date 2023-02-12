@@ -170,7 +170,6 @@ const StoreDataManagePage = () => {
 						ref={uploadFileInputRef}
 						type="file"
 						onChange={onChangeFileHandler}
-						ㅁ
 					/>
 					<button
 						className="input-button w-full mt-10"

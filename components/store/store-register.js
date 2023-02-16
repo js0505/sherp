@@ -1,10 +1,9 @@
 import { format } from "date-fns"
-import { useRef, useState } from "react"
+import { useState } from "react"
 import {
 	cityItems,
 	vanItems,
 	isBackupItems,
-	storeProductsInit,
 } from "../../lib/variables/variables"
 import { editItemforDropdownButton } from "../../lib/util/dropdown-util"
 import Dropdown from "react-dropdown"
@@ -12,7 +11,7 @@ import { DownArrow } from "../ui/icons/icons"
 import { useAddStoreMutation } from "../../query/storeApi"
 import { useGetAllItemsByUrlQuery } from "../../query/api"
 import Loader from "../ui/loader"
-import { useForm } from "react-hook-form"
+import { useController, useForm } from "react-hook-form"
 import { toast } from "react-toastify"
 import { StoreProductCheckbox } from "../ui/store-product-checkbox"
 function StoreRegisterForm() {
@@ -36,11 +35,18 @@ function StoreRegisterForm() {
 			cms: 0,
 			contractDate: formattedToday,
 			note: "",
+			product: {
+				pos: false,
+				kiosk: false,
+				printer: false,
+				cat: false,
+				router: false,
+			},
 		},
 	})
-	// console.log(watch("products"))
 
-	// const [product, setProduct] = useState(storeProductsInit)
+	// const { field } = useController({ control, name: "user", defaultValue: "" })
+
 	const [isBackup, setIsBackup] = useState(isBackupItems[0])
 	const [selectedVANName, setSelectedVANName] = useState(vanItems[0])
 	const [selectedCity, setSelectedCity] = useState(cityItems[0])
@@ -54,7 +60,6 @@ function StoreRegisterForm() {
 			van: selectedVANName.value,
 			city: selectedCity.value,
 			isBackup: isBackup.value,
-			product,
 			...formData,
 		}
 
@@ -75,7 +80,7 @@ function StoreRegisterForm() {
 		toast.success(response.message)
 
 		reset()
-		setProduct(...storeProductsInit)
+
 		setIsBackup(isBackupItems[0])
 		setSelectedVANName(vanItems[0])
 		setSelectedCity(cityItems[0])
@@ -140,6 +145,13 @@ function StoreRegisterForm() {
 					<label className="input-label" htmlFor="user">
 						담당자
 					</label>
+					{/* <Dropdown
+						arrowClosed={<DownArrow />}
+						arrowOpen={<DownArrow />}
+						options={editedUsers}
+						value={field.value}
+						onChange={(data) => field.onChange(data.label)}
+					/> */}
 					<Dropdown
 						arrowClosed={<DownArrow />}
 						arrowOpen={<DownArrow />}
@@ -241,7 +253,7 @@ function StoreRegisterForm() {
 				<div className="col-span-4">
 					<div className="input-label">장비</div>
 					<div className="flex justify-between">
-						<StoreProductCheckbox control={control} name="products" />
+						<StoreProductCheckbox control={control} name="product" />
 					</div>
 				</div>
 

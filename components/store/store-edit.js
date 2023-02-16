@@ -41,6 +41,13 @@ export default function EditStoreComponent({ storeId, modalHandler }) {
 			vanId: "",
 			vanCode: "",
 			cms: "",
+			product: {
+				pos: false,
+				kiosk: false,
+				printer: false,
+				cat: false,
+				router: false,
+			},
 		},
 	})
 

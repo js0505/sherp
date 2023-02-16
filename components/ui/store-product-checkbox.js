@@ -1,12 +1,10 @@
 import { useController } from "react-hook-form"
-import { storeProductsInit } from "../../lib/variables/variables"
 export const StoreProductCheckbox = ({ control, name, disabled = false }) => {
 	const optionIds = ["pos", "kiosk", "printer", "cat", "router"]
 
 	const { field } = useController({
 		control,
 		name,
-		defaultValue: storeProductsInit,
 	})
 
 	const buttonTitleSwitch = (id) => {

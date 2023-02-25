@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { useGetAllItemsByUrlQuery } from "../../query/api"
 import {
 	useLazyGetFilteredStoresQuery,
@@ -210,72 +210,69 @@ function StoreSearchResult({ rowData, year, isDataLoading }) {
 		countColumnData.push(cmsItem)
 	}
 
-	const columns = useMemo(() => {
-		return [
-			{
-				headerName: "가맹점명",
-				field: "storeName",
-				pinned: true,
-				minWidth: 100,
-				maxWidth: 250,
-			},
-			{
-				headerName: "사업자번호",
-				field: "businessNum",
-				minWidth: 200,
-				valueGetter: (params) => {
-					const plainNumber = params.data.businessNum
-					const parsedPlainNumber = String(plainNumber)
-					const filteredNumber = `${parsedPlainNumber.slice(
-						0,
-						3,
-					)}-${parsedPlainNumber.slice(3, 5)}-${parsedPlainNumber.slice(5, 10)}`
+	const columns = [
+		{
+			headerName: "가맹점명",
+			field: "storeName",
+			pinned: true,
+			minWidth: 100,
+			maxWidth: 250,
+		},
+		{
+			headerName: "사업자번호",
+			field: "businessNum",
+			minWidth: 200,
+			valueGetter: (params) => {
+				const plainNumber = params.data.businessNum
+				const parsedPlainNumber = String(plainNumber)
+				const filteredNumber = `${parsedPlainNumber.slice(
+					0,
+					3,
+				)}-${parsedPlainNumber.slice(3, 5)}-${parsedPlainNumber.slice(5, 10)}`
 
-					return filteredNumber
-				},
+				return filteredNumber
 			},
-			{
-				headerName: "담당자",
-				field: "user",
-				maxWidth: 150,
+		},
+		{
+			headerName: "담당자",
+			field: "user",
+			maxWidth: 150,
+		},
+		{
+			headerName: "지역",
+			field: "city",
+			minWidth: 100,
+			maxWidth: 150,
+		},
+		{
+			headerName: "주소",
+			field: "address",
+			minWidth: 100,
+		},
+		{ headerName: "VAN", field: "van", minWidth: 100, maxWidth: 150 },
+		{
+			headerName: "영업상태",
+			field: "inOperation",
+			minWidth: 100,
+			maxWidth: 150,
+			cellRenderer: (props) => {
+				return (
+					<span
+						className={`${
+							props.value === "폐업"
+								? "text-red"
+								: props.value === "영업중"
+								? "text-green"
+								: "text-primary"
+						} font-semibold`}
+					>
+						{props.value}
+					</span>
+				)
 			},
-			{
-				headerName: "지역",
-				field: "city",
-				minWidth: 100,
-				maxWidth: 150,
-			},
-			{
-				headerName: "주소",
-				field: "address",
-				minWidth: 100,
-			},
-			{ headerName: "VAN", field: "van", minWidth: 100, maxWidth: 150 },
-			{
-				headerName: "영업상태",
-				field: "inOperation",
-				minWidth: 100,
-				maxWidth: 150,
-				cellRenderer: (props) => {
-					return (
-						<span
-							className={`${
-								props.value === "폐업"
-									? "text-red"
-									: props.value === "영업중"
-									? "text-green"
-									: "text-primary"
-							} font-semibold`}
-						>
-							{props.value}
-						</span>
-					)
-				},
-			},
-			...countColumnData,
-		]
-	}, [])
-
+		},
+		...countColumnData,
+	]
 	const onCellClick = async (params) => {
 		if (params.column.colId === "storeName") {
 			setSelectedStoreId(() => params.data._id)

@@ -7,8 +7,20 @@ const repairApi = api.injectEndpoints({
 				`repair/log?page=${page}&maxPosts=${maxPosts}&start=${startDate}&end=${endDate}`,
 		}),
 		getRepairListByState: builder.query({
-			query: ({ state }) => `repair?state=${state}`,
+			query: ({ state }) => {
+				return `repair?state=${state}`
+			},
 			providesTags: ["RepairList"],
+		}),
+		addRepairItem: builder.mutation({
+			query: ({ body }) => {
+				return {
+					url: "repair",
+					method: "POST",
+					body,
+				}
+			},
+			invalidatesTags: ["RepairList"],
 		}),
 		setRepairListState: builder.mutation({
 			query: ({ body }) => {
@@ -32,7 +44,7 @@ const repairApi = api.injectEndpoints({
 					body,
 				}
 			},
-			invalidatesTags: ["RepairItem"],
+			invalidatesTags: ["RepairItem", "RepairList"],
 		}),
 	}),
 })
@@ -40,6 +52,7 @@ const repairApi = api.injectEndpoints({
 export const {
 	useGetRepairLogQuery,
 	useGetRepairListByStateQuery,
+	useAddRepairItemMutation,
 	useSetRepairListStateMutation,
 	useGetRepairItemByIdQuery,
 	useSetRepairReplyMutation,

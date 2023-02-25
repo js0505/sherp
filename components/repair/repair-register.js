@@ -6,10 +6,12 @@ import { usePlainFetcherMutation } from "../../query/api"
 import { format } from "date-fns"
 import { useForm } from "react-hook-form"
 import { toast } from "react-toastify"
+import { useAddRepairItemMutation } from "../../query/repairApi"
 
 function RepairRegisterForm() {
 	const productList = getAllProductsForDatalist()
-	const [plainFetcher] = usePlainFetcherMutation()
+	// const [plainFetcher] = usePlainFetcherMutation()
+	const [addRepairItem] = useAddRepairItemMutation()
 
 	const today = new Date()
 	const year = format(today, "yyyy")
@@ -58,9 +60,7 @@ function RepairRegisterForm() {
 			return
 		}
 
-		const { data: response } = await plainFetcher({
-			url: "repair",
-			method: "POST",
+		const { data: response } = await addRepairItem({
 			body,
 		})
 

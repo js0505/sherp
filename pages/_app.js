@@ -7,7 +7,6 @@ import Head from "next/head"
 import { useEffect } from "react"
 import { useRouter } from "next/router"
 import { ToastMessageComponent } from "../components/ui/toast-message"
-import { toast } from "react-toastify"
 
 const MyApp = ({ Component, pageProps }) => {
 	const router = useRouter()
@@ -18,15 +17,7 @@ const MyApp = ({ Component, pageProps }) => {
 				router.replace(`${window.location.origin}/auth`)
 			}
 		})
-		fetch("/api/server-status")
-			.then((res) => res.json())
-			.then((res) => {
-				if (res.success) {
-					return
-				}
-				toast.error(res.message)
-			})
-	}, [router.pathname])
+	}, [router])
 	return (
 		<ApiProvider api={api}>
 			<SessionProvider session={pageProps.session}>

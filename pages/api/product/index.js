@@ -12,7 +12,7 @@ handler.get(async function (req, res) {
 
 	let orQuery = []
 	if (name) {
-		orQuery.push({ name })
+		orQuery.push({ name: { $regex: name, $options: "i" } })
 	}
 
 	let andQuery = []
@@ -25,7 +25,6 @@ handler.get(async function (req, res) {
 	if (brand) {
 		andQuery.push({ brand })
 	}
-
 
 	await dbConnect()
 
@@ -40,7 +39,7 @@ handler.get(async function (req, res) {
 		res.status(200).json({ products: filteredProduct, success: true })
 	} catch (e) {
 		console.log(e)
-		res.status(200).json({
+		res.status(400).json({
 			message: "장비 정보 가져오는 중 에러 발생",
 			success: false,
 			error: e,

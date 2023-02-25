@@ -38,7 +38,7 @@ export default function RepairCardItem({ item, state }) {
 					{item.reply.length > 0 && <span> ({item.reply.length})</span>}
 				</div>
 				<div className="text-gray-300 text-xs lg:text-base  flex lg:justify-end w-full p-0 ">
-					<div className="mr-2">{item.user.name}</div>
+					<div className="mr-2">{item.user}</div>
 					<div>{item.date}</div>
 				</div>
 			</div>
@@ -55,7 +55,7 @@ export function RepairItemDetail({ repairId, modalHandler, state }) {
 
 	const { data: session } = useSession()
 
-	const userId = session.user.image._id
+	const userName = session.user.name
 
 	const today = new Date()
 	const formattedToday = format(today, "yyyy-MM-dd")
@@ -70,7 +70,7 @@ export function RepairItemDetail({ repairId, modalHandler, state }) {
 		if (state === "수리접수") {
 			await repairStateUpdateFunction(item, "수리완료", modalHandler)
 		} else if (state === "수리완료") {
-			await repairStateUpdateFunction(item, buttonValue, modalHandler, userId)
+			await repairStateUpdateFunction(item, buttonValue, modalHandler, userName)
 		}
 	}
 
@@ -78,7 +78,7 @@ export function RepairItemDetail({ repairId, modalHandler, state }) {
 		item,
 		value,
 		modalHandler,
-		userId,
+		userName,
 	) => {
 		const accept = confirm(`${value} 처리 하시겠습니까?`)
 
@@ -90,10 +90,11 @@ export function RepairItemDetail({ repairId, modalHandler, state }) {
 				state: value,
 				product: item.product._id,
 				qty: item.qty,
-				completeUser: userId,
+				completeUser: userName,
 				completeDate: formattedToday,
 			}
 			const { data: response } = await setRepairListState({ body })
+			console.log(response)
 			alert(response.message)
 			modalHandler()
 		}
@@ -138,7 +139,7 @@ export function RepairItemDetail({ repairId, modalHandler, state }) {
 						<div className="text-xl font-medium">{item.storeName}</div>
 						<div className="text-gray-300">{`${item.product.name} ${
 							item.product.van === "없음" ? "" : item.product.van
-						} / ${item.user.name}`}</div>
+						} / ${item.user}`}</div>
 					</div>
 
 					<DetailListItem title="날짜" desc={item.date} />

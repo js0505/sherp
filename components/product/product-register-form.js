@@ -1,18 +1,22 @@
-import { useRef, useState } from "react"
-import Dropdown from "react-dropdown"
 import { categoryItems, vanItems } from "../../lib/variables/variables"
 import { editItemforDropdownButton } from "../../lib/util/dropdown-util"
-import { DownArrow } from "../ui/icons/icons"
 import { useGetAllItemsByUrlQuery } from "../../query/api"
 import { useAddProductMutation } from "../../query/productApi"
+import { useForm } from "react-hook-form"
+import { Dropdown } from "../ui/dropdown"
+import { toast } from "react-toastify"
 
 function ProductRegisterForm() {
-	const [selectedVANName, setSelectedVANName] = useState()
-	const [selectedCategoryName, setSelectedCategoryName] = useState()
-	const [selectedCompanyId, setSelectedCompanyId] = useState()
-	const [selectedBrandId, setSelectedBrandId] = useState()
-
-	const productNameInputRef = useRef()
+	const { register, reset, control, handleSubmit } = useForm({
+		mode: "onSubmit",
+		defaultValues: {
+			name: "",
+			van: "",
+			category: "",
+			productCompany: "",
+			brand: "",
+		},
+	})
 
 	const [addProduct] = useAddProductMutation()
 	const { data: companyData } = useGetAllItemsByUrlQuery({
@@ -24,98 +28,74 @@ function ProductRegisterForm() {
 	const companyList = editItemforDropdownButton(companyData?.company)
 	const brandList = editItemforDropdownButton(brandData?.brand)
 
-	const submitHandler = async (e) => {
-		e.preventDefault()
-		const productName = productNameInputRef.current.value
-
-		if (productName === "") {
-			alert("모델명을 입력 해주세요.")
-			return
-		}
-
+	const submitHandler = async (formData) => {
 		if (
-			selectedBrandId === undefined ||
-			selectedCategoryName === undefined ||
-			selectedCompanyId === undefined ||
-			selectedVANName === undefined
+			formData.name === "" ||
+			formData.van === "" ||
+			formData.category === "" ||
+			formData.productCompany === "" ||
+			formData.brand === ""
 		) {
 			alert("옵션을 모두 선택 해주세요.")
 			return
 		}
-
 		const accept = confirm("장비를 등록 하시겠습니까?")
-
 		if (!accept) {
 			return
 		}
 		const body = {
-			name: productName,
-			van: selectedVANName.value,
-			category: selectedCategoryName.value,
-			brand: selectedBrandId.value,
-			productCompany: selectedCompanyId.value,
+			...formData,
 		}
-
 		const { data } = await addProduct(body)
-
 		if (data.success) {
-			alert(data.message)
-
-			productNameInputRef.current.value = ""
-			setSelectedBrandId(undefined)
-			setSelectedCategoryName(undefined)
-			setSelectedCompanyId(undefined)
-			setSelectedVANName(undefined)
+			toast.success(data.message)
+			reset()
 			return
 		} else {
-			alert(data.message)
+			toast.error(data.message)
 		}
 	}
 	return (
 		<section className="container lg:w-2/5">
-			<form className="grid grid-cols-4 gap-4" onSubmit={submitHandler}>
+			<form
+				className="grid grid-cols-4 gap-4"
+				onSubmit={handleSubmit(submitHandler)}
+			>
 				<div className="col-span-4">
 					<label className="input-label">모델명</label>
-					<input className="input-text" ref={productNameInputRef} />
+					<input className="input-text" {...register("name")} />
 				</div>
 				<div className="col-span-2">
 					<Dropdown
-						arrowClosed={<DownArrow />}
-						arrowOpen={<DownArrow />}
+						control={control}
 						options={vanItems}
-						onChange={setSelectedVANName}
-						value={selectedVANName}
 						placeholder="VAN"
+						name="van"
+						required={true}
 					/>
 				</div>
 				<div className="col-span-2">
 					<Dropdown
-						arrowClosed={<DownArrow />}
-						arrowOpen={<DownArrow />}
+						control={control}
 						options={categoryItems}
 						placeholder="카테고리"
-						value={selectedCategoryName}
-						onChange={setSelectedCategoryName}
+						name="category"
 					/>
 				</div>
 				<div className="col-span-2">
 					<Dropdown
-						arrowClosed={<DownArrow />}
-						arrowOpen={<DownArrow />}
+						control={control}
 						options={companyList}
 						placeholder="제조사"
-						value={selectedCompanyId}
-						onChange={setSelectedCompanyId}
+						name="productCompany"
 					/>
 				</div>
 				<div className="col-span-2">
 					<Dropdown
-						arrowClosed={<DownArrow />}
-						arrowOpen={<DownArrow />}
+						control={control}
 						options={brandList}
-						value={selectedBrandId}
 						placeholder="법인명"
-						onChange={setSelectedBrandId}
+						name="brand"
 					/>
 				</div>
 

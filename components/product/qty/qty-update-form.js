@@ -2,9 +2,7 @@ import { useRef, useState } from "react"
 import { useSession } from "next-auth/react"
 import DatalistInput from "react-datalist-input"
 import { format } from "date-fns"
-import {
-	usePlainFetcherMutation,
-} from "../../../query/api"
+import { usePlainFetcherMutation } from "../../../query/api"
 import { getAllProductsForDatalist } from "../../../lib/util/product-util"
 
 function QtyUpdateForm() {
@@ -33,7 +31,7 @@ function QtyUpdateForm() {
 
 		const productId = selectedProductId
 		const calc = selectedCalcValue
-		const userId = session.user.image._id
+		const userName = session.user.name
 		const note = noteInputRef.current.value
 		const qty = qtyInputRef.current.value
 		const date = formattedToday
@@ -55,7 +53,7 @@ function QtyUpdateForm() {
 		}
 
 		const body = {
-			user: userId,
+			user: userName,
 			productId,
 			calc,
 			note,

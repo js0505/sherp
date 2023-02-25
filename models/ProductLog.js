@@ -3,8 +3,7 @@ import mongoose, { Schema } from "mongoose"
 export const productLogSchema = new Schema(
 	{
 		user: {
-			type: Schema.Types.ObjectId,
-			ref: "User",
+			type: String,
 		},
 		product: {
 			type: Schema.Types.ObjectId,

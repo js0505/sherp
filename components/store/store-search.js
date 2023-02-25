@@ -1,55 +1,54 @@
-import { useEffect, useRef, useState } from "react"
+import { useEffect, useMemo, useRef, useState } from "react"
 import { useGetAllItemsByUrlQuery } from "../../query/api"
 import {
 	useLazyGetFilteredStoresQuery,
 	useUpdateStoreCreditCountMutation,
 } from "../../query/storeApi"
-import Dropdown from "react-dropdown"
-import { DownArrow } from "../ui/icons/icons"
+
 import { cityItems, vanItems } from "../../lib/variables/variables"
-import { editItemforDropdownButton } from "../../lib/util/dropdown-util"
+import { editUserforDropdown } from "../../lib/util/dropdown-util"
 import { format, isBefore, parseISO } from "date-fns"
 import Modal from "../ui/modal"
 import GridTable from "../ui/grid-table"
 import Loader from "../ui/loader"
 import EditStoreComponent from "./store-edit"
 import { toast } from "react-toastify"
+import { Dropdown } from "../ui/dropdown"
+import { useForm } from "react-hook-form"
 
 export default function StoreSearchComponent() {
 	const [trigger, result] = useLazyGetFilteredStoresQuery()
 	const { data: allUsersData } = useGetAllItemsByUrlQuery({ url: "user" })
-	const dropdownUsers = editItemforDropdownButton(allUsersData?.users)
+	const dropdownUsers = editUserforDropdown(allUsersData?.users)
 
 	const today = new Date()
 	const todayYear = format(today, "yyyy")
 
-	const businessNumInputRef = useRef("")
-	const storeNameInputRef = useRef("")
-	const [van, setVan] = useState("")
-	const [city, setCity] = useState("")
-	const [user, setUser] = useState("")
 	const [year, setYear] = useState(todayYear)
 
-	const submitHandler = async (e) => {
-		e.preventDefault()
-		const businessNum = businessNumInputRef.current.value
-		const storeName = storeNameInputRef.current.value
+	const { control, register, handleSubmit, reset } = useForm({
+		mode: "onChange",
+		defaultValues: {
+			van: "",
+			city: "",
+			user: "",
+			businessNum: "",
+			storeName: "",
+		},
+	})
 
-		if (Number.isNaN(Number(businessNum))) {
+	const submitHandler = async (formData) => {
+		if (Number.isNaN(Number(formData.businessNum))) {
 			alert("사업자번호는 숫자만 입력 가능합니다.")
 			return
 		}
-		if (businessNum && storeName) {
+		if (formData.businessNum && formData.storeName) {
 			alert("사업자번호와 상호명 중 한가지만 검색 가능합니다.")
 			return
 		}
 
 		const query = {
-			businessNum,
-			storeName,
-			van: van.value ? van.value : "",
-			city: city.value ? city.value : "",
-			user: user.label ? user.label : "",
+			...formData,
 		}
 
 		await trigger(query)
@@ -60,49 +59,48 @@ export default function StoreSearchComponent() {
 			{result.isLoading && <Loader />}
 			<section className="lg:container lg:w-5/6 w-full flex flex-col">
 				<div className="">
-					<form className="flex justify-center" onSubmit={submitHandler}>
+					<form
+						className="flex justify-center"
+						onSubmit={handleSubmit(submitHandler)}
+					>
 						<div className=" lg:w-2/3 grid  grid-cols-6 gap-3">
 							<input
 								className="input-text  col-span-3 w-full mt-0 text-lg"
 								type="text"
-								ref={businessNumInputRef}
 								placeholder="사업자번호"
 								maxLength={10}
-								onChange={(e) => e.target.value.replace(/[^0-9]/g, "")}
+								{...register("businessNum")}
 							/>
 							<input
 								className="input-text  col-span-3 w-full mt-0 text-lg"
-								ref={storeNameInputRef}
 								placeholder="가맹점명"
+								{...register("storeName")}
 							/>
+							<div className="col-span-2">
+								<Dropdown
+									control={control}
+									options={vanItems.slice(1, vanItems.length)}
+									name="van"
+									placeholder="VAN"
+								/>
+							</div>
+							<div className="col-span-2">
+								<Dropdown
+									control={control}
+									options={cityItems}
+									name="city"
+									placeholder="도시"
+								/>
+							</div>
+							<div className="col-span-2">
+								<Dropdown
+									control={control}
+									options={dropdownUsers}
+									name="user"
+									placeholder="담당자"
+								/>
+							</div>
 
-							<Dropdown
-								className=" col-span-2"
-								placeholder="VAN"
-								arrowClosed={<DownArrow />}
-								arrowOpen={<DownArrow />}
-								options={vanItems.slice(1, vanItems.length)}
-								onChange={setVan}
-								value={van}
-							/>
-							<Dropdown
-								className=" col-span-2"
-								placeholder="도시"
-								arrowClosed={<DownArrow />}
-								arrowOpen={<DownArrow />}
-								options={cityItems}
-								onChange={setCity}
-								value={city}
-							/>
-							<Dropdown
-								className=" col-span-2"
-								placeholder="담당자"
-								arrowClosed={<DownArrow />}
-								arrowOpen={<DownArrow />}
-								options={dropdownUsers}
-								onChange={setUser}
-								value={user}
-							/>
 							<div className="col-span-6">
 								<div className="flex lg:justify-end">
 									<button
@@ -114,13 +112,7 @@ export default function StoreSearchComponent() {
 									<button
 										className="input-button lg:w-[8rem] "
 										type="button"
-										onClick={() => {
-											businessNumInputRef.current.value = ""
-											storeNameInputRef.current.value = ""
-											setVan("")
-											setCity("")
-											setUser("")
-										}}
+										onClick={() => reset()}
 									>
 										초기화
 									</button>
@@ -218,69 +210,71 @@ function StoreSearchResult({ rowData, year, isDataLoading }) {
 		countColumnData.push(cmsItem)
 	}
 
-	const columns = [
-		{
-			headerName: "가맹점명",
-			field: "storeName",
-			pinned: true,
-			minWidth: 100,
-			maxWidth: 250,
-		},
-		{
-			headerName: "사업자번호",
-			field: "businessNum",
-			minWidth: 200,
-			valueGetter: (params) => {
-				const plainNumber = params.data.businessNum
-				const parsedPlainNumber = String(plainNumber)
-				const filteredNumber = `${parsedPlainNumber.slice(
-					0,
-					3,
-				)}-${parsedPlainNumber.slice(3, 5)}-${parsedPlainNumber.slice(5, 10)}`
+	const columns = useMemo(() => {
+		return [
+			{
+				headerName: "가맹점명",
+				field: "storeName",
+				pinned: true,
+				minWidth: 100,
+				maxWidth: 250,
+			},
+			{
+				headerName: "사업자번호",
+				field: "businessNum",
+				minWidth: 200,
+				valueGetter: (params) => {
+					const plainNumber = params.data.businessNum
+					const parsedPlainNumber = String(plainNumber)
+					const filteredNumber = `${parsedPlainNumber.slice(
+						0,
+						3,
+					)}-${parsedPlainNumber.slice(3, 5)}-${parsedPlainNumber.slice(5, 10)}`
 
-				return filteredNumber
+					return filteredNumber
+				},
 			},
-		},
-		{
-			headerName: "담당자",
-			field: "user",
-			maxWidth: 150,
-		},
-		{
-			headerName: "지역",
-			field: "city",
-			minWidth: 100,
-			maxWidth: 150,
-		},
-		{
-			headerName: "주소",
-			field: "address",
-			minWidth: 100,
-		},
-		{ headerName: "VAN", field: "van", minWidth: 100, maxWidth: 150 },
-		{
-			headerName: "영업상태",
-			field: "inOperation",
-			minWidth: 100,
-			maxWidth: 150,
-			cellRenderer: (props) => {
-				return (
-					<span
-						className={`${
-							props.value === "폐업"
-								? "text-red"
-								: props.value === "영업중"
-								? "text-green"
-								: "text-primary"
-						} font-semibold`}
-					>
-						{props.value}
-					</span>
-				)
+			{
+				headerName: "담당자",
+				field: "user",
+				maxWidth: 150,
 			},
-		},
-		...countColumnData,
-	]
+			{
+				headerName: "지역",
+				field: "city",
+				minWidth: 100,
+				maxWidth: 150,
+			},
+			{
+				headerName: "주소",
+				field: "address",
+				minWidth: 100,
+			},
+			{ headerName: "VAN", field: "van", minWidth: 100, maxWidth: 150 },
+			{
+				headerName: "영업상태",
+				field: "inOperation",
+				minWidth: 100,
+				maxWidth: 150,
+				cellRenderer: (props) => {
+					return (
+						<span
+							className={`${
+								props.value === "폐업"
+									? "text-red"
+									: props.value === "영업중"
+									? "text-green"
+									: "text-primary"
+							} font-semibold`}
+						>
+							{props.value}
+						</span>
+					)
+				},
+			},
+			...countColumnData,
+		]
+	}, [])
 
 	const onCellClick = async (params) => {
 		if (params.column.colId === "storeName") {

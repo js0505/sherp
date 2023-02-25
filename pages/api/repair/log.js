@@ -1,6 +1,5 @@
 import nextConnect from "next-connect"
 import Repair from "../../../models/Repair"
-import User from "../../../models/User"
 import Brand from "../../../models/Brand"
 import Product from "../../../models/Product"
 import dbConnect from "../../../lib/mongoose/dbConnect"
@@ -36,8 +35,6 @@ handler.get(async function (req, res) {
 					model: Product,
 					populate: { path: "brand", model: Brand },
 				})
-				.populate({ path: "completeUser", model: User })
-				.populate({ path: "user", model: User })
 				.exec()
 
 			const totalPosts = await Repair.countDocuments(query)
@@ -60,8 +57,6 @@ handler.get(async function (req, res) {
 					model: Product,
 					populate: { path: "brand", model: Brand },
 				})
-				.populate({ path: "completeUser", model: User })
-				.populate({ path: "user", model: User })
 				.exec()
 			const totalPosts = await Repair.countDocuments(query)
 			res.status(200).json({ success: true, repairs, totalPosts })
@@ -81,8 +76,6 @@ handler.get(async function (req, res) {
 					model: Product,
 					populate: { path: "brand", model: Brand },
 				})
-				.populate({ path: "completeUser", model: User })
-				.populate({ path: "user", model: User })
 				.exec()
 
 			// 리미트 없이 해당 조건에 맞는 전체 데이터 갯수 전달.
@@ -105,8 +98,6 @@ handler.get(async function (req, res) {
 					model: Product,
 					populate: { path: "brand", model: Brand },
 				})
-				.populate({ path: "completeUser", model: User })
-				.populate({ path: "user", model: User })
 				.exec()
 			const totalPosts = await Repair.countDocuments(query)
 			res.status(200).json({ success: true, repairs, totalPosts })

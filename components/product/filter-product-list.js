@@ -1,11 +1,11 @@
-import { useRef, useState } from "react"
 import { editItemforDropdownButton } from "../../lib/util/dropdown-util"
 import { useGetAllItemsByUrlQuery } from "../../query/api"
 import { useLazyGetFilteredProductQuery } from "../../query/productApi"
 import GridTable from "../ui/grid-table"
-import { DownArrow } from "../ui/icons/icons"
-import Dropdown from "react-dropdown"
+
 import { categoryItems, vanItems } from "../../lib/variables/variables"
+import { useForm } from "react-hook-form"
+import { Dropdown } from "../ui/dropdown"
 
 // 제품 검색 필터
 //  제품명 : 문자
@@ -16,10 +16,14 @@ const FilterProductList = () => {
 	const { data: brands } = useGetAllItemsByUrlQuery({ url: "brand" })
 	const dropdownBrands = editItemforDropdownButton(brands?.brand)
 
-	const productNameInputRef = useRef()
-	const [van, setVan] = useState("")
-	const [category, setCategory] = useState("")
-	const [brand, setBrand] = useState("")
+	const { control, handleSubmit, register, reset } = useForm({
+		mode: "onSubmit",
+		defaultValues: {
+			van: "",
+			category: "",
+			brand: "",
+		},
+	})
 
 	const columns = [
 		{
@@ -58,55 +62,50 @@ const FilterProductList = () => {
 		params.api.sizeColumnsToFit()
 	}
 
-	const submitHandler = async (e) => {
-		e.preventDefault()
-
-		const name = productNameInputRef.current.value
-
+	const submitHandler = async (formData) => {
 		await trigger({
-			name,
-			van: van.value ? van.value : "",
-			brand: brand.value ? brand.value : "",
-			category: category.label ? category.label : "",
+			...formData,
 		})
 	}
+
 
 	return (
 		<>
 			<div className="">
-				<form className="flex justify-center" onSubmit={submitHandler}>
+				<form
+					className="flex justify-center"
+					onSubmit={handleSubmit(submitHandler)}
+				>
 					<div className=" lg:w-1/2 grid  grid-cols-6 gap-3">
-						<Dropdown
-							className=" col-span-2"
-							placeholder="VAN"
-							arrowClosed={<DownArrow />}
-							arrowOpen={<DownArrow />}
-							options={vanItems}
-							onChange={setVan}
-							value={van}
-						/>
-						<Dropdown
-							className=" col-span-2"
-							placeholder="카테고리"
-							arrowClosed={<DownArrow />}
-							arrowOpen={<DownArrow />}
-							options={categoryItems}
-							onChange={setCategory}
-							value={category}
-						/>
-						<Dropdown
-							className=" col-span-2"
-							placeholder="법인명"
-							arrowClosed={<DownArrow />}
-							arrowOpen={<DownArrow />}
-							options={dropdownBrands}
-							onChange={setBrand}
-							value={brand}
-						/>
+						<div className="col-span-2">
+							<Dropdown
+								control={control}
+								options={vanItems}
+								placeholder="VAN"
+								name="van"
+							/>
+						</div>
+						<div className="col-span-2">
+							<Dropdown
+								control={control}
+								options={categoryItems}
+								placeholder="카테고리"
+								name="category"
+							/>
+						</div>
+						<div className="col-span-2">
+							<Dropdown
+								control={control}
+								options={dropdownBrands}
+								placeholder="법인명"
+								name="brand"
+							/>
+						</div>
+
 						<input
 							className="input-text  col-span-3 w-full text-lg"
-							ref={productNameInputRef}
 							placeholder="제품명"
+							{...register("name")}
 						/>
 						<div className="col-span-3">
 							<div className="flex">
@@ -119,12 +118,7 @@ const FilterProductList = () => {
 								<button
 									className="input-button mt-1 lg:w-full "
 									type="button"
-									onClick={() => {
-										productNameInputRef.current.value = ""
-										setVan("")
-										setCategory("")
-										setBrand("")
-									}}
+									onClick={() => reset()}
 								>
 									초기화
 								</button>

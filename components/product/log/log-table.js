@@ -54,7 +54,7 @@ function ProductLogTable(props) {
 			cellRenderer: calcRenderer,
 		},
 
-		{ headerName: "등록자", field: "user.name", minWidth: 100, maxWidth: 100 },
+		{ headerName: "등록자", field: "user", minWidth: 100, maxWidth: 100 },
 		{ headerName: "등록일자", field: "date", minWidth: 100, maxWidth: 100 },
 	]
 

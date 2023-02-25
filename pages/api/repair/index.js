@@ -4,7 +4,6 @@ import ProductLog from "../../../models/ProductLog"
 import Repair from "../../../models/Repair"
 import Brand from "../../../models/Brand"
 import dbConnect from "../../../lib/mongoose/dbConnect"
-import User from "../../../models/User"
 
 const handler = nextConnect()
 
@@ -13,7 +12,6 @@ handler.get(async function (req, res) {
 	try {
 		const findRepairListByState = await Repair.find({ state: req.query.state })
 			.populate({ path: "product", model: Product })
-			.populate({ path: "user", model: User })
 			.exec()
 
 		res.status(200).json({ repairs: findRepairListByState, success: true })
@@ -78,57 +76,63 @@ handler.patch(async function (req, res) {
 	// 입고된 장비 상태 업데이트 하는 부분.
 	// 수리 입고 -> 완료는 그냥 상태만 변경
 	// 수리완료 -> 재고 or 원복은 재고 수량변경, 로그남기기, 최종 변경 날짜, 유저 입력
-	await dbConnect()
-	const { state, id, product, qty, completeUser, completeDate } = req.body
 
-	// 수리완료 처리
-	if (state === "수리완료") {
-		const findRepairByState = await Repair.findByIdAndUpdate(id, {
-			$set: { state: state },
-		})
-		res.status(200).json({
-			message: "상태 변경 성공",
-			repair: findRepairByState,
-			success: true,
-		})
-	} else {
-		// 원복, 재고입고 : 재고 수량 조정
-		await Repair.findByIdAndUpdate(id, {
-			$set: {
-				state: state,
-				completeUser: completeUser,
-				completeDate: completeDate,
-			},
-		})
+	try {
+		await dbConnect()
+		const { state, id, product, qty, completeUser, completeDate } = req.body
 
-		Product.findById(product)
-			.populate({ path: "brand", model: Brand })
-			.exec((err, result) => {
-				// 기존 재고 수량에 수리해서 돌아온 수량 증가.
+		// 수리완료 처리
+		if (state === "수리완료") {
+			const findRepairByState = await Repair.findByIdAndUpdate(id, {
+				$set: { state: state },
+			})
+			res.status(200).json({
+				message: "상태 변경 성공",
+				repair: findRepairByState,
+				success: true,
+			})
+		} else {
+			// 원복, 재고입고 : 재고 수량 조정
+			await Repair.findByIdAndUpdate(id, {
+				$set: {
+					state: state,
+					completeUser: completeUser,
+					completeDate: completeDate,
+				},
+			})
 
-				// 법인장비 아닐 때만 수량조정, 로그 입력
-				if (result.brand.name !== "없음") {
-					result.qty = result.qty + qty
-					result.save()
+			Product.findById(product)
+				.populate({ path: "brand", model: Brand })
+				.exec((err, result) => {
+					// 기존 재고 수량에 수리해서 돌아온 수량 증가.
 
-					// 수량변경 로그 데이터
-					const logBody = {
-						user: completeUser,
-						product: product,
-						calc: "plus",
-						quantity: Number(qty),
-						note: `${state}로 인한 재고 증가.`,
-						date: completeDate,
+					// 법인장비 아닐 때만 수량조정, 로그 입력
+					if (result.brand.name !== "없음") {
+						result.qty = result.qty + qty
+						result.save()
+
+						// 수량변경 로그 데이터
+						const logBody = {
+							user: completeUser,
+							product: product,
+							calc: "plus",
+							quantity: Number(qty),
+							note: `${state}로 인한 재고 증가.`,
+							date: completeDate,
+						}
+
+						const log = new ProductLog(logBody)
+						log.save()
 					}
 
-					const log = new ProductLog(logBody)
-					log.save()
-				}
-
-				res
-					.status(201)
-					.json({ message: `${state} 상태 변경 완료.`, success: true })
-			})
+					res
+						.status(201)
+						.json({ message: `${state} 상태 변경 완료.`, success: true })
+				})
+		}
+	} catch (e) {
+		console.log(e)
+		res.status(400).json({ message: `상태 변경 중 에러.`, success: false })
 	}
 })
 export default handler

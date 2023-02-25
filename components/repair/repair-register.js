@@ -39,11 +39,9 @@ function RepairRegisterForm() {
 	const [datalistValue, setDatalistValue] = useState()
 
 	async function submitHandler(formData) {
-		const userId = session.user.image._id
-
+		const user = session.user.name
 		const date = dateInput
 		const product = selectedProductId
-		const user = userId
 		const productCompany = selectedProductCompany
 		const brand = selectedBrand
 

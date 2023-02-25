@@ -3,8 +3,7 @@ import mongoose, { Schema } from "mongoose"
 export const RepairSchema = new Schema(
 	{
 		user: {
-			type: Schema.Types.ObjectId,
-			ref: "User",
+			type: String,
 		},
 		product: {
 			type: Schema.Types.ObjectId,
@@ -46,8 +45,7 @@ export const RepairSchema = new Schema(
 			// 수리접수, 수리완료, 원복완료, 재고입고
 		},
 		completeUser: {
-			type: Schema.Types.ObjectId,
-			ref: "User",
+			type: String,
 		},
 		completeDate: {
 			type: String,

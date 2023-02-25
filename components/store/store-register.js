@@ -1,28 +1,27 @@
 import { format } from "date-fns"
-import { useState } from "react"
+import { useEffect } from "react"
 import {
 	cityItems,
 	vanItems,
 	isBackupItems,
 } from "../../lib/variables/variables"
-import { editItemforDropdownButton } from "../../lib/util/dropdown-util"
-import Dropdown from "react-dropdown"
-import { DownArrow } from "../ui/icons/icons"
+import { editUserforDropdown } from "../../lib/util/dropdown-util"
 import { useAddStoreMutation } from "../../query/storeApi"
 import { useGetAllItemsByUrlQuery } from "../../query/api"
 import Loader from "../ui/loader"
-import { useController, useForm } from "react-hook-form"
+import { useForm } from "react-hook-form"
 import { toast } from "react-toastify"
 import { StoreProductCheckbox } from "../ui/store-product-checkbox"
+import { Dropdown } from "../ui/dropdown"
 function StoreRegisterForm() {
 	const today = new Date()
 	const formattedToday = format(today, "yyyy-MM-dd")
 
 	const [addStore] = useAddStoreMutation()
 	const { data, isLoading } = useGetAllItemsByUrlQuery({ url: "user" })
-	const editedUsers = editItemforDropdownButton(data?.users)
+	const editedUsers = editUserforDropdown(data?.users)
 
-	const { register, reset, handleSubmit, watch, control } = useForm({
+	const { register, reset, handleSubmit, control } = useForm({
 		mode: "onSubmit",
 		defaultValues: {
 			storeName: "",
@@ -42,24 +41,26 @@ function StoreRegisterForm() {
 				cat: false,
 				router: false,
 			},
+			user: "",
+			city: "",
+			isBackup: false,
+			van: "",
 		},
 	})
 
-	// const { field } = useController({ control, name: "user", defaultValue: "" })
-
-	const [isBackup, setIsBackup] = useState(isBackupItems[0])
-	const [selectedVANName, setSelectedVANName] = useState(vanItems[0])
-	const [selectedCity, setSelectedCity] = useState(cityItems[0])
-	const [selectedUser, setSelectedUser] = useState()
+	useEffect(() => {
+		reset({
+			user: editedUsers[0]?.value,
+			van: vanItems[1],
+			isBackup: isBackupItems[0],
+			city: cityItems[0],
+		})
+	}, [editedUsers])
 
 	async function submitHandler(formData) {
 		// todo: 사업자번호로 검색해서 이미 존재하는 가맹점인지 확인하고 계속 저장할지 묻는 로직 생성.
 
 		const body = {
-			user: selectedUser.label,
-			van: selectedVANName.value,
-			city: selectedCity.value,
-			isBackup: isBackup.value,
 			...formData,
 		}
 
@@ -80,11 +81,6 @@ function StoreRegisterForm() {
 		toast.success(response.message)
 
 		reset()
-
-		setIsBackup(isBackupItems[0])
-		setSelectedVANName(vanItems[0])
-		setSelectedCity(cityItems[0])
-		setSelectedUser(editedUsers[0])
 
 		return
 	}
@@ -145,20 +141,7 @@ function StoreRegisterForm() {
 					<label className="input-label" htmlFor="user">
 						담당자
 					</label>
-					{/* <Dropdown
-						arrowClosed={<DownArrow />}
-						arrowOpen={<DownArrow />}
-						options={editedUsers}
-						value={field.value}
-						onChange={(data) => field.onChange(data.label)}
-					/> */}
-					<Dropdown
-						arrowClosed={<DownArrow />}
-						arrowOpen={<DownArrow />}
-						options={editedUsers}
-						value={selectedUser}
-						onChange={setSelectedUser}
-					/>
+					<Dropdown control={control} options={editedUsers} name="user" />
 				</div>
 				<div className="col-span-2 lg:col-span-1">
 					<label className="input-label" htmlFor="contact">
@@ -187,13 +170,7 @@ function StoreRegisterForm() {
 					<label className="input-label" htmlFor="city">
 						주소(도시)
 					</label>
-					<Dropdown
-						arrowClosed={<DownArrow />}
-						arrowOpen={<DownArrow />}
-						options={cityItems}
-						value={selectedCity}
-						onChange={setSelectedCity}
-					/>
+					<Dropdown control={control} options={cityItems} name="city" />
 				</div>
 				<div className="col-span-4 lg:col-span-3">
 					<label className="input-label" htmlFor="address">
@@ -211,26 +188,14 @@ function StoreRegisterForm() {
 					<label className="input-label" htmlFor="isbackup">
 						메인/백업
 					</label>
-					<Dropdown
-						arrowClosed={<DownArrow />}
-						arrowOpen={<DownArrow />}
-						options={isBackupItems}
-						value={isBackup}
-						onChange={setIsBackup}
-					/>
+					<Dropdown control={control} options={isBackupItems} name="isBackup" />
 				</div>
 
 				<div className="col-span-2 lg:col-span-1">
 					<label className="input-label" htmlFor="van">
 						VAN
 					</label>
-					<Dropdown
-						arrowClosed={<DownArrow />}
-						arrowOpen={<DownArrow />}
-						options={vanItems}
-						value={selectedVANName}
-						onChange={setSelectedVANName}
-					/>
+					<Dropdown control={control} options={vanItems} name="van" />
 				</div>
 				<div className="col-span-2 lg:col-span-1">
 					<label className="input-label" htmlFor="van-id">

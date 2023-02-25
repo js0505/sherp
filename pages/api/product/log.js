@@ -1,5 +1,4 @@
 import nextConnect from "next-connect"
-import User from "../../../models/User"
 import Brand from "../../../models/Brand"
 import ProductLog from "../../../models/ProductLog"
 import Product from "../../../models/Product"
@@ -32,7 +31,6 @@ handler.get(async function (req, res) {
 					model: Product,
 					populate: { path: "brand", model: Brand },
 				})
-				.populate({ path: "user", model: User })
 				.exec()
 
 			const totalPosts = await ProductLog.countDocuments(query)
@@ -52,7 +50,6 @@ handler.get(async function (req, res) {
 					model: Product,
 					populate: { path: "brand", model: Brand },
 				})
-				.populate({ path: "user", model: User })
 				.exec()
 			const totalPosts = await ProductLog.countDocuments(query)
 			return res.status(200).json({ success: true, productLogs, totalPosts })
@@ -71,7 +68,6 @@ handler.get(async function (req, res) {
 					model: Product,
 					populate: { path: "brand", model: Brand },
 				})
-				.populate({ path: "user", model: User })
 				.exec()
 
 			// 리미트 없이 해당 조건에 맞는 전체 데이터 갯수 전달.
@@ -91,7 +87,6 @@ handler.get(async function (req, res) {
 					model: Product,
 					populate: { path: "brand", model: Brand },
 				})
-				.populate({ path: "user", model: User })
 				.exec()
 
 			const totalPosts = await ProductLog.countDocuments(query)

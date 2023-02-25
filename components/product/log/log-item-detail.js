@@ -18,7 +18,7 @@ function ProductLogItemDetail(props) {
 			</div>
 
 			<DetailListItem title="처리날짜" desc={item.date} />
-			<DetailListItem title="처리자" desc={item.user.name} />
+			<DetailListItem title="처리자" desc={item.user} />
 			<DetailListItem title="조정사유" desc={item.note || ""} />
 			<DetailListItem title="조정수량" desc={`${item.quantity}대`} />
 			<DetailListItem

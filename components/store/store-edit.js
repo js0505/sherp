@@ -1,20 +1,20 @@
 import { useEffect, useState } from "react"
 import { cityItems, inOperationItems } from "../../lib/variables/variables"
 import { vanItems } from "../../lib/variables/variables"
-import { DownArrow } from "../ui/icons/icons"
 import { format } from "date-fns"
-import { editItemforDropdownButton } from "../../lib/util/dropdown-util"
+import { editUserforDropdown } from "../../lib/util/dropdown-util"
 import { useGetAllItemsByUrlQuery } from "../../query/api"
 import {
 	useGetStoreByIdQuery,
 	useUpdateStoreMutation,
 	useDeleteStoreMutation,
 } from "../../query/storeApi"
-import Dropdown from "react-dropdown"
+
 import Loader from "../ui/loader"
-import { useController, useForm } from "react-hook-form"
+import { useForm } from "react-hook-form"
 import { StoreProductCheckbox } from "../ui/store-product-checkbox"
 import { toast } from "react-toastify"
+import { Dropdown } from "../ui/dropdown"
 
 export default function EditStoreComponent({ storeId, modalHandler }) {
 	const today = new Date()
@@ -26,12 +26,13 @@ export default function EditStoreComponent({ storeId, modalHandler }) {
 	const [updateStore] = useUpdateStoreMutation()
 	const [deleteStore] = useDeleteStoreMutation()
 	const { data: allUsersData } = useGetAllItemsByUrlQuery({ url: "user" })
-	const editedUsers = editItemforDropdownButton(allUsersData?.users)
+	const editedUsers = editUserforDropdown(allUsersData?.users)
 
-	const { register, reset, control, handleSubmit } = useForm({
+	const { register, reset, control, setValue, handleSubmit } = useForm({
 		mode: "onSubmit",
 		defaultValues: {
 			contractDate: "",
+			closeDate: "",
 			note: "",
 			storeName: "",
 			businessNum: "",
@@ -48,36 +49,20 @@ export default function EditStoreComponent({ storeId, modalHandler }) {
 				cat: false,
 				router: false,
 			},
+			user: "",
+			van: "",
+			city: "",
+			inOperation: "",
 		},
 	})
 
-	const { field: city } = useController({
-		name: "city",
-		control,
-		defaultValue: "",
-	})
-	const { field: user } = useController({
-		name: "user",
-		control,
-		defaultValue: "",
-	})
-
-	const { field: van } = useController({
-		name: "van",
-		control,
-		defaultValue: "",
-	})
-
-	const [closeDate, setCloseDate] = useState("")
 	const [users, setUsers] = useState([])
-	const [inOperation, setInOperation] = useState("")
 	const [asNote, setAsNote] = useState([])
 	const [isStoreEditLoading, setIsStoreEditLoading] = useState(false)
 
 	useEffect(() => {
 		if (item) {
 			setAsNote(item.asNote)
-			setInOperation(item.inOperation)
 			setUsers(editedUsers)
 
 			reset({
@@ -90,11 +75,13 @@ export default function EditStoreComponent({ storeId, modalHandler }) {
 				contact: item.contact,
 				vanId: item.vanId,
 				vanCode: item.vanCode,
-				cms: item.cms,
 				van: item.van,
+				cms: item.cms,
 				city: item.city,
 				user: item.user,
 				product: item.product,
+				inOperation: item.inOperation,
+				closeDate: item.closeDate,
 			})
 		}
 	}, [item])
@@ -114,8 +101,6 @@ export default function EditStoreComponent({ storeId, modalHandler }) {
 
 		const body = {
 			_id: item._id,
-			closeDate,
-			inOperation,
 			...formData,
 		}
 
@@ -136,9 +121,8 @@ export default function EditStoreComponent({ storeId, modalHandler }) {
 
 			if (!accept) {
 				// 폐업 변경 안할시에 다시 원래대로 돌아가게 해야 하는데 어쩌지..
-				const oldInOperation = item.inOperation
-				setInOperation(oldInOperation)
-				setItem((prev) => prev)
+				const oldValue = item.inOperation
+				setValue("inOperation", oldValue)
 
 				return
 			}
@@ -149,12 +133,15 @@ export default function EditStoreComponent({ storeId, modalHandler }) {
 			)
 
 			alert(`${closeDateInput}로 폐업처리 합니다. 수정완료 해주세요.`)
-			setCloseDate(closeDateInput)
-			setInOperation(value)
+
+			setValue("inOperation", value)
+			setValue("closeDate", closeDateInput)
+
 			return
 		}
 
-		setInOperation(value)
+		setValue("inOperation", value)
+
 		return
 	}
 
@@ -203,35 +190,23 @@ export default function EditStoreComponent({ storeId, modalHandler }) {
 								type="date"
 								{...register("contractDate")}
 							/>
+							<input id="close-date" type="hidden" {...register("closeDate")} />
 						</div>
 						<div className="col-span-2 lg:col-span-1">
 							<label className="input-label">담당자</label>
-							<Dropdown
-								arrowClosed={<DownArrow />}
-								arrowOpen={<DownArrow />}
-								options={users}
-								onChange={(data) => user.onChange(data.value)}
-								value={user.value}
-							/>
+							<Dropdown control={control} options={users} name="user" />
 						</div>
 						<div className="col-span-3 lg:col-span-1">
 							<label className="input-label">VAN</label>
-							<Dropdown
-								arrowClosed={<DownArrow />}
-								arrowOpen={<DownArrow />}
-								options={vanItems}
-								onChange={(data) => van.onChange(data.value)}
-								value={van.value}
-							/>
+							<Dropdown control={control} options={vanItems} name="van" />
 						</div>
 						<div className="col-span-2 lg:col-span-1">
 							<label className="input-label">영업상태</label>
 							<Dropdown
-								arrowClosed={<DownArrow />}
-								arrowOpen={<DownArrow />}
+								control={control}
 								options={inOperationItems}
+								name="inOperation"
 								onChange={(item) => onCloseStateHandler(item)}
-								value={inOperation}
 							/>
 						</div>
 						<div className="col-span-5 lg:col-span-3">
@@ -253,13 +228,7 @@ export default function EditStoreComponent({ storeId, modalHandler }) {
 						</div>
 						<div className="col-span-2 lg:col-span-1">
 							<label className="input-label">도시</label>
-							<Dropdown
-								arrowClosed={<DownArrow />}
-								arrowOpen={<DownArrow />}
-								options={cityItems}
-								onChange={(data) => city.onChange(data.value)}
-								value={city.value}
-							/>
+							<Dropdown control={control} options={cityItems} name="city" />
 						</div>
 						<div className="col-span-5 lg:col-span-4">
 							<label className="input-label">주소</label>

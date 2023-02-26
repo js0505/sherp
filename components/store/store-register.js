@@ -55,7 +55,9 @@ function StoreRegisterForm() {
 			isBackup: isBackupItems[0],
 			city: cityItems[0],
 		})
-	}, [editedUsers])
+
+		// editedUsers 의존성 추가하면 페이지 안넘어가고 동작 안하는 버그 발생 함
+	}, [])
 
 	async function submitHandler(formData) {
 		// todo: 사업자번호로 검색해서 이미 존재하는 가맹점인지 확인하고 계속 저장할지 묻는 로직 생성.

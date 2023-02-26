@@ -1,10 +1,9 @@
-import { AgGridReact } from "@ag-grid-community/react"
-import { forwardRef } from "react"
 import { ClientSideRowModelModule } from "@ag-grid-community/client-side-row-model"
-
+import { AgGridReact } from "@ag-grid-community/react"
 import "@ag-grid-community/styles/ag-grid.css"
 import "@ag-grid-community/styles/ag-theme-alpine.css"
-function GridTable(props, ref) {
+
+function GridTable(props) {
 	const {
 		columnDefs,
 		rowData,
@@ -23,7 +22,6 @@ function GridTable(props, ref) {
 				<div className="ag-theme-alpine h-50vh lg:h-65vh">
 					<AgGridReact
 						modules={[ClientSideRowModelModule]}
-						ref={ref}
 						defaultColDef={{
 							resizable: true,
 							sortable: true,
@@ -53,4 +51,4 @@ function GridTable(props, ref) {
 	)
 }
 
-export default forwardRef(GridTable)
+export default GridTable

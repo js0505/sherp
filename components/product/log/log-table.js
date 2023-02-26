@@ -1,8 +1,9 @@
 import { useState } from "react"
-import GridTable from "../../ui/grid-table"
 import Modal from "../../ui/modal"
 import ProductLogItemDetail from "./log-item-detail"
+import dynamic from "next/dynamic"
 
+const DynamicGridTable = dynamic(import("../../ui/grid-table"))
 function ProductLogTable(props) {
 	const { data } = props
 
@@ -77,12 +78,14 @@ function ProductLogTable(props) {
 					/>
 				</Modal>
 			)}
-			<GridTable
-				columnDefs={columns}
-				rowData={data}
-				onGridReady={onGridReady}
-				onCellClicked={onCellClick}
-			/>
+			{data && (
+				<DynamicGridTable
+					columnDefs={columns}
+					rowData={data}
+					onGridReady={onGridReady}
+					onCellClicked={onCellClick}
+				/>
+			)}
 		</>
 	)
 }

@@ -1,11 +1,13 @@
 import { editItemforDropdownButton } from "../../lib/util/dropdown-util"
 import { useGetAllItemsByUrlQuery } from "../../query/api"
 import { useLazyGetFilteredProductQuery } from "../../query/productApi"
-import GridTable from "../ui/grid-table"
 
 import { categoryItems, vanItems } from "../../lib/variables/variables"
 import { useForm } from "react-hook-form"
 import { Dropdown } from "../ui/dropdown"
+import dynamic from "next/dynamic"
+
+const DynamicGridTable = dynamic(import("../ui/grid-table"))
 
 // 제품 검색 필터
 //  제품명 : 문자
@@ -68,7 +70,6 @@ const FilterProductList = () => {
 		})
 	}
 
-
 	return (
 		<>
 			<div className="">
@@ -129,7 +130,7 @@ const FilterProductList = () => {
 			</div>
 			{result.data && (
 				<div className="lg:w-5/6 lg:container">
-					<GridTable
+					<DynamicGridTable
 						columnDefs={columns}
 						rowData={result.data.products}
 						onGridReady={onGridReady}

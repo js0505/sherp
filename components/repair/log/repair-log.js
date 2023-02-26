@@ -1,7 +1,9 @@
 import { useState } from "react"
 import Modal from "../../ui/modal"
 import { RepairItemDetail } from "../repair-item"
-import GridTable from "../../ui/grid-table"
+import dynamic from "next/dynamic"
+
+const DynamicGridTable = dynamic(() => import("../../ui/grid-table"))
 
 function CompleteRepairTable(props) {
 	const { data } = props
@@ -65,12 +67,14 @@ function CompleteRepairTable(props) {
 					/>
 				</Modal>
 			)}
-			<GridTable
-				columnDefs={columns}
-				rowData={data}
-				onGridReady={onGridReady}
-				onCellClicked={onCellClick}
-			/>
+			{data && (
+				<DynamicGridTable
+					columnDefs={columns}
+					rowData={data}
+					onGridReady={onGridReady}
+					onCellClicked={onCellClick}
+				/>
+			)}
 		</>
 	)
 }

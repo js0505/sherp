@@ -19,7 +19,45 @@ const productApi = api.injectEndpoints({
 			query: ({ van, name, category, brand }) => {
 				return `product?van=${van}&name=${name}&category=${category}&brand=${brand}`
 			},
-			// providesTags: ["ProductList"],
+			providesTags: ["ProductQty"],
+		}),
+		getAllProductsForComboBox: builder.query({
+			query: () => "product",
+			transformResponse: (respose) => {
+				const { products } = respose
+
+				let editedProductList = []
+				if (products) {
+					products.map((item) =>
+						editedProductList.push({
+							value: item._id,
+							brand: item.brand,
+							company: item.productCompany.name,
+							companyId: item.productCompany._id,
+							qty: item.qty,
+							name:
+								item.brand.name === "없음"
+									? `${item.name} ${item.van === "없음" ? "" : item.van}`
+									: `${item.brand.name} ${item.name} ${
+											item.van === "없음" ? "" : item.van
+									  }`,
+						}),
+					)
+				}
+
+				return editedProductList
+			},
+			providesTags: ["ProductQty"],
+		}),
+		updateProductQty: builder.mutation({
+			query: (body) => {
+				return {
+					url: "qty",
+					method: "PATCH",
+					body,
+				}
+			},
+			invalidatesTags: ["ProductQty"],
 		}),
 	}),
 })
@@ -28,4 +66,6 @@ export const {
 	useGetProductLogQuery,
 	useAddProductMutation,
 	useLazyGetFilteredProductQuery,
+	useGetAllProductsForComboBoxQuery,
+	useUpdateProductQtyMutation,
 } = productApi

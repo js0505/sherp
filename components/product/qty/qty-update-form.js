@@ -1,46 +1,60 @@
-import { useRef, useState } from "react"
+import { useState } from "react"
 import { useSession } from "next-auth/react"
-import DatalistInput from "react-datalist-input"
 import { format } from "date-fns"
-import { usePlainFetcherMutation } from "../../../query/api"
-import { getAllProductsForDatalist } from "../../../lib/util/product-util"
+import {
+	useGetAllProductsForComboBoxQuery,
+	useUpdateProductQtyMutation,
+} from "../../../query/productApi"
+import Loader from "../../ui/loader"
+import { useController, useForm } from "react-hook-form"
+import { Combobox } from "@headlessui/react"
+import { DownChevronIcon } from "../../ui/icons/icons"
+import { toast } from "react-toastify"
 
 function QtyUpdateForm() {
-	const productList = getAllProductsForDatalist()
 	const { data: session } = useSession()
+	const [query, setQuery] = useState("")
+	const [updateProductQty] = useUpdateProductQtyMutation()
+	const { data: productList, isLoading } = useGetAllProductsForComboBoxQuery()
+	const filteredProductList =
+		query === ""
+			? productList
+			: productList.filter((product) =>
+					product.name
+						.toLowerCase()
+						.replace(/\s+/g, "")
+						.includes(query.toLowerCase().replace(/\s+/g, "")),
+			  )
 
-	const [plainFetcher] = usePlainFetcherMutation()
+	const { control, register, handleSubmit, reset } = useForm({
+		mode: "onSubmit",
+		defaultValues: {
+			product: "",
+			calc: "plus",
+			note: "",
+			qty: "",
+		},
+	})
 
-	const [selectedProductId, setSelectedProductId] = useState()
-	const [selectedProductQty, setSelectedProductQty] = useState()
-	const [selectedCalcValue, setSelectedCalcValue] = useState("plus")
+	const { field: productIdField } = useController({
+		control,
+		name: "product",
+	})
+	const { field: calcField } = useController({ control, name: "calc" })
 
-	const qtyInputRef = useRef()
-	const noteInputRef = useRef()
-	const dataListRef = useRef()
-
-	const dataListSelectHandler = (item) => {
-		setSelectedProductId(item.id)
-		setSelectedProductQty(item.qty)
-	}
-
-	const submitHandler = async (e) => {
-		e.preventDefault()
+	const submitHandler = async (formData) => {
+		const { product, calc, note, qty } = formData
 		const today = new Date()
 		const formattedToday = format(today, "yyyy-MM-dd")
 
-		const productId = selectedProductId
-		const calc = selectedCalcValue
 		const userName = session.user.name
-		const note = noteInputRef.current.value
-		const qty = qtyInputRef.current.value
 		const date = formattedToday
 
 		let confirmQty
 		if (calc === "plus") {
-			confirmQty = selectedProductQty + Number(qty)
+			confirmQty = product.qty + Number(qty)
 		} else {
-			confirmQty = selectedProductQty - Number(qty)
+			confirmQty = product.qty - Number(qty)
 			if (confirmQty < 0) {
 				alert("기존 재고보다 출고 수량이 많습니다.")
 				return
@@ -54,136 +68,158 @@ function QtyUpdateForm() {
 
 		const body = {
 			user: userName,
-			productId,
+			productId: product.value,
 			calc,
 			note,
 			qty: Number(qty),
 			date,
 		}
 
-		const { data: response } = await plainFetcher({
-			url: "qty",
-			method: "PATCH",
-			body,
-		})
+		const { data: response } = await updateProductQty(body)
 		if (!response.success) {
-			alert(response.message)
+			toast.error(response.message)
 		}
 
-		alert(response.message)
-		noteInputRef.current.value = ""
-		qtyInputRef.current.value = ""
-		dataListRef.current.value = ""
-		setSelectedProductId("")
-		setSelectedCalcValue("plus")
+		toast.success(response.message)
+		reset()
 	}
 
 	return (
 		<section className="container lg:w-2/5 pt-3 ">
-			<form onSubmit={submitHandler} className="grid grid-cols-4 gap-4">
-				<div className="col-span-4 lg:col-span-2">
-					<DatalistInput
-						className="relative"
-						label={<div className="input-label">제품선택</div>}
-						onSelect={(item) => dataListSelectHandler(item)}
-						items={productList}
-						ref={dataListRef}
-						required
-						inputProps={{ className: " input-text " }}
-						listboxOptionProps={{
-							className:
-								" px-2 py-2 h-10 hover:bg-primary hover:text-white  w-full",
-						}}
-						isExpandedClassName="absolute border border-gray-300 rounded-md   bg-white w-full max-h-40 overflow-auto "
-					/>
-				</div>
+			{isLoading ? (
+				<Loader />
+			) : (
+				<>
+					<form
+						onSubmit={handleSubmit(submitHandler)}
+						className="grid grid-cols-4 gap-4"
+					>
+						<div className="col-span-4 lg:col-span-2">
+							<div className="input-label">제품선택</div>
+							<Combobox
+								value={productIdField.value}
+								onChange={productIdField.onChange}
+							>
+								<div className="relative">
+									<div className="relative w-full overflow-hidden ">
+										<Combobox.Input
+											className="px-4 h-12 mt-1 block w-full  rounded-md border border-gray-300 
+														shadow-md text-base"
+											displayValue={(item) => item.name}
+											onChange={(event) => setQuery(event.target.value)}
+										/>
+										<Combobox.Button className="absolute inset-y-0 right-0 flex items-center pr-2">
+											<DownChevronIcon
+												className="h-4 w-4 text-gray-300"
+												aria-hidden="true"
+											/>
+										</Combobox.Button>
+									</div>
+									<Combobox.Options className="absolute max-h-60 w-full overflow-auto mt-1 bg-white border rounded-md">
+										{filteredProductList &&
+											filteredProductList.map((product) => (
+												<Combobox.Option
+													key={product.value}
+													value={product}
+													className="relative cursor-pointer select-none py-2 px-2 
+													hover:bg-primaryHover hover:bg-opacity-90 hover:text-white"
+												>
+													{product.name}
+												</Combobox.Option>
+											))}
+									</Combobox.Options>
+								</div>
+							</Combobox>
+						</div>
 
-				<div className="col-span-4 lg:col-span-2">
-					<label className="input-label " htmlFor="calc">
-						입/출고
-					</label>
-					<div className="flex justify-between">
-						<label
-							className={`input-radio-label ${
-								selectedCalcValue === "plus" ? "bg-primary text-white" : ""
-							}`}
-							htmlFor="plus"
-						>
+						<div className="col-span-4 lg:col-span-2">
+							<label className="input-label " htmlFor="calc">
+								입/출고
+							</label>
+							<div className="flex justify-between">
+								<label
+									className={`input-radio-label ${
+										calcField.value === "plus" ? "bg-primary text-white" : ""
+									}`}
+									htmlFor="plus"
+								>
+									<input
+										className="input-radio "
+										id="plus"
+										type="radio"
+										name="calc"
+										onChange={() => calcField.onChange("plus")}
+									/>
+									입고
+								</label>
+
+								<label
+									className={`input-radio-label ${
+										calcField.value === "minus" ? "bg-primary text-white" : ""
+									}`}
+									htmlFor="minus"
+								>
+									<input
+										className="input-radio"
+										name="calc"
+										id="minus"
+										type="radio"
+										onChange={() => calcField.onChange("minus")}
+									/>
+									출고
+								</label>
+							</div>
+						</div>
+						<div className="col-span-2 lg:col-span-2">
+							<label className="input-label" htmlFor="qty">
+								기존 재고수량
+							</label>
 							<input
-								className="input-radio "
-								id="plus"
-								type="radio"
-								value="plus"
-								name="calc"
-								checked={selectedCalcValue === "plus"}
-								onChange={() => setSelectedCalcValue("plus")}
+								className="input-text"
+								id="qty"
+								type="text"
+								value={
+									productIdField.value.qty === undefined
+										? ""
+										: productIdField.value.qty
+								}
+								disabled
 							/>
-							입고
-						</label>
-
-						<label
-							className={`input-radio-label ${
-								selectedCalcValue === "minus" ? "bg-primary text-white" : ""
-							}`}
-							htmlFor="minus"
-						>
+						</div>
+						<div className="col-span-2 lg:col-span-2">
+							<label className="input-label" htmlFor="qty">
+								조정 수량
+							</label>
 							<input
-								className="input-radio"
-								value="minus"
-								name="calc"
-								id="minus"
-								type="radio"
-								checked={selectedCalcValue === "minus"}
-								onChange={() => setSelectedCalcValue("minus")}
+								className="input-text"
+								id="qty"
+								type="number"
+								{...register("qty")}
+								required
 							/>
-							출고
-						</label>
-					</div>
-				</div>
-				<div className="col-span-2 lg:col-span-2">
-					<label className="input-label" htmlFor="qty">
-						기존 재고수량
-					</label>
-					<input
-						className="input-text"
-						id="qty"
-						type="text"
-						value={selectedProductQty === undefined ? "" : selectedProductQty}
-						disabled
-					/>
-				</div>
-				<div className="col-span-2 lg:col-span-2">
-					<label className="input-label" htmlFor="qty">
-						조정 수량
-					</label>
-					<input
-						className="input-text"
-						id="qty"
-						type="number"
-						ref={qtyInputRef}
-						required
-					/>
-				</div>
-				<div className="col-span-4">
-					<label className="input-label" htmlFor="note">
-						비고
-					</label>
-					<textarea
-						className="input-textarea"
-						id="note"
-						maxLength={200}
-						rows={3}
-						ref={noteInputRef}
-						required
-					></textarea>
-				</div>
+						</div>
+						<div className="col-span-4">
+							<label className="input-label" htmlFor="note">
+								비고
+							</label>
+							<textarea
+								className="input-textarea"
+								id="note"
+								maxLength={200}
+								rows={3}
+								{...register("note")}
+								required
+							></textarea>
+						</div>
 
-				<div className="col-span-4">
-					<button className="input-button" type="submit">
-						등록
-					</button>
-				</div>
-			</form>
+						<div className="col-span-4">
+							<button className="input-button" type="submit">
+								등록
+							</button>
+						</div>
+					</form>
+				</>
+			)}
 		</section>
 	)
 }

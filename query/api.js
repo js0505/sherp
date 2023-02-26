@@ -8,6 +8,7 @@ export const api = createApi({
 		"StoreDetail",
 		"StoreList",
 		"ProductList",
+		"ProductQty",
 	],
 	endpoints: (builder) => ({
 		getAllItemsByUrl: builder.query({

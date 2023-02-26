@@ -5,7 +5,6 @@ import { getRepairProductListByState } from "../../lib/util/repair-util"
 export default function RepairListComponent(props) {
 	const { state } = props
 	const { data } = useGetRepairListByStateQuery({ state })
-	console.log(data)
 
 	const items = getRepairProductListByState({
 		repairs: data ? data.repairs : undefined,

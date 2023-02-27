@@ -2,7 +2,6 @@ import { useState } from "react"
 import { useSession } from "next-auth/react"
 import { DatalistInput } from "react-datalist-input"
 import { getAllProductsForDatalist } from "../../lib/util/product-util"
-import { usePlainFetcherMutation } from "../../query/api"
 import { format } from "date-fns"
 import { useForm } from "react-hook-form"
 import { toast } from "react-toastify"
@@ -10,7 +9,6 @@ import { useAddRepairItemMutation } from "../../query/repairApi"
 
 function RepairRegisterForm() {
 	const productList = getAllProductsForDatalist()
-	// const [plainFetcher] = usePlainFetcherMutation()
 	const [addRepairItem] = useAddRepairItemMutation()
 
 	const today = new Date()
@@ -163,7 +161,7 @@ function RepairRegisterForm() {
 					</label>
 
 					<textarea
-						className="input-textarea h-10"
+						className="input-textarea h-12 pt-3 overflow-hidden"
 						id="product-num"
 						maxLength={200}
 						rows={1}

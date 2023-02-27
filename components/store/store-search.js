@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { useGetAllItemsByUrlQuery } from "../../query/api"
 import {
 	useLazyGetFilteredStoresQuery,
@@ -15,7 +15,7 @@ import { toast } from "react-toastify"
 import { Dropdown } from "../ui/dropdown"
 import { useForm } from "react-hook-form"
 import dynamic from "next/dynamic"
-
+// import GridTable from "../ui/grid-table"
 const DynamicGridTable = dynamic(() => import("../ui/grid-table"))
 
 export default function StoreSearchComponent() {
@@ -275,6 +275,7 @@ function StoreSearchResult({ rowData, year, isDataLoading }) {
 		},
 		...countColumnData,
 	]
+
 	const onCellClick = async (params) => {
 		if (params.column.colId === "storeName") {
 			setSelectedStoreId(() => params.data._id)
@@ -363,6 +364,7 @@ function StoreSearchResult({ rowData, year, isDataLoading }) {
 	const getRowId = (params) => {
 		return params.data._id
 	}
+	const gridRef = useRef()
 
 	return (
 		<>
@@ -377,18 +379,17 @@ function StoreSearchResult({ rowData, year, isDataLoading }) {
 			{isDataLoading && <Loader />}
 			{isLoading && <Loader />}
 
-			{rowData && (
-				<DynamicGridTable
-					columnDefs={columns}
-					rowData={rowData}
-					readOnlyEdit={true}
-					getRowId={getRowId}
-					onCellClicked={onCellClick}
-					onCellEditRequest={cellEditRequest}
-					filter={true}
-					floatingFilter={true}
-				/>
-			)}
+			<DynamicGridTable
+				ref={gridRef}
+				columnDefs={columns}
+				rowData={rowData}
+				readOnlyEdit={true}
+				getRowId={getRowId}
+				onCellClicked={onCellClick}
+				onCellEditRequest={cellEditRequest}
+				filter={true}
+				floatingFilter={true}
+			/>
 		</>
 	)
 }

@@ -18,6 +18,7 @@ export const Dropdown = ({
 			arrowOpen={<DownArrow />}
 			options={options}
 			onChange={onChange ? onChange : (data) => field.onChange(data.value)}
+			// onChange={(data) => field.onChange(data.value)}
 			value={field.value}
 			placeholder={placeholder}
 		/>

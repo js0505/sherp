@@ -54,6 +54,8 @@ function StoreRegisterForm() {
 			van: vanItems[1],
 			isBackup: isBackupItems[0],
 			city: cityItems[0],
+			contractDate: formattedToday,
+			cms: 0,
 		})
 
 		// editedUsers 의존성 추가하면 페이지 안넘어가고 동작 안하는 버그 발생 함
@@ -62,8 +64,40 @@ function StoreRegisterForm() {
 	async function submitHandler(formData) {
 		// todo: 사업자번호로 검색해서 이미 존재하는 가맹점인지 확인하고 계속 저장할지 묻는 로직 생성.
 
+		const {
+			user,
+			van,
+			isBackup,
+			city,
+			contractDate,
+			cms,
+			storeName,
+			businessNum,
+			owner,
+			contact,
+			address,
+			vanCode,
+			vanId,
+			note,
+			product,
+		} = formData
+
 		const body = {
-			...formData,
+			user,
+			van: van.value,
+			isBackup: isBackup.value,
+			city: city.value,
+			contractDate,
+			cms,
+			storeName,
+			businessNum,
+			owner,
+			contact,
+			address,
+			vanCode,
+			vanId,
+			note,
+			product,
 		}
 
 		const accept = confirm("가맹점을 등록 하시겠습니까?")
@@ -82,7 +116,23 @@ function StoreRegisterForm() {
 
 		toast.success(response.message)
 
-		reset()
+		reset({
+			user: editedUsers[0]?.value,
+			van: vanItems[1],
+			isBackup: isBackupItems[0],
+			city: cityItems[0],
+			contractDate: formattedToday,
+			cms: 0,
+			storeName,
+			businessNum,
+			owner,
+			contact,
+			address,
+			vanCode,
+			vanId,
+			note,
+			product,
+		})
 
 		return
 	}

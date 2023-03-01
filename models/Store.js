@@ -100,6 +100,10 @@ export const StoreSchema = new Schema(
 			type: Boolean,
 			default: false,
 		},
+		isCorporation: {
+			type: Boolean,
+			default: false,
+		},
 	},
 	{ timestamps: true },
 )

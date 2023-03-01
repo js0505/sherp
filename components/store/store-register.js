@@ -13,6 +13,8 @@ import { useForm } from "react-hook-form"
 import { toast } from "react-toastify"
 import { StoreProductCheckbox } from "../ui/store-product-checkbox"
 import { Dropdown } from "../ui/dropdown"
+import { useSession } from "next-auth/react"
+
 function StoreRegisterForm() {
 	const today = new Date()
 	const formattedToday = format(today, "yyyy-MM-dd")
@@ -20,6 +22,7 @@ function StoreRegisterForm() {
 	const [addStore] = useAddStoreMutation()
 	const { data, isLoading } = useGetAllItemsByUrlQuery({ url: "user" })
 	const editedUsers = editUserforDropdown(data?.users)
+	const { data: session } = useSession()
 
 	const { register, reset, handleSubmit, control } = useForm({
 		mode: "onSubmit",
@@ -43,61 +46,33 @@ function StoreRegisterForm() {
 			},
 			user: "",
 			city: "",
-			isBackup: false,
+			isBackup: "",
 			van: "",
 		},
 	})
 
 	useEffect(() => {
-		reset({
-			user: editedUsers[0]?.value,
-			van: vanItems[1],
-			isBackup: isBackupItems[0],
-			city: cityItems[0],
-			contractDate: formattedToday,
-			cms: 0,
-		})
+		if (session) {
+			reset({
+				user: session.user.name,
+				van: vanItems[1].value,
+				isBackup: isBackupItems[0].value,
+				city: cityItems[0].value,
+				contractDate: formattedToday,
+				cms: 0,
+			})
+		}
 
 		// editedUsers 의존성 추가하면 페이지 안넘어가고 동작 안하는 버그 발생 함
-	}, [])
+	}, [session])
 
 	async function submitHandler(formData) {
 		// todo: 사업자번호로 검색해서 이미 존재하는 가맹점인지 확인하고 계속 저장할지 묻는 로직 생성.
 
-		const {
-			user,
-			van,
-			isBackup,
-			city,
-			contractDate,
-			cms,
-			storeName,
-			businessNum,
-			owner,
-			contact,
-			address,
-			vanCode,
-			vanId,
-			note,
-			product,
-		} = formData
+		formData.isBackup = formData.isBackup === "메인" ? false : true
 
 		const body = {
-			user,
-			van: van.value,
-			isBackup: isBackup.value,
-			city: city.value,
-			contractDate,
-			cms,
-			storeName,
-			businessNum,
-			owner,
-			contact,
-			address,
-			vanCode,
-			vanId,
-			note,
-			product,
+			...formData,
 		}
 
 		const accept = confirm("가맹점을 등록 하시겠습니까?")
@@ -108,7 +83,7 @@ function StoreRegisterForm() {
 
 		const { data: response } = await addStore(body)
 
-		if (!response.success) {
+		if (response.success === false) {
 			toast.error(response.message)
 			console.log(response.error)
 			return
@@ -117,21 +92,27 @@ function StoreRegisterForm() {
 		toast.success(response.message)
 
 		reset({
-			user: editedUsers[0]?.value,
-			van: vanItems[1],
-			isBackup: isBackupItems[0],
-			city: cityItems[0],
+			user: session.user.name,
+			van: vanItems[1].value,
+			isBackup: isBackupItems[0].value,
+			city: cityItems[0].value,
 			contractDate: formattedToday,
 			cms: 0,
-			storeName,
-			businessNum,
-			owner,
-			contact,
-			address,
-			vanCode,
-			vanId,
-			note,
-			product,
+			storeName: "",
+			businessNum: "",
+			owner: "",
+			contact: "",
+			address: "",
+			vanCode: "",
+			vanId: "",
+			note: "",
+			product: {
+				pos: false,
+				kiosk: false,
+				printer: false,
+				cat: false,
+				router: false,
+			},
 		})
 
 		return

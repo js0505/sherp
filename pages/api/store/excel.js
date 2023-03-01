@@ -69,7 +69,6 @@ let uploadFile = upload.single("file")
  *
  */
 handler.use(uploadFile).post(async function (req, res) {
-
 	try {
 		await dbConnect()
 		// 요청 받으면서 업로드 된 파일을 처리할 연, 월 값
@@ -520,7 +519,10 @@ const makeStoreCountUpSample = async ({ res }) => {
 			sheet.getRow(1).alignment = firstRowAlign
 		})
 
-		const stores = await Store.find({ inOperation: { $not: { $eq: "폐업" } } })
+		const stores = await Store.find({
+			inOperation: { $not: { $eq: "폐업" } },
+			isCorporation: { $not: { $eq: true } },
+		})
 
 		stores.forEach((value) => {
 			const rowData = {

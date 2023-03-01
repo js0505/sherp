@@ -20,7 +20,6 @@ export const Dropdown = ({
 			onChange={onChange ? onChange : (data) => field.onChange(data.value)}
 			value={field.value}
 			placeholder={placeholder}
-			
 		/>
 	)
 }

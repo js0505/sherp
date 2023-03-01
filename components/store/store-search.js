@@ -15,7 +15,7 @@ import { toast } from "react-toastify"
 import { Dropdown } from "../ui/dropdown"
 import { useForm } from "react-hook-form"
 import dynamic from "next/dynamic"
-// import GridTable from "../ui/grid-table"
+
 const DynamicGridTable = dynamic(() => import("../ui/grid-table"))
 
 export default function StoreSearchComponent() {
@@ -28,18 +28,30 @@ export default function StoreSearchComponent() {
 
 	const [year, setYear] = useState(todayYear)
 
-	const { control, register, handleSubmit, reset } = useForm({
-		mode: "onChange",
-		defaultValues: {
-			van: "",
-			city: "",
-			user: "",
-			businessNum: "",
-			storeName: "",
-		},
-	})
+	const { control, register, handleSubmit, reset, setValue, getValues, watch } =
+		useForm({
+			mode: "onSubmit",
+			defaultValues: {
+				van: "",
+				city: "",
+				user: "",
+				businessNum: "",
+				storeName: "",
+				isCorporation: false,
+			},
+		})
+	const isCorporationFilterValue = watch("isCorporation")
+
+	const filteredisCorporationStoreList =
+		isCorporationFilterValue === false
+			? result.data?.filteredStore
+			: result.data?.filteredStore.filter(
+					(store) => store.isCorporation === true,
+			  )
 
 	const submitHandler = async (formData) => {
+		setValue("isCorporation", false)
+
 		if (Number.isNaN(Number(formData.businessNum))) {
 			alert("사업자번호는 숫자만 입력 가능합니다.")
 			return
@@ -65,7 +77,7 @@ export default function StoreSearchComponent() {
 						className="flex justify-center"
 						onSubmit={handleSubmit(submitHandler)}
 					>
-						<div className=" lg:w-2/3 grid  grid-cols-6 gap-3">
+						<div className=" lg:w-2/3 grid  grid-cols-6 gap-3 ">
 							<input
 								className="input-text  col-span-3 w-full mt-0 text-lg"
 								type="text"
@@ -103,7 +115,33 @@ export default function StoreSearchComponent() {
 								/>
 							</div>
 
-							<div className="col-span-6">
+							<div className="col-span-6 flex lg:justify-between">
+								<div className={``}>
+									<label
+										className={`flex  rounded-md  border-gray-transparent w-full h-14 px-2 mt-2
+									 justify-center items-center shadow-md
+									 ${filteredisCorporationStoreList ? "" : "hidden"}
+									`}
+									>
+										<input
+											type="checkbox"
+											className=" appearance-none"
+											{...register("isCorporation")}
+											onChange={() => {
+												const prevValue = getValues("isCorporation")
+												setValue("isCorporation", !prevValue)
+											}}
+										/>
+										<div
+											className={`w-4 h-4 mr-3 border border-gray-300 border-opacity-50 
+											flex justify-center items-center text-xs text-white
+											${isCorporationFilterValue ? "bg-green border-none" : ""}`}
+										>
+											v
+										</div>
+										<p className={``}>결과 내 법인사업자 보기</p>
+									</label>
+								</div>
 								<div className="flex lg:justify-end">
 									<button
 										className="input-button mr-3 lg:w-[8rem] "
@@ -126,11 +164,11 @@ export default function StoreSearchComponent() {
 
 				{result.isLoading && <Loader />}
 
-				{result.data && (
+				{filteredisCorporationStoreList && (
 					<StoreSearchResult
 						isDataLoading={result.isLoading}
 						year={year}
-						rowData={result.data.filteredStore}
+						rowData={filteredisCorporationStoreList}
 					/>
 				)}
 			</section>
@@ -324,8 +362,8 @@ function StoreSearchResult({ rowData, year, isDataLoading }) {
 		// todo: 계약일 이전의 데이터에는 접근 할 수 없도록 로직 생성.
 		// if (oldData.contractDate) {
 		// 	const editItemDate = parseISO(`${editItemYear}-${editItemMonth}`)
-		// 	const test = parseISO(oldData.contractDate)
-		// 	const checkIsAfter = isBefore(editItemDate, test)
+		// 	const isCorporation = parseISO(oldData.contractDate)
+		// 	const checkIsAfter = isBefore(editItemDate, isCorporation)
 		// 	console.log(oldData.contractDate)
 		// 	console.log(checkIsAfter)
 		// }

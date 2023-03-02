@@ -21,8 +21,8 @@ a {
 
 @layer components {
 	.input-text {
-		@apply px-4 h-12 mt-1 block w-full  rounded-md border border-gray-300 border-opacity-60
-		shadow-md text-base  focus:border-primary focus:ring-2  focus:ring-primary focus:outline-none;
+		@apply px-4 h-10 lg:h-12 mt-1 block w-full  rounded-md border border-gray-300 border-opacity-60
+		shadow-md text-xs lg:text-base  focus:border-primary focus:ring-2  focus:ring-primary focus:outline-none;
 	}
 	.input-label {
 		@apply block  text-base font-medium text-gray-700;
@@ -32,8 +32,8 @@ a {
 		shadow-md text-base  focus:border-primary focus:ring-2  focus:ring-primary focus:outline-none;
 	}
 	.input-button {
-		@apply bg-primary mt-3 text-white font-normal h-12 rounded-md 
-		text-base w-full md:w-20 md:float-right hover:bg-green;
+		@apply bg-primary mt-3 text-white font-normal h-10 lg:h-12 rounded-md 
+		 text-sm lg:text-base w-full md:w-20 md:float-right hover:bg-green;
 	}
 	.input-radio {
 		@apply hidden;
@@ -88,9 +88,9 @@ a {
 }
 
 .Dropdown-control {
-	@apply relative bg-white px-4 pt-3 h-12 mt-1  w-full text-left  rounded-md  
+	@apply relative bg-white px-4 pt-2 lg:pt-3 h-10 lg:h-12 mt-1  w-full text-left  rounded-md  
 	overflow-hidden
-			border border-gray-300 border-opacity-50 shadow-md text-base flex justify-between;
+			border border-gray-300 border-opacity-50 shadow-md text-sm lg:text-base flex justify-between;
 }
 
 .Dropdown-menu {
@@ -100,7 +100,7 @@ a {
 
 .Dropdown-option {
 	@apply hover:text-white hover:bg-primary  border-b border-b-gray-transparent  
-			h-12 text-base px-3 pt-3;
+		 	h-10 lg:h-12 text-sm lg:text-base px-3 pt-3;
 }
 
 .is-open .Dropdown-arrow {

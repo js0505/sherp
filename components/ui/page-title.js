@@ -3,7 +3,7 @@
  */
 const PageTitle = ({ title }) => {
 	return (
-		<header className="text-2xl font-medium w-full mb-6 lg:px-28">
+		<header className=" text-lg lg:text-2xl font-medium w-full mb-3 lg:mb-6 lg:px-28">
 			{title}
 		</header>
 	)

@@ -108,6 +108,7 @@ export default function StoreSearchComponent() {
 							</div>
 							<div className="col-span-2">
 								<Dropdown
+									className="text-xs"
 									control={control}
 									options={dropdownUsers}
 									name="user"
@@ -115,17 +116,17 @@ export default function StoreSearchComponent() {
 								/>
 							</div>
 
-							<div className="col-span-6 flex lg:justify-between">
-								<div className={``}>
+							<div className="col-span-6 flex lg:justify-between  ">
+								<div className={`lg:w-1/2 lg:block hidden`}>
 									<label
-										className={`flex  rounded-md  border-gray-transparent w-full h-14 px-2 mt-2
+										className={`flex  rounded-md  border-gray-transparent w-full lg:w-1/2 h-14 px-2 mt-2
 									 justify-center items-center shadow-md
 									 ${filteredisCorporationStoreList ? "" : "hidden"}
 									`}
 									>
 										<input
 											type="checkbox"
-											className=" appearance-none"
+											className=" appearance-none "
 											{...register("isCorporation")}
 											onChange={() => {
 												const prevValue = getValues("isCorporation")
@@ -133,8 +134,8 @@ export default function StoreSearchComponent() {
 											}}
 										/>
 										<div
-											className={`w-4 h-4 mr-3 border border-gray-300 border-opacity-50 
-											flex justify-center items-center text-xs text-white
+											className={`w-4 h-4 mr-3  border-gray-300 border-opacity-50 
+											flex justify-center items-center text-xs text-white 
 											${isCorporationFilterValue ? "bg-green border-none" : ""}`}
 										>
 											v
@@ -142,15 +143,15 @@ export default function StoreSearchComponent() {
 										<p className={``}>결과 내 법인사업자 보기</p>
 									</label>
 								</div>
-								<div className="flex lg:justify-end">
+								<div className="flex w-full lg:w-1/2 lg:justify-end">
 									<button
-										className="input-button mr-3 lg:w-[8rem] "
+										className="input-button mr-3 w-full lg:w-[8rem] "
 										type="submit"
 									>
 										검색
 									</button>
 									<button
-										className="input-button lg:w-[8rem] "
+										className="input-button w-full lg:w-[8rem] "
 										type="button"
 										onClick={() => reset()}
 									>

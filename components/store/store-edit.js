@@ -127,10 +127,19 @@ export default function EditStoreComponent({ storeId, modalHandler }) {
 				return
 			}
 
-			const closeDateInput = prompt(
+			let closeDateInput = prompt(
 				"폐업 일자를 입력 해주세요. ex) 2022-11-22",
 				formattedToday,
 			)
+			const dateRegexp = /[0-9]{4}-[0-9]{2}-[0-9]{2}/
+			const isRegMatch = closeDateInput.match(dateRegexp)
+			if (!isRegMatch) {
+				alert("형식에 맞지 않습니다. 다시 입력 해주세요. ex) 2022-11-22")
+				closeDateInput = prompt(
+					"폐업 일자를 입력 해주세요. ex) 2022-11-22",
+					formattedToday,
+				)
+			}
 
 			alert(`${closeDateInput}로 폐업처리 합니다. 수정완료 해주세요.`)
 

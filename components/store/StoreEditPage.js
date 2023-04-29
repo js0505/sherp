@@ -16,7 +16,7 @@ import { StoreProductCheckbox } from "../ui/store-product-checkbox"
 import { toast } from "react-toastify"
 import { Dropdown } from "../ui/dropdown"
 
-export default function EditStoreComponent({ storeId, modalHandler }) {
+export default function StoreEditPage({ storeId, modalHandler }) {
 	const today = new Date()
 	const formattedToday = format(today, "yyyy-MM-dd")
 

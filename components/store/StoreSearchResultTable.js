@@ -1,183 +1,15 @@
 import { useEffect, useRef, useState } from "react"
-import { useGetAllItemsByUrlQuery } from "../../query/api"
-import {
-	useLazyGetFilteredStoresQuery,
-	useUpdateStoreCreditCountMutation,
-} from "../../query/storeApi"
-
-import { cityItems, vanItems } from "../../lib/variables/variables"
-import { editUserforDropdown } from "../../lib/util/dropdown-util"
-import { format, isBefore, parseISO } from "date-fns"
+import { useUpdateStoreCreditCountMutation } from "../../query/storeApi"
 import Modal from "../ui/modal"
 import Loader from "../ui/loader"
-import EditStoreComponent from "./store-edit"
 import { toast } from "react-toastify"
-import { Dropdown } from "../ui/dropdown"
-import { useForm } from "react-hook-form"
+import StoreEditPage from "./StoreEditPage"
+
 import dynamic from "next/dynamic"
 
 const DynamicGridTable = dynamic(() => import("../ui/grid-table"))
 
-export default function StoreSearchComponent() {
-	const [trigger, result] = useLazyGetFilteredStoresQuery()
-	const { data: allUsersData } = useGetAllItemsByUrlQuery({ url: "user" })
-	const dropdownUsers = editUserforDropdown(allUsersData?.users)
-
-	const today = new Date()
-	const todayYear = format(today, "yyyy")
-
-	const [year, setYear] = useState(todayYear)
-
-	const { control, register, handleSubmit, reset, setValue, getValues, watch } =
-		useForm({
-			mode: "onSubmit",
-			defaultValues: {
-				van: "",
-				city: "",
-				user: "",
-				businessNum: "",
-				storeName: "",
-				isCorporation: false,
-			},
-		})
-	const isCorporationFilterValue = watch("isCorporation")
-
-	const filteredisCorporationStoreList =
-		isCorporationFilterValue === false
-			? result.data?.filteredStore
-			: result.data?.filteredStore.filter(
-					(store) => store.isCorporation === true,
-			  )
-
-	const submitHandler = async (formData) => {
-		setValue("isCorporation", false)
-
-		if (Number.isNaN(Number(formData.businessNum))) {
-			alert("사업자번호는 숫자만 입력 가능합니다.")
-			return
-		}
-		if (formData.businessNum && formData.storeName) {
-			alert("사업자번호와 상호명 중 한가지만 검색 가능합니다.")
-			return
-		}
-
-		const query = {
-			...formData,
-		}
-
-		await trigger(query)
-	}
-
-	return (
-		<>
-			{result.isLoading && <Loader />}
-			<section className="lg:container lg:w-5/6 w-full flex flex-col">
-				<div className="">
-					<form
-						className="flex justify-center"
-						onSubmit={handleSubmit(submitHandler)}
-					>
-						<div className=" lg:w-2/3 grid  grid-cols-6 gap-3 ">
-							<input
-								className="input-text  col-span-3 w-full mt-0 text-lg"
-								type="text"
-								placeholder="사업자번호"
-								maxLength={10}
-								{...register("businessNum")}
-							/>
-							<input
-								className="input-text  col-span-3 w-full mt-0 text-lg"
-								placeholder="가맹점명"
-								{...register("storeName")}
-							/>
-							<div className="col-span-2">
-								<Dropdown
-									control={control}
-									options={vanItems.slice(1, vanItems.length)}
-									name="van"
-									placeholder="VAN"
-								/>
-							</div>
-							<div className="col-span-2">
-								<Dropdown
-									control={control}
-									options={cityItems}
-									name="city"
-									placeholder="도시"
-								/>
-							</div>
-							<div className="col-span-2">
-								<Dropdown
-									className="text-xs"
-									control={control}
-									options={dropdownUsers}
-									name="user"
-									placeholder="담당자"
-								/>
-							</div>
-
-							<div className="col-span-6 flex lg:justify-between  ">
-								<div className={`lg:w-1/2 lg:block hidden`}>
-									<label
-										className={`flex  rounded-md  border-gray-transparent w-full lg:w-1/2 h-14 px-2 mt-2
-									 justify-center items-center shadow-md
-									 ${filteredisCorporationStoreList ? "" : "hidden"}
-									`}
-									>
-										<input
-											type="checkbox"
-											className=" appearance-none "
-											{...register("isCorporation")}
-											onChange={() => {
-												const prevValue = getValues("isCorporation")
-												setValue("isCorporation", !prevValue)
-											}}
-										/>
-										<div
-											className={`w-4 h-4 mr-3  border-gray-300 border-opacity-50 
-											flex justify-center items-center text-xs text-white 
-											${isCorporationFilterValue ? "bg-green border-none" : ""}`}
-										>
-											v
-										</div>
-										<p className={``}>결과 내 법인사업자 보기</p>
-									</label>
-								</div>
-								<div className="flex w-full lg:w-1/2 lg:justify-end">
-									<button
-										className="input-button mr-3 w-full lg:w-[8rem] "
-										type="submit"
-									>
-										검색
-									</button>
-									<button
-										className="input-button w-full lg:w-[8rem] "
-										type="button"
-										onClick={() => reset()}
-									>
-										초기화
-									</button>
-								</div>
-							</div>
-						</div>
-					</form>
-				</div>
-
-				{result.isLoading && <Loader />}
-
-				{filteredisCorporationStoreList && (
-					<StoreSearchResult
-						isDataLoading={result.isLoading}
-						year={year}
-						rowData={filteredisCorporationStoreList}
-					/>
-				)}
-			</section>
-		</>
-	)
-}
-
-function StoreSearchResult({ rowData, year, isDataLoading }) {
+const StoreSearchResultTable = ({ rowData, year, isDataLoading }) => {
 	const [selectedStoreId, setSelectedStoreId] = useState("")
 	const [filterYear, setFilterYear] = useState()
 	const [showModal, setShowModal] = useState(false)
@@ -321,26 +153,39 @@ function StoreSearchResult({ rowData, year, isDataLoading }) {
 			setShowModal(true)
 		}
 		if (params.column.colId === "businessNum") {
-			if (navigator.clipboard) {
-				await navigator.clipboard.writeText(params.data.businessNum)
-				toast.success("클립보드에 사업자번호가 복사 되었습니다.")
-				return
-			}
-
-			const textArea = document.createElement("textarea")
-			textArea.value = params.data.businessNum
-			document.body.appendChild(textArea)
-			textArea.select()
-			textArea.setSelectionRange(0, 99999)
-			try {
-				document.execCommand("copy")
-			} catch (err) {
-				console.error("복사 실패", err)
-			}
-			textArea.setSelectionRange(0, 0)
-			document.body.removeChild(textArea)
-			toast.success("클립보드에 사업자번호가 복사 되었습니다.")
+			clipboardLogicFunction(
+				params.data.businessNum,
+				"클립보드에 사업자번호가 복사 되었습니다.",
+			)
 		}
+		if (params.column.colId === "address") {
+			clipboardLogicFunction(
+				params.data.address,
+				"클립보드에 주소가 복사 되었습니다.",
+			)
+		}
+	}
+
+	const clipboardLogicFunction = async (data, message) => {
+		if (navigator.clipboard) {
+			await navigator.clipboard.writeText(data)
+			toast.success(message)
+			return
+		}
+
+		const textArea = document.createElement("textarea")
+		textArea.value = data
+		document.body.appendChild(textArea)
+		textArea.select()
+		textArea.setSelectionRange(0, 99999)
+		try {
+			document.execCommand("copy")
+		} catch (err) {
+			console.error("복사 실패", err)
+		}
+		textArea.setSelectionRange(0, 0)
+		document.body.removeChild(textArea)
+		toast.success(message)
 	}
 
 	// 셀에서 직접 거래건수, cms 수정 시에 동작
@@ -409,7 +254,7 @@ function StoreSearchResult({ rowData, year, isDataLoading }) {
 		<>
 			{showModal && (
 				<Modal isOpen={showModal} onClose={modalHandler}>
-					<EditStoreComponent
+					<StoreEditPage
 						storeId={selectedStoreId}
 						modalHandler={modalHandler}
 					/>
@@ -432,3 +277,4 @@ function StoreSearchResult({ rowData, year, isDataLoading }) {
 		</>
 	)
 }
+export default StoreSearchResultTable

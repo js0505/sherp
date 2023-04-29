@@ -8,7 +8,7 @@ import path from "path"
 
 const handler = nextConnect()
 
-handler.get(async function (req, res) {
+handler.get(async function (req, res) {	
 	const { type, year } = req.query
 	await dbConnect()
 

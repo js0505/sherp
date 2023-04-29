@@ -1,9 +1,10 @@
 import { useState } from "react"
-import Modal from "../../ui/modal"
-import { RepairItemDetail } from "../repair-item"
+import Modal from "../ui/modal"
+
+import { RepairItemDetail } from "./RepairItemDetail"
 import dynamic from "next/dynamic"
 
-const DynamicGridTable = dynamic(() => import("../../ui/grid-table"))
+const DynamicGridTable = dynamic(() => import("../ui/grid-table"))
 
 function CompleteRepairTable(props) {
 	const { data } = props

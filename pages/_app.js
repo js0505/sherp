@@ -10,6 +10,7 @@ import { ToastMessageComponent } from "../components/ui/toast-message"
 
 const MyApp = ({ Component, pageProps }) => {
 	const router = useRouter()
+	
 
 	useEffect(() => {
 		getSession().then((session) => {
@@ -27,7 +28,7 @@ const MyApp = ({ Component, pageProps }) => {
 				</Head>
 				<ToastMessageComponent />
 				<Layout>
-					<Component {...pageProps} />
+					<Component  {...pageProps} />
 				</Layout>
 			</SessionProvider>
 		</ApiProvider>

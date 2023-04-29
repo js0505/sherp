@@ -1,4 +1,4 @@
-import DetailListItem from "../../ui/detail-list-item"
+import DetailListItem from "../ui/detail-list-item"
 function ProductLogItemDetail(props) {
 	// item : 상세 입출고 정보 데이터
 	// modalHandler : 모달 창 켜고 끄는 상태변경 함수

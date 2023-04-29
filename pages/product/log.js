@@ -1,6 +1,6 @@
 import { useRef, useState } from "react"
 import PageTitle from "../../components/ui/page-title"
-import ProductLogTable from "../../components/product/log/log-table"
+import ProductLogTable from "../../components/product/ProductLogTable"
 import PagenationUi from "../../components/ui/pagenation-lib"
 import { useGetProductLogQuery } from "../../query/productApi"
 

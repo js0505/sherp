@@ -1,9 +1,9 @@
 import { useState } from "react"
-import Modal from "../../ui/modal"
-import ProductLogItemDetail from "./log-item-detail"
+import Modal from "../ui/modal"
+import ProductLogItemDetail from "./ProductLogItemDetail"
 import dynamic from "next/dynamic"
 
-const DynamicGridTable = dynamic(import("../../ui/grid-table"))
+const DynamicGridTable = dynamic(import("../ui/grid-table"))
 function ProductLogTable(props) {
 	const { data } = props
 

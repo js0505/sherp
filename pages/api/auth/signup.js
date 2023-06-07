@@ -1,7 +1,6 @@
 import nextConnect from "next-connect"
 import { hashPassword } from "../../../lib/auth/password"
-import User from "../../../models/User"
-
+import { UserModel } from "../../../models/User"
 
 const handler = nextConnect()
 
@@ -11,7 +10,7 @@ handler.post(async (req, res) => {
 
 	// 데이터 유효성검사 만들어야 함
 
-	const existingUser = await User.findOne({ email: email })
+	const existingUser = await UserModel.findOne({ email: email })
 
 	if (existingUser) {
 		res.status(422).json({ message: "이미 가입 된 이메일 입니다." })
@@ -21,12 +20,11 @@ handler.post(async (req, res) => {
 	const hashedPassword = await hashPassword(password)
 
 	try {
-		const newUser = new User({
+		await UserModel.create({
 			email,
 			password: hashedPassword,
 			name,
 		})
-		newUser.save()
 	} catch (e) {
 		console.log(e)
 	}

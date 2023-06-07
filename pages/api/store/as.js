@@ -1,6 +1,7 @@
 import nextConnect from "next-connect"
-import dbConnect from "../../../lib/mongoose/dbConnect"
-import Store from "../../../models/Store"
+import mongooseConnect from "../../../lib/db/mongooseConnect"
+
+import { StoreModel } from "../../../models/Store"
 
 const handler = nextConnect()
 
@@ -8,10 +9,10 @@ const handler = nextConnect()
 handler.post(async function (req, res) {
 	const { storeId, date, note, writerName } = req.body
 
-	await dbConnect()
+	await mongooseConnect()
 
 	try {
-		await Store.findByIdAndUpdate(
+		await StoreModel.findByIdAndUpdate(
 			{ _id: storeId },
 			{
 				$push: {

@@ -1,18 +1,19 @@
 import nextConnect from "next-connect"
-import Product from "../../models/Product"
-import dbConnect from "../../lib/mongoose/dbConnect"
-import ProductLog from "../../models/ProductLog"
+
+import mongooseConnect from "../../lib/db/mongooseConnect"
+import { ProductModel } from "../../models/Product"
+import { ProductLogModel } from "../../models/ProductLog"
 
 const handler = nextConnect()
 
 // 장비 재고 수정
 
 handler.patch(async function (req, res) {
-	await dbConnect()
+	await mongooseConnect()
 
 	const { qty, calc, note, user, productId, date } = req.body
 	try {
-		const product = await Product.findById(productId)
+		const product = await ProductModel.findById(productId)
 
 		switch (calc) {
 			case "plus":
@@ -28,7 +29,7 @@ handler.patch(async function (req, res) {
 					date,
 				}
 
-				const log = new ProductLog(logBody)
+				const log = new ProductLogModel(logBody)
 				log.save()
 				res
 					.status(200)
@@ -51,7 +52,7 @@ handler.patch(async function (req, res) {
 						date,
 					}
 
-					const log = new ProductLog(logBody)
+					const log = new ProductLogModel(logBody)
 					log.save()
 					res
 						.status(200)

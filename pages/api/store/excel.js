@@ -1,16 +1,17 @@
 import nextConnect from "next-connect"
-import dbConnect from "../../../lib/mongoose/dbConnect"
-import Store from "../../../models/Store"
+
 import { Workbook } from "exceljs"
 import multer from "multer"
 import fs from "fs"
 import path from "path"
+import mongooseConnect from "../../../lib/db/mongooseConnect"
+import { StoreModel } from "../../../models/Store"
 
 const handler = nextConnect()
 
-handler.get(async function (req, res) {	
+handler.get(async function (req, res) {
 	const { type, year } = req.query
-	await dbConnect()
+	await mongooseConnect()
 
 	// type 쿼리를 만들어서 report면 전체 리스트 만드는 엑셀파일 넘기고
 	// countUp 이면 건수 넣을 샘플파일 넘기기. van 도 받아서 van 별로 받아 줘야 함.
@@ -115,7 +116,7 @@ handler.use(uploadFile).post(async function (req, res) {
 				const count = countArr[index]
 				const storeName = storeNameArr[index]
 
-				const store = await Store.findOne({ van, businessNum, storeName })
+				const store = await StoreModel.findOne({ van, businessNum, storeName })
 
 				if (store) {
 					// 기존에 입력된 데이터가 있는지 확인
@@ -244,15 +245,11 @@ const makeStoreReport = async ({ year, res }) => {
 		 */
 		workbook.eachSheet((worksheet) => {
 			if (worksheet.id !== 1) {
-				// worksheet.getRow(1).fill = firstRowFill
-				// worksheet.getRow(1).alignment = firstRowAlign
-				// worksheet.getRow(1).border = firstRowBorder
-				// worksheet.getRow(1).height = firstRowHeight
 				worksheet.columns = sheetColumns
 			}
 		})
 
-		const stores = await Store.find()
+		const stores = await StoreModel.find()
 
 		stores.forEach((item) => {
 			// 계약 연도가 요청한 연도보다 크면 그 해에는 없던 가맹점 이니까 제외.
@@ -522,7 +519,7 @@ const makeStoreCountUpSample = async ({ res }) => {
 			sheet.getRow(1).alignment = firstRowAlign
 		})
 
-		const stores = await Store.find({
+		const stores = await StoreModel.find({
 			inOperation: { $not: { $eq: "폐업" } },
 			isCorporation: { $not: { $eq: true } },
 		})

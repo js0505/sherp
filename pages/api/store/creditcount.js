@@ -1,10 +1,11 @@
 import nextConnect from "next-connect"
-import dbConnect from "../../../lib/mongoose/dbConnect"
-import Store from "../../../models/Store"
+import mongooseConnect from "../../../lib/db/mongooseConnect"
+import { StoreModel } from "../../../models/Store"
+
 const handler = nextConnect()
 
 handler.patch(async function (req, res) {
-	await dbConnect()
+	await mongooseConnect()
 
 	const { storeId, year, month, count, cms, inOperation } = req.body
 
@@ -16,7 +17,7 @@ handler.patch(async function (req, res) {
 				"creditCount.$.cms": cms,
 			},
 		}
-		const filterdStore = await Store.updateOne(
+		const filterdStore = await StoreModel.updateOne(
 			{
 				_id: storeId,
 				creditCount: { $elemMatch: { year, month } },
@@ -26,7 +27,7 @@ handler.patch(async function (req, res) {
 
 		// 등록되지 않은 연, 월에 데이터 입력 시 새로운 값 입력 시키기
 		if (filterdStore.matchedCount === 0) {
-			await Store.findByIdAndUpdate(
+			await StoreModel.findByIdAndUpdate(
 				{ _id: storeId },
 				{
 					$push: {

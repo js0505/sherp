@@ -1,17 +1,20 @@
 import nextConnect from "next-connect"
-import Product from "../../../models/Product"
-import ProductLog from "../../../models/ProductLog"
-import Repair from "../../../models/Repair"
-import Brand from "../../../models/Brand"
-import dbConnect from "../../../lib/mongoose/dbConnect"
+import { ProductModel } from "../../../models/Product"
+import { ProductLogModel } from "../../../models/ProductLog"
+import mongooseConnect from "../../../lib/db/mongooseConnect"
+import { RepairModel } from "../../../models/Repair"
+import { BrandModel } from "../../../models/Brand"
 
 const handler = nextConnect()
 
 handler.get(async function (req, res) {
-	await dbConnect()
+	await mongooseConnect()
+
 	try {
-		const findRepairListByState = await Repair.find({ state: req.query.state })
-			.populate({ path: "product", model: Product })
+		const findRepairListByState = await RepairModel.find({
+			state: req.query.state,
+		})
+			.populate({ path: "product", model: ProductModel })
 			.exec()
 
 		res.status(200).json({ repairs: findRepairListByState, success: true })
@@ -23,18 +26,18 @@ handler.get(async function (req, res) {
 })
 
 handler.post(async function (req, res) {
-	await dbConnect()
+	await mongooseConnect()
 	const data = req.body
 
 	try {
 		if (data.brand.name === "없음") {
 			// 법인건 아니면 수량조정 없이 그냥 저장
-			const repair = new Repair(data)
+			const repair = new RepairModel(data)
 			repair.save()
 			res.status(201).json({ message: "수리 내역 저장 성공", success: true })
 		} else {
-			const result = await Product.findById(data.product)
-				.populate({ path: "brand", model: Brand })
+			const result = await ProductModel.findById(data.product)
+				.populate({ path: "brand", model: BrandModel })
 				.exec()
 			if (result.qty - data.qty < 0) {
 				res.status(200).json({
@@ -57,15 +60,16 @@ handler.post(async function (req, res) {
 					date: data.date,
 				}
 
-				const log = new ProductLog(logBody)
+				const log = new ProductLogModel(logBody)
 				log.save()
 
-				const repair = new Repair(data)
+				const repair = new RepairModel(data)
 				repair.save()
 				res.status(201).json({ message: "수리 내역 저장 성공", success: true })
 			}
 		}
 	} catch (e) {
+		console.log(e)
 		res
 			.status(500)
 			.json({ message: "수리 내역 저장 중 오류", err: e, success: false })
@@ -78,12 +82,12 @@ handler.patch(async function (req, res) {
 	// 수리완료 -> 재고 or 원복은 재고 수량변경, 로그남기기, 최종 변경 날짜, 유저 입력
 
 	try {
-		await dbConnect()
+		await mongooseConnect()
 		const { state, id, product, qty, completeUser, completeDate } = req.body
 
 		// 수리완료 처리
 		if (state === "수리완료") {
-			const findRepairByState = await Repair.findByIdAndUpdate(id, {
+			const findRepairByState = await RepairModel.findByIdAndUpdate(id, {
 				$set: { state: state },
 			})
 			res.status(200).json({
@@ -93,7 +97,7 @@ handler.patch(async function (req, res) {
 			})
 		} else {
 			// 원복, 재고입고 : 재고 수량 조정
-			await Repair.findByIdAndUpdate(id, {
+			await RepairModel.findByIdAndUpdate(id, {
 				$set: {
 					state: state,
 					completeUser: completeUser,
@@ -101,9 +105,9 @@ handler.patch(async function (req, res) {
 				},
 			})
 
-			Product.findById(product)
-				.populate({ path: "brand", model: Brand })
-				.exec((err, result) => {
+			ProductModel.findById(product)
+				.populate({ path: "brand", model: BrandModel })
+				.then((result) => {
 					// 기존 재고 수량에 수리해서 돌아온 수량 증가.
 
 					// 법인장비 아닐 때만 수량조정, 로그 입력
@@ -121,7 +125,7 @@ handler.patch(async function (req, res) {
 							date: completeDate,
 						}
 
-						const log = new ProductLog(logBody)
+						const log = new ProductLogModel(logBody)
 						log.save()
 					}
 

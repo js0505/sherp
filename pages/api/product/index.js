@@ -1,8 +1,9 @@
 import nextConnect from "next-connect"
-import Product from "../../../models/Product"
-import ProductCompany from "../../../models/ProductCompany"
-import Brand from "../../../models/Brand"
-import dbConnect from "../../../lib/mongoose/dbConnect"
+import { ProductModel } from "../../../models/Product"
+import { ProductCompanyModel } from "../../../models/ProductCompany"
+import { BrandModel } from "../../../models/Brand"
+
+import mongooseConnect from "../../../lib/db/mongooseConnect"
 
 const handler = nextConnect()
 
@@ -26,15 +27,14 @@ handler.get(async function (req, res) {
 		andQuery.push({ brand })
 	}
 
-	await dbConnect()
+	await mongooseConnect()
 
 	try {
-		const filteredProduct = await Product.find()
+		const filteredProduct = await ProductModel.find()
 			.or(orQuery.length < 1 ? {} : orQuery)
 			.and(andQuery.length < 1 ? {} : andQuery)
-			.populate({ path: "productCompany", model: ProductCompany })
-			.populate({ path: "brand", model: Brand })
-			.exec()
+			.populate({ path: "productCompany", model: ProductCompanyModel })
+			.populate({ path: "brand", model: BrandModel })
 
 		res.status(200).json({ products: filteredProduct, success: true })
 	} catch (e) {
@@ -49,15 +49,30 @@ handler.get(async function (req, res) {
 
 // 장비 정보 저장
 handler.post(async function (req, res) {
-	const data = req.body
-
 	try {
-		const newProduct = new Product(data)
-		newProduct.save()
+		const { name, van, category, brand, productCompany } = req.body
+
+		const findBrandId = await BrandModel.findOne({ name: brand }).then(
+			(value) => value._id.toString(),
+		)
+
+		const findProductCompanyId = await ProductCompanyModel.findOne({
+			name: productCompany,
+		}).then((value) => value._id.toString())
+
+		const newProduct = await ProductModel.create({
+			name,
+			van,
+			category,
+			brand: findBrandId,
+			productCompany: findProductCompanyId,
+		})
+
 		res
 			.status(201)
 			.json({ message: "장비 저장 성공", result: newProduct, success: true })
 	} catch (e) {
+		console.log(e)
 		res
 			.status(500)
 			.json({ message: "장비 저장 중 오류", err: e, success: false })

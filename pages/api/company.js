@@ -1,10 +1,10 @@
 import nextConnect from "next-connect"
-import ProductCompany from "../../models/ProductCompany"
+import { ProductCompanyModel } from "../../models/ProductCompany"
 
 const handler = nextConnect()
 
 handler.get(async function (req, res) {
-	const getAllCompany = await ProductCompany.find()
+	const getAllCompany = await ProductCompanyModel.find()
 
 	res.status(200).json({ company: getAllCompany })
 })
@@ -12,7 +12,7 @@ handler.get(async function (req, res) {
 handler.post(async function (req, res) {
 	const data = req.body
 	let productCompany
-	const existingCompanyName = await ProductCompany.findOne({
+	const existingCompanyName = await ProductCompanyModel.findOne({
 		name: data.name,
 	})
 
@@ -22,19 +22,17 @@ handler.post(async function (req, res) {
 	}
 
 	try {
-		productCompany = new ProductCompany(data)
+		productCompany = new ProductCompanyModel(data)
 		productCompany.save()
 	} catch (e) {
 		res
 			.status(500)
 			.json({ message: "제조사 저장 중 오류", err: e, success: false })
 	}
-	res
-		.status(201)
-		.json({
-			message: "제조사 저장 성공",
-			result: productCompany,
-			success: true,
-		})
+	res.status(201).json({
+		message: "제조사 저장 성공",
+		result: productCompany,
+		success: true,
+	})
 })
 export default handler

@@ -1,12 +1,13 @@
 import nextConnect from "next-connect"
-import dbConnect from "../../lib/mongoose/dbConnect"
-import User from "../../models/User"
+import mongooseConnect from "../../lib/db/mongooseConnect"
+import { UserModel } from "./../../models/User"
+
 const handler = nextConnect()
 
 handler.get(async function (req, res) {
 	try {
-		await dbConnect()
-		const users = await User.find({}).exec()
+		await mongooseConnect()
+		const users = await UserModel.find({}).exec()
 
 		res.status(200).json({ success: true, users })
 	} catch (e) {

@@ -1,6 +1,7 @@
 import nextConnect from "next-connect"
-import dbConnect from "../../../lib/mongoose/dbConnect"
-import Repair from "../../../models/Repair"
+import mongooseConnect from "../../../lib/db/mongooseConnect"
+import { RepairModel } from "../../../models/Repair"
+
 
 const handler = nextConnect()
 
@@ -9,10 +10,10 @@ handler.post(async function (req, res) {
 
 	const { repairId, writerName, date, note } = req.body
 
-	await dbConnect()
+	await mongooseConnect()
 
 	try {
-		await Repair.findByIdAndUpdate(
+		await RepairModel.findByIdAndUpdate(
 			{ _id: repairId },
 			{
 				$push: {

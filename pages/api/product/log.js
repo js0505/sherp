@@ -2,7 +2,7 @@ import nextConnect from "next-connect"
 import mongooseConnect from "../../../lib/db/mongooseConnect"
 import { BrandModel } from "../../../models/Brand"
 import { ProductModel } from "../../../models/Product"
-import { ProductLogModel } from "../../../models/ProductLogModel"
+import { ProductLogModel } from "../../../models/ProductLog"
 
 const handler = nextConnect()
 

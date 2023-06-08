@@ -39,6 +39,7 @@ const StorePage = ({ users }) => {
 		control,
 		watch,
 		setValue,
+		getValues,
 	} = useForm<FieldValues>({
 		mode: "onSubmit",
 		defaultValues: {
@@ -47,6 +48,7 @@ const StorePage = ({ users }) => {
 			city: "",
 			storeName: "",
 			businessNum: "",
+			isCorporation: false,
 		},
 	})
 
@@ -163,6 +165,56 @@ const StorePage = ({ users }) => {
 										onClick={() => registerStoreModal.onOpen()}
 									/>
 								</div>
+								{fetchedStoreResultData && (
+									<div className={`hidden md:block col-span-12 `}>
+										<label
+											className={`
+											flex  
+											rounded-md  
+											border-2
+											border-gray-transparent 
+											w-full 
+											h-14 
+											px-2 
+											mt-2
+											justify-center 
+											items-center 
+											shadow-md
+											${fetchedStoreResultData ? "" : "hidden"}
+									`}
+										>
+											<input
+												type="checkbox"
+												className=" appearance-none "
+												{...register("isCorporation")}
+												onChange={() => {
+													setIsFilteredStoresLoading(true)
+													const prevValue = getValues("isCorporation")
+													setValue("isCorporation", !prevValue)
+													setIsFilteredStoresLoading(false)
+												}}
+											/>
+											<div
+												className={`
+												w-4 
+												h-4 
+												mr-3  
+												border-2
+												border-gray-300 
+												border-opacity-50 
+												flex 
+												justify-center 
+												items-center 
+												text-xs
+												text-white 
+												${isCorporationFilterValue ? " bg-teal-800 border-none" : ""}`}
+											>
+												v
+											</div>
+											<p className={``}>결과 내 법인사업자 보기</p>
+										</label>
+									</div>
+								)}
 							</form>
 						</div>
 					</div>

@@ -82,6 +82,7 @@ handler.post(async function (req: NextApiRequest, res: NextApiResponse) {
 		note,
 		contractImg,
 		isBackup,
+		isCorporation,
 	} = req.body
 
 	console.log(req.body)
@@ -121,6 +122,7 @@ handler.post(async function (req: NextApiRequest, res: NextApiResponse) {
 			isBackup,
 			inOperation,
 			creditCount,
+			isCorporation,
 		})
 
 		newStore.save()
@@ -157,6 +159,7 @@ handler.patch(async function (req: NextApiRequest, res: NextApiResponse) {
 		owner,
 		note,
 		inOperation,
+		isCorporation,
 	} = req.body
 
 	try {
@@ -239,6 +242,7 @@ handler.patch(async function (req: NextApiRequest, res: NextApiResponse) {
 					owner,
 					note,
 					inOperation,
+					isCorporation,
 					isBackup: inOperation === "영업중" ? false : true,
 				},
 			},

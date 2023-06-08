@@ -40,6 +40,9 @@ const RegisterStoreModal = (props: Props) => {
 		reset,
 		handleSubmit,
 		control,
+		getValues,
+		setValue,
+		watch,
 		formState: { errors },
 	} = useForm<FieldValues>({
 		mode: "onSubmit",
@@ -65,6 +68,7 @@ const RegisterStoreModal = (props: Props) => {
 			city: "",
 			isBackup: "",
 			van: "",
+			isCorporation: false,
 		},
 	})
 
@@ -87,6 +91,8 @@ const RegisterStoreModal = (props: Props) => {
 			})
 		}
 	}, [session])
+
+	const isCorporationState = watch("isCorporation")
 
 	async function submitHandler(formData) {
 		// todo: 사업자번호로 검색해서 이미 존재하는 가맹점인지 확인하고 계속 저장할지 묻는 로직 생성.
@@ -128,6 +134,7 @@ const RegisterStoreModal = (props: Props) => {
 			vanCode: "",
 			vanId: "",
 			note: "",
+			isCorporation: false,
 			product: {
 				pos: false,
 				kiosk: false,
@@ -365,6 +372,50 @@ const RegisterStoreModal = (props: Props) => {
 							{...register("note", { maxLength: 500 })}
 							rows={3}
 						></textarea>
+					</div>
+					<div className="col-span-3">
+						<label
+							className={`
+											flex  
+											rounded-md
+											border-2  
+											border-gray-transparent 
+											w-full 
+											h-full
+											px-2 
+											mt-2
+											justify-center 
+											items-center 
+											shadow-md
+									`}
+						>
+							<input
+								type="checkbox"
+								className=" appearance-none "
+								{...register("isCorporation")}
+								onChange={() => {
+									const prevValue = getValues("isCorporation")
+									setValue("isCorporation", !prevValue)
+								}}
+							/>
+							<div
+								className={`
+												w-4 
+												h-4 
+												mr-3  
+												border-2
+												flex 
+												justify-center 
+												items-center 
+												text-xs
+												text-white 
+												${isCorporationState ? " bg-teal-800 border-none" : ""}
+												`}
+							>
+								v
+							</div>
+							<p className={``}>법인 사업자</p>
+						</label>
 					</div>
 					<div
 						className="

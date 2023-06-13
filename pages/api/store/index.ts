@@ -16,7 +16,7 @@ const handler = nextConnect()
 handler.get(async function (req: NextApiRequest, res: NextApiResponse) {
 	try {
 		const { businessNum, storeName, van, city, user } = req.query
-		console.log(req.query)
+
 
 		let andQuery: FilterQuery<any>[] = []
 		let orQuery: FilterQuery<any>[] = []

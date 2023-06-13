@@ -91,7 +91,7 @@ function RegisterRepairModal({ products }: Props) {
 
 		reset()
 	}
-	console.log(watch("selectedProduct"))
+
 	const modalBodyContent = (
 		<>
 			<form

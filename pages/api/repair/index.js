@@ -30,44 +30,50 @@ handler.post(async function (req, res) {
 	const data = req.body
 
 	try {
-		if (data.brand.name === "없음") {
-			// 법인건 아니면 수량조정 없이 그냥 저장
-			const repair = new RepairModel(data)
-			repair.save()
-			res.status(201).json({ message: "수리 내역 저장 성공", success: true })
-		} else {
-			const result = await ProductModel.findById(data.product)
-				.populate({ path: "brand", model: BrandModel })
-				.exec()
-			if (result.qty - data.qty < 0) {
-				res.status(200).json({
-					message: `재고 수량이 부족합니다. 보유수량 : ${result.qty}`,
-					success: false,
-				})
-			} else {
-				// 법인 장비인 경우
-				// 기존 재고에서 수리 들어가는 수량 빼기.
-				result.qty = result.qty - data.qty
-				result.save()
+		const repair = new RepairModel(data)
+		repair.save()
+		res.status(201).json({ message: "수리 내역 저장 성공", success: true })
 
-				// 수량변경 로그 데이터 남기기
-				const logBody = {
-					user: data.user,
-					product: data.product,
-					calc: "minus",
-					quantity: Number(data.qty),
-					note: "수리 접수로 인한 재고 감소",
-					date: data.date,
-				}
+		// 하단 주석 내용은 법인 장비 여부에 따라 재고 및 로그용 로직.
 
-				const log = new ProductLogModel(logBody)
-				log.save()
+		// if (data.brand.name === "없음") {
+		// 	// 법인건 아니면 수량조정 없이 그냥 저장
+		// 	const repair = new RepairModel(data)
+		// 	repair.save()
+		// 	res.status(201).json({ message: "수리 내역 저장 성공", success: true })
+		// } else {
+		// 	const result = await ProductModel.findById(data.product)
+		// 		.populate({ path: "brand", model: BrandModel })
+		// 		.exec()
+		// 	if (result.qty - data.qty < 0) {
+		// 		res.status(200).json({
+		// 			message: `재고 수량이 부족합니다. 보유수량 : ${result.qty}`,
+		// 			success: false,
+		// 		})
+		// 	} else {
+		// 		// 법인 장비인 경우
+		// 		// 기존 재고에서 수리 들어가는 수량 빼기.
+		// 		result.qty = result.qty - data.qty
+		// 		result.save()
 
-				const repair = new RepairModel(data)
-				repair.save()
-				res.status(201).json({ message: "수리 내역 저장 성공", success: true })
-			}
-		}
+		// 		// 수량변경 로그 데이터 남기기
+		// 		const logBody = {
+		// 			user: data.user,
+		// 			product: data.product,
+		// 			calc: "minus",
+		// 			quantity: Number(data.qty),
+		// 			note: "수리 접수로 인한 재고 감소",
+		// 			date: data.date,
+		// 		}
+
+		// 		const log = new ProductLogModel(logBody)
+		// 		log.save()
+
+		// 		const repair = new RepairModel(data)
+		// 		repair.save()
+		// 		res.status(201).json({ message: "수리 내역 저장 성공", success: true })
+		// 	}
+		// }
 	} catch (e) {
 		console.log(e)
 		res

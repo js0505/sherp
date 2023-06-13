@@ -36,7 +36,6 @@ function RegisterRepairModal({ products }: Props) {
 		handleSubmit,
 		setValue,
 		getValues,
-		control,
 		watch,
 		formState: { errors },
 	} = useForm<FieldValues>({
@@ -54,6 +53,7 @@ function RegisterRepairModal({ products }: Props) {
 			// 재고 수량조정 때문에 브랜드 있는지 백엔드에서 확인 해야 해서 보냄
 			brand: "",
 			selectedProduct: {},
+			selectedProductName: "",
 			// 재조사 보여주려고 사용하는 값
 			selectedProductCompanyName: "",
 		},
@@ -85,14 +85,13 @@ function RegisterRepairModal({ products }: Props) {
 
 		if (!response.success) {
 			toast.error(response.message)
-			console.log(response.error)
 			return
 		}
 		toast.success(response.message)
 
 		reset()
 	}
-
+	console.log(watch("selectedProduct"))
 	const modalBodyContent = (
 		<>
 			<form
@@ -111,10 +110,10 @@ function RegisterRepairModal({ products }: Props) {
 				</div>
 				<div className="col-span-4 lg:col-span-2">
 					<Combobox
-						value={getValues("selectedProduct")}
+						value={getValues("selectedProductName")}
 						onChange={(value) => {
-							console.log(value)
 							setValue("selectedProduct", value)
+							setValue("selectedProductName", value.value)
 							setValue("selectedProductCompanyName", value.company)
 							setValue("product", value.id)
 							setValue("productCompany", value.companyId)
@@ -135,7 +134,6 @@ function RegisterRepairModal({ products }: Props) {
 							</div>
 							<Combobox.Input
 								onChange={(event) => setQuery(event.target.value)}
-								displayValue={(product: ProductsType) => product.value}
 								className="
 								border-2
 								border-neutral-300

@@ -29,7 +29,7 @@ function Modal(props: ModalProps) {
 		setShowModal(false)
 		setTimeout(() => {
 			onClose()
-		}, 220)
+		}, 200)
 	}, [onClose, disabled])
 
 	const handleSubmit = useCallback(() => {
@@ -78,7 +78,7 @@ function Modal(props: ModalProps) {
 							inset-0 
 							overflow-y-auto
 							translate
-            				duration-500
+            				duration-300
 							${showModal ? "translate-y-0" : "translate-y-full"}
             				${showModal ? "opacity-100" : "opacity-0"}
 			`}

@@ -59,6 +59,8 @@ function RegisterRepairModal({ products }: Props) {
 		},
 	})
 
+	const selectedProductComboboxValue = watch("selectedProductName")
+
 	const filteredProducts =
 		query === ""
 			? products
@@ -110,7 +112,7 @@ function RegisterRepairModal({ products }: Props) {
 				</div>
 				<div className="col-span-4 lg:col-span-2">
 					<Combobox
-						value={getValues("selectedProductName")}
+						value={selectedProductComboboxValue}
 						onChange={(value) => {
 							setValue("selectedProduct", value)
 							setValue("selectedProductName", value.value)

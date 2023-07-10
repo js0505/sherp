@@ -72,7 +72,7 @@ let uploadFile = upload.single("file")
 handler.use(uploadFile).post(async function (req, res) {
 	console.log("건수입력 시작")
 	try {
-		await dbConnect()
+		await mongooseConnect()
 		// 요청 받으면서 업로드 된 파일을 처리할 연, 월 값
 		const { month, year } = req.query
 		const parseMonth = month.length === 1 ? `0${month}` : month

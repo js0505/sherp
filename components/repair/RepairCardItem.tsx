@@ -13,47 +13,16 @@ export default function RepairCardItem({ item }: Props) {
 	return (
 		<>
 			<div
-				className="
-					cursor-pointer 
-					h-16 
-					pt-3 
-					lg:py-2 
-					px-2 
-					mb-3 
-					border 
-					border-gray-transparent 
-					rounded-md 
-					shadow-md 
-					hover:bg-gray-300 
-					hover:bg-opacity-10
-				"
+				className="h-16 px-2 pt-3 mb-3 border rounded-md shadow-md cursor-pointer lg:py-2 border-gray-transparent hover:bg-gray-300 hover:bg-opacity-10"
 				onClick={modalHandler}
 			>
-				<div
-					className="
-						w-full 
-						text-lg 
-						lg:text-base 
-						flex 
-						font-medium
-				"
-				>
+				<div className="flex w-full text-lg font-medium lg:text-base">
 					<div className="mr-2">{item.storeName} </div>
 					<span className="mr-2">{item.product.name} </span>
 					<span className="mr-1">{item.qty}대</span>
 					{item.reply.length > 0 && <span> ({item.reply.length})</span>}
 				</div>
-				<div
-					className="
-						text-gray-600 
-						text-xs 
-						lg:text-base  
-						flex 
-						lg:justify-end 
-						w-full 
-						p-0 
-				"
-				>
+				<div className="flex w-full p-0 text-xs text-gray-600 lg:text-base lg:justify-end">
 					<div className="mr-2">{item.user}</div>
 					<div>{item.date}</div>
 				</div>

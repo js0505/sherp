@@ -178,6 +178,7 @@ function StoreTable(props: IProps) {
 		document.body.removeChild(textArea)
 		toast.success(message)
 	}
+
 	// 셀에서 직접 거래건수, cms 수정 시에 동작
 	const cellEditRequest = async (event: any) => {
 		// 수정 대상 데이터
@@ -243,7 +244,7 @@ function StoreTable(props: IProps) {
 
 	return (
 		<>
-			<div className="w-full md:pl-10 overflow-auto">
+			<div className="w-full overflow-auto md:pl-10">
 				<div className="ag-theme-alpine h-[50vh] md:h-[70vh]">
 					<AgGridReact
 						defaultColDef={{

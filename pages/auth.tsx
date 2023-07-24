@@ -102,7 +102,7 @@ const AuthPage = () => {
 		<section className="md:flex md:justify-center">
 			<form
 				onSubmit={handleSubmit(submitHandler)}
-				className="mx-3 lg:w-1/3 flex flex-col gap-4"
+				className="flex flex-col gap-4 mx-3 lg:w-1/3"
 			>
 				{!isLogin && (
 					<div>
@@ -129,7 +129,7 @@ const AuthPage = () => {
 				<div className="flex flex-col mt-4 ">
 					<Button label={isLogin ? "로그인" : "계정 생성"} type="submit" />
 
-					<div className="text-center mt-4" onClick={switchAuthModeHandler}>
+					<div className="mt-4 text-center" onClick={switchAuthModeHandler}>
 						{isLogin ? "새로운 계정 생성" : "기존 계정으로 로그인"}
 					</div>
 				</div>

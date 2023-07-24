@@ -150,17 +150,9 @@ const RegisterStoreModal = (props: Props) => {
 			<section>
 				<form
 					onSubmit={handleSubmit(submitHandler)}
-					className="
-                        grid
-                        grid-cols-12
-                        gap-4
-                    "
+					className="grid grid-cols-12 gap-4 "
 				>
-					<div
-						className="
-                            col-span-4
-                        "
-					>
+					<div className="col-span-4 ">
 						<Input
 							id="contractDate"
 							label="계약일자"
@@ -171,11 +163,7 @@ const RegisterStoreModal = (props: Props) => {
 						/>
 					</div>
 
-					<div
-						className="
-                            col-span-5
-                        "
-					>
+					<div className="col-span-5 ">
 						<Input
 							id="storeName"
 							label="가맹점명"
@@ -186,11 +174,7 @@ const RegisterStoreModal = (props: Props) => {
 						/>
 					</div>
 
-					<div
-						className="
-                            col-span-3
-                        "
-					>
+					<div className="col-span-3 ">
 						<Input
 							id="businessNum"
 							label="사업자번호"
@@ -207,11 +191,7 @@ const RegisterStoreModal = (props: Props) => {
 						/>
 					</div>
 
-					<div
-						className="
-                            col-span-3
-                        "
-					>
+					<div className="col-span-3 ">
 						<Input
 							id="owner"
 							label="대표자명"
@@ -222,11 +202,7 @@ const RegisterStoreModal = (props: Props) => {
 						/>
 					</div>
 
-					<div
-						className="
-                            col-span-3
-                        "
-					>
+					<div className="col-span-3 ">
 						<ListboxButton
 							control={control}
 							options={users || [{ value: "", name: "" }]}
@@ -235,11 +211,7 @@ const RegisterStoreModal = (props: Props) => {
 						/>
 					</div>
 
-					<div
-						className="
-                            col-span-3
-                        "
-					>
+					<div className="col-span-3 ">
 						<Input
 							register={register}
 							errors={errors}
@@ -248,25 +220,24 @@ const RegisterStoreModal = (props: Props) => {
 							type="text"
 						/>
 					</div>
-					<div
-						className="
-                            col-span-3
-                        "
-					>
+					<div className="col-span-3 ">
 						<Input
 							register={register}
 							errors={errors}
+							options={{
+								validate: {
+									checkComma: (value: string) => {
+										return value.indexOf(",") === -1
+									},
+								},
+							}}
 							id="cms"
 							label="CMS"
 							required
 							type="text"
 						/>
 					</div>
-					<div
-						className="
-                            col-span-3
-                        "
-					>
+					<div className="col-span-3 ">
 						<ListboxButton
 							placeholder="도시"
 							control={control}
@@ -274,11 +245,7 @@ const RegisterStoreModal = (props: Props) => {
 							name="city"
 						/>
 					</div>
-					<div
-						className="
-                            col-span-9
-                        "
-					>
+					<div className="col-span-9 ">
 						<Input
 							register={register}
 							errors={errors}
@@ -288,11 +255,7 @@ const RegisterStoreModal = (props: Props) => {
 							type="text"
 						/>
 					</div>
-					<div
-						className="
-                            col-span-3
-                        "
-					>
+					<div className="col-span-3 ">
 						<ListboxButton
 							placeholder="메인/백업"
 							control={control}
@@ -300,11 +263,7 @@ const RegisterStoreModal = (props: Props) => {
 							name="isBackup"
 						/>
 					</div>
-					<div
-						className="
-                            col-span-3
-                        "
-					>
+					<div className="col-span-3 ">
 						<ListboxButton
 							placeholder="VAN"
 							control={control}
@@ -312,11 +271,7 @@ const RegisterStoreModal = (props: Props) => {
 							name="van"
 						/>
 					</div>
-					<div
-						className="
-                            col-span-3
-                        "
-					>
+					<div className="col-span-3 ">
 						<Input
 							register={register}
 							errors={errors}
@@ -325,11 +280,7 @@ const RegisterStoreModal = (props: Props) => {
 							type="text"
 						/>
 					</div>
-					<div
-						className="
-                            col-span-3
-                        "
-					>
+					<div className="col-span-3 ">
 						<Input
 							register={register}
 							errors={errors}
@@ -338,36 +289,14 @@ const RegisterStoreModal = (props: Props) => {
 							type="text"
 						/>
 					</div>
-					<div
-						className="
-                            col-span-12
-                        "
-					>
-						<div
-							className="
-                                pl-2
-                                text-zinc-400
-                            "
-						>
-							장비
-						</div>
+					<div className="col-span-12 ">
+						<div className="pl-2 text-zinc-400">장비</div>
 						<StoreProductCheckbox control={control} name="product" />
 					</div>
-					<div
-						className="
-                            col-span-12
-                        "
-					>
+					<div className="col-span-12 ">
 						<textarea
 							placeholder="비고"
-							className="
-                                    w-full 
-                                    border-2 
-                                    rounded-md
-                                    pl-2
-                                    pt-2
-                                    resize-none
-                                "
+							className="w-full pt-2 pl-2 border-2 rounded-md resize-none "
 							id="note"
 							{...register("note", { maxLength: 500 })}
 							rows={3}
@@ -391,7 +320,7 @@ const RegisterStoreModal = (props: Props) => {
 						>
 							<input
 								type="checkbox"
-								className=" appearance-none "
+								className="appearance-none "
 								{...register("isCorporation")}
 								onChange={() => {
 									const prevValue = getValues("isCorporation")
@@ -417,12 +346,7 @@ const RegisterStoreModal = (props: Props) => {
 							<p className={``}>법인 사업자</p>
 						</label>
 					</div>
-					<div
-						className="
-                            col-span-3
-                            col-start-10
-                        "
-					>
+					<div className="col-span-3 col-start-10 ">
 						<Button
 							label="등록"
 							type="submit"

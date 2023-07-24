@@ -17,7 +17,6 @@ handler.get(async function (req: NextApiRequest, res: NextApiResponse) {
 	try {
 		const { businessNum, storeName, van, city, user } = req.query
 
-
 		let andQuery: FilterQuery<any>[] = []
 		let orQuery: FilterQuery<any>[] = []
 
@@ -125,7 +124,7 @@ handler.post(async function (req: NextApiRequest, res: NextApiResponse) {
 			isCorporation,
 		})
 
-		newStore.save()
+		// newStore.save()
 
 		res
 			.status(201)

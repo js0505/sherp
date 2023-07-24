@@ -94,15 +94,9 @@ const StorePage = ({ users }) => {
 			{isFilteredStoresLoading && <Loader />}
 			<Container>
 				<Heading title="가맹점 관리" />
-				<div className="flex flex-col md:flex-row gap-4 pt-4">
-					<div className="md:basis-1/5 w-full">
-						<div
-							className="
-								flex
-								flex-col
-								gap-5
-							"
-						>
+				<div className="flex flex-col gap-4 pt-4 md:flex-row">
+					<div className="w-full md:basis-1/5">
+						<div className="flex flex-col gap-5 ">
 							<form
 								onSubmit={handleSubmit(onSubmit)}
 								className="grid grid-cols-12 gap-2"
@@ -185,7 +179,7 @@ const StorePage = ({ users }) => {
 										>
 											<input
 												type="checkbox"
-												className=" appearance-none "
+												className="appearance-none "
 												{...register("isCorporation")}
 												onChange={() => {
 													setIsFilteredStoresLoading(true)

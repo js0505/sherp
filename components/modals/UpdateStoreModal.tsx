@@ -190,7 +190,7 @@ function UpdateStoreModal(props: Props) {
 		<>
 			{item && (
 				<form onSubmit={handleSubmit(editStoreSubmitHandler)} className="">
-					<div className="w-full  grid grid-cols-5 gap-2">
+					<div className="grid w-full grid-cols-5 gap-2">
 						<div className="col-span-3 lg:col-span-2">
 							<Input
 								label="계약일자"
@@ -291,6 +291,13 @@ function UpdateStoreModal(props: Props) {
 								id="cms"
 								label="CMS"
 								required
+								options={{
+									validate: {
+										checkComma: (value: string) => {
+											return value.indexOf(",") === -1
+										},
+									},
+								}}
 								register={register}
 								errors={errors}
 							/>
@@ -315,23 +322,16 @@ function UpdateStoreModal(props: Props) {
 								errors={errors}
 							/>
 						</div>
-						<div className="col-span-5 h-full">
+						<div className="h-full col-span-5">
 							<textarea
 								placeholder="비고"
-								className="
-                                    w-full 
-                                    border-2 
-                                    rounded-md
-                                    pl-2
-                                    pt-2
-                                    resize-none
-                                "
+								className="w-full pt-2 pl-2 border-2 rounded-md resize-none "
 								id="note"
 								{...register("note", { maxLength: 500 })}
 								rows={6}
 							></textarea>
 						</div>
-						<div className="col-span-5 flex gap-2">
+						<div className="flex col-span-5 gap-2">
 							<div className={`w-full hidden lg:block`}>
 								<Button
 									outline

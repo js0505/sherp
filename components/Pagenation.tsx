@@ -20,11 +20,7 @@ const Pagenation = ({ onPageChange, pageRangeDisplayed, pageCount }: Props) => {
 			pageRangeDisplayed={pageRangeDisplayed}
 			pageCount={Math.ceil(pageCount / pageRangeDisplayed)}
 			previousLabel="<"
-			className="
-				py-2 
-				flex 
-				justify-center
-			"
+			className="flex justify-center py-2 "
 			pageClassName="
 				text-lg 
 				py-1 

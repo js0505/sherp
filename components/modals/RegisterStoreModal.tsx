@@ -227,7 +227,7 @@ const RegisterStoreModal = (props: Props) => {
 							options={{
 								validate: {
 									checkComma: (value: string) => {
-										return value.indexOf(",") === -1
+										return String(value).indexOf(",") === -1
 									},
 								},
 							}}

@@ -160,20 +160,6 @@ handler.use(uploadFile).post(async function (req, res) {
 })
 
 const makeStoreReport = async ({ year, res }) => {
-	// const firstRowFill = {
-	// 	type: "pattern",
-	// 	pattern: "solid",
-	// 	fgColor: { argb: "deebf9" },
-	// }
-	// const firstRowAlign = { vertical: "middle", horizontal: "center" }
-
-	// const firstRowBorder = {
-	// 	bottom: { style: "thin" },
-	// 	left: { style: "thin" },
-	// }
-
-	// const firstRowHeight = 33
-
 	const sheetColumns = [
 		{ header: "담당자", key: "user" },
 		{ header: "대리점코드", key: "vanCode" },

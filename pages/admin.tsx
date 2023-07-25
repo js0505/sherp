@@ -15,6 +15,7 @@ import React, { useCallback, useEffect, useRef, useState } from "react"
 import { FieldValues, useForm } from "react-hook-form"
 import { toast } from "react-toastify"
 import { saveAs } from "file-saver"
+import useCheckSession from "@/hooks/useCheckSession"
 
 export async function getServerSideProps() {
 	const brands = await getBrands()
@@ -26,11 +27,12 @@ export async function getServerSideProps() {
 }
 
 function Admin({ brands, productCompanies }) {
+	useCheckSession()
+
 	const {
 		register,
 		control,
 		reset,
-		watch,
 		getValues,
 		formState: { errors },
 	} = useForm<FieldValues>({
@@ -144,7 +146,6 @@ function Admin({ brands, productCompanies }) {
 		const [uploadFile, setUploadFile] = useState(null)
 		const [isLoading, setIsLoading] = useState(false)
 		const uploadFileInputRef = useRef<HTMLInputElement>()
-		const today = new Date()
 		const todayYear = useDate("yyyy")
 		const todayMonth = useDate("MM")
 
@@ -360,7 +361,7 @@ function Admin({ brands, productCompanies }) {
 						/>
 					</div>
 
-					<div className="col-start-4 col-span-1">
+					<div className="col-span-1 col-start-4">
 						<Button
 							label="장비 등록"
 							onClick={(e) =>
@@ -377,7 +378,7 @@ function Admin({ brands, productCompanies }) {
 		return (
 			<>
 				<Heading title="제조사 등록" />
-				<div className="pt-5  grid grid-cols-4 gap-4">
+				<div className="grid grid-cols-4 gap-4 pt-5">
 					<div className="col-span-2">
 						<Input
 							id="productCompanyName"
@@ -419,7 +420,7 @@ function Admin({ brands, productCompanies }) {
 		return (
 			<>
 				<Heading title="법인 등록" />
-				<div className="grid gap-4 grid-cols-4 pt-4">
+				<div className="grid grid-cols-4 gap-4 pt-4">
 					<div className="col-span-4">
 						<Input
 							id="brandName"
@@ -443,13 +444,7 @@ function Admin({ brands, productCompanies }) {
 
 	return (
 		<Container>
-			<div
-				className="
-                    grid
-                    grid-cols-12
-                    gap-6
-                "
-			>
+			<div className="grid grid-cols-12 gap-6 ">
 				<div
 					className="
                         col-span-6

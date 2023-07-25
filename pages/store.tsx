@@ -16,6 +16,7 @@ import useUpdateStoreModal from "@/hooks/useUpdateStoreModal"
 import UpdateStoreModal from "@/components/modals/UpdateStoreModal"
 import { useState } from "react"
 import Loader from "@/components/Loader"
+import useCheckSession from "@/hooks/useCheckSession"
 
 export async function getServerSideProps() {
 	const users = await getUsersList()
@@ -25,6 +26,7 @@ export async function getServerSideProps() {
 }
 
 const StorePage = ({ users }) => {
+	useCheckSession()
 	const registerStoreModal = useRegisterStoreModal()
 	const updateStoreModal = useUpdateStoreModal()
 	const [isFilteredStoresLoading, setIsFilteredStoresLoading] = useState(false)

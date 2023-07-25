@@ -54,13 +54,12 @@ const AuthPage = () => {
 					redirect: false,
 					email,
 					password,
-					callbackUrl: "/",
 				})
 
 				if (!result.ok) {
 					alert("로그인 에러")
 				} else {
-					router.replace("/")
+					router.push("/store")
 				}
 			} catch (e) {
 				console.log(e)
@@ -86,15 +85,6 @@ const AuthPage = () => {
 		}
 	}
 
-	// useEffect(() => {
-	// getSession().then((session) => {
-	// 	if (!session) {
-	// 		router.replace(`${window.location.origin}/auth`)
-	// 	} else {
-	// 		router.replace(`${window.location.origin}/`)
-	// 	}
-	// })
-	// }, [])
 	return (
 		<section className="md:flex md:justify-center">
 			<form

@@ -5,23 +5,20 @@ import {
 	useSetRepairListStateMutation,
 	useSetRepairReplyMutation,
 } from "@/query/repairApi"
-import { useSession } from "next-auth/react"
+
 import { FormEvent, useRef } from "react"
 import Button from "../Button"
 import DetailListItem from "../ui/DetailListItem"
 import Loader from "../Loader"
-
 import Modal from "./Modal"
-
-interface Props {}
+import useCheckSession from "@/hooks/useCheckSession"
 
 type IButtonValue = "수리접수" | "수리완료" | "원복완료" | "재고입고"
 
-function DetailRepairModal(props: Props) {
-	const {} = props
-	const today = useDate("yyyy-MM-dd")
+function DetailRepairModal() {
+	const session = useCheckSession()
 	const replyToday = useDate("MM/dd")
-	const { data: session } = useSession()
+	const today = useDate("yyyy-MM-dd")
 	const detailRepairModal = useDetailRepairModal()
 	const [setRepairListState] = useSetRepairListStateMutation()
 	const [setRepairReply] = useSetRepairReplyMutation()
@@ -71,6 +68,7 @@ function DetailRepairModal(props: Props) {
 
 	const onReplySubmit = async (e: FormEvent) => {
 		e.preventDefault()
+
 		if (replyInputRef.current.value === "") {
 			alert("내용을 입력 해주세요.")
 			return
@@ -104,7 +102,7 @@ function DetailRepairModal(props: Props) {
 			{isLoading ? (
 				<Loader />
 			) : (
-				<div className="divide-y divide-gray-300/50 w-full ">
+				<div className="w-full divide-y divide-gray-300/50 ">
 					{repairItem && (
 						<>
 							<div className="px-4 py-2">
@@ -137,16 +135,14 @@ function DetailRepairModal(props: Props) {
 								title="댓글"
 								desc={
 									<>
-										<div className=" overflow-auto max-h-80">
+										<div className="overflow-auto max-h-80">
 											{repairItem.reply.map((item, index) => (
 												<div
 													className="flex-col justify-between mb-2"
 													key={index}
 												>
 													<div className="mb-1">
-														<span className=" text-sm ">
-															{item.writerName}{" "}
-														</span>
+														<span className="text-sm ">{item.writerName} </span>
 														<span className="text-sm text-gray-300">
 															{item.date}
 														</span>
@@ -158,29 +154,12 @@ function DetailRepairModal(props: Props) {
 										<div>
 											<form
 												onSubmit={onReplySubmit}
-												className="
-                                            grid
-                                            grid-cols-12
-                                            gap-2
-                                    "
+												className="grid grid-cols-12 gap-2 "
 											>
 												<input
 													ref={replyInputRef}
 													type="text"
-													className="
-                                                col-span-10
-                                                px-4 
-                                                h-9 
-                                                my-1 
-                                                block 
-                                                w-full  
-                                                rounded-md 
-                                                border 
-                                                border-gray-300 
-                                                shadow-sm
-                                                lg:text-sm 
-                                                focus:ring-2  
-                                                focus:outline-none"
+													className="block w-full col-span-10 px-4 my-1 border border-gray-300 rounded-md shadow-sm h-9 lg:text-sm focus:ring-2 focus:outline-none"
 												/>
 
 												<div className="col-span-2 py-1">
@@ -192,7 +171,7 @@ function DetailRepairModal(props: Props) {
 								}
 							/>
 
-							<div className="w-full flex p-2 gap-4">
+							<div className="flex w-full gap-4 p-2">
 								{repairItemState === "수리접수" ||
 								repairItemState === "수리완료" ? (
 									<Button

@@ -1,8 +1,8 @@
+import useCheckSession from "@/hooks/useCheckSession"
 import useDate from "@/hooks/useDate"
 import useRegisterRepairModal from "@/hooks/useRegisterRepairModal"
 import { useAddRepairItemMutation } from "@/query/repairApi"
 import { Combobox } from "@headlessui/react"
-import { useSession } from "next-auth/react"
 import { useState } from "react"
 import { FieldValues, useForm } from "react-hook-form"
 import { toast } from "react-toastify"
@@ -26,7 +26,7 @@ function RegisterRepairModal({ products }: Props) {
 	const dateString = useDate("yyyy-MM-dd")
 	const [query, setQuery] = useState("")
 
-	const { data: session } = useSession()
+	const session = useCheckSession()
 	const registerRepairModal = useRegisterRepairModal()
 	const [addRepairItem] = useAddRepairItemMutation()
 
@@ -123,55 +123,16 @@ function RegisterRepairModal({ products }: Props) {
 						}}
 					>
 						<div className="relative w-full h-full">
-							<div
-								className="
-									absolute
-									top-2
-									left-4
-									text-sm
-									text-zinc-400
-								"
-							>
+							<div className="absolute text-sm top-2 left-4 text-zinc-400">
 								제품선택
 							</div>
 							<Combobox.Input
 								onChange={(event) => setQuery(event.target.value)}
-								className="
-								border-2
-								border-neutral-300
-								bg-white
-								outline-none
-								focus:border-sky-600
-								rounded-md
-								pl-6
-								pt-2
-								w-full
-								h-full
-							"
+								className="w-full h-full pt-2 pl-6 bg-white border-2 rounded-md outline-none border-neutral-300 focus:border-sky-600"
 							/>
-							<Combobox.Options
-								className="
-									cursor-pointer
-									absolute
-									z-50
-									max-h-40
-									w-full
-									bg-white
-									overflow-auto
-									border-2
-									shadow-md
-								"
-							>
+							<Combobox.Options className="absolute z-50 w-full overflow-auto bg-white border-2 shadow-md cursor-pointer max-h-40">
 								{filteredProducts.length === 0 && query !== "" ? (
-									<span
-										className="
-											pl-4
-											pt-2
-											h-10
-											block
-											opacity-60
-										"
-									>
+									<span className="block h-10 pt-2 pl-4 opacity-60">
 										검색 결과 없음
 									</span>
 								) : (
@@ -179,15 +140,7 @@ function RegisterRepairModal({ products }: Props) {
 										<Combobox.Option
 											key={product.id}
 											value={product}
-											className="
-												pl-4
-												pt-2
-												w-full
-												h-10
-												border-b
-												hover:text-white
-												hover:bg-sky-600
-										"
+											className="w-full h-10 pt-2 pl-4 border-b hover:text-white hover:bg-sky-600"
 										>
 											{product.value}
 										</Combobox.Option>
@@ -249,14 +202,7 @@ function RegisterRepairModal({ products }: Props) {
 				<div className="col-span-4">
 					<textarea
 						placeholder="고장증상"
-						className="  
-							w-full 
-							border-2 
-							rounded-md
-							pl-2
-							pt-2
-							resize-none
-						"
+						className="w-full pt-2 pl-2 border-2 rounded-md resize-none "
 						id="symptom"
 						maxLength={200}
 						rows={3}
@@ -266,14 +212,7 @@ function RegisterRepairModal({ products }: Props) {
 				<div className="col-span-4">
 					<textarea
 						placeholder="비고 사항이나 담당자 연락처를 남겨주세요"
-						className="  
-							w-full 
-							border-2 
-							rounded-md
-							pl-2
-							pt-2
-							resize-none
-						"
+						className="w-full pt-2 pl-2 border-2 rounded-md resize-none "
 						id="note"
 						maxLength={200}
 						rows={3}

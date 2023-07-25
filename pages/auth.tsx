@@ -1,6 +1,6 @@
 import Button from "@/components/Button"
 import Input from "@/components/inputs/Input"
-import { signIn, useSession } from "next-auth/react"
+import { signIn } from "next-auth/react"
 import { useRouter } from "next/router"
 import { useState } from "react"
 import { FieldValues, useForm } from "react-hook-form"
@@ -24,8 +24,6 @@ async function createUserFetch(email, name, password) {
 }
 
 const AuthPage = () => {
-	const { data: session } = useSession()
-
 	const router = useRouter()
 	const [isLogin, setIsLogin] = useState(true)
 
@@ -58,7 +56,6 @@ const AuthPage = () => {
 					password,
 					callbackUrl: "/",
 				})
-				console.log(result)
 
 				if (!result.ok) {
 					alert("로그인 에러")

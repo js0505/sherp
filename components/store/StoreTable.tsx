@@ -183,6 +183,7 @@ function StoreTable(props: IProps) {
 	const cellEditRequest = async (event: any) => {
 		// 수정 대상 데이터
 		const oldData = event.data
+
 		// if (oldData.inOperation === "폐업") {
 		// 	alert("폐업 가맹점은 데이터를 변경 할 수 없습니다.")
 		// 	return
@@ -208,7 +209,7 @@ function StoreTable(props: IProps) {
 		const oldDataCms =
 			oldData.creditCount.find(
 				(item) => item.year === editItemYear && item.month === editItemMonth,
-			)?.cms || 0
+			)?.cms || oldData.cms
 
 		const oldDataCount =
 			oldData.creditCount.find(

@@ -4,7 +4,7 @@ import { useEffect } from "react"
 
 const RequireAuth = ({ children }) => {
 	const { data: session, status } = useSession()
-	console.log(session)
+
 	const { push } = useRouter()
 
 	useEffect(() => {

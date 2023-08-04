@@ -30,7 +30,9 @@
 		"**/*.ts",
 		"**/*.tsx",
 		"pages/api/auth/signup.js",
-		"pages/api/auth/[...nextauth].js"
+		"pages/api/auth/[...nextauth].js",
+		"tests/pages/api/store/index.test.ts",
+		"lib/db/mongooseConnect.ㅓs"
 	],
 	"exclude": ["node_modules"]
 }

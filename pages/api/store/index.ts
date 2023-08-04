@@ -124,7 +124,7 @@ handler.post(async function (req: NextApiRequest, res: NextApiResponse) {
 			isCorporation,
 		})
 
-		// newStore.save()
+		newStore.save()
 
 		res
 			.status(201)
@@ -222,7 +222,7 @@ handler.patch(async function (req: NextApiRequest, res: NextApiResponse) {
 
 		// 가맹점 정보 수정 쿼리
 
-		const updatedStore = await StoreModel.findByIdAndUpdate(
+		await StoreModel.findByIdAndUpdate(
 			{ _id },
 			{
 				$set: {
@@ -247,8 +247,9 @@ handler.patch(async function (req: NextApiRequest, res: NextApiResponse) {
 			},
 		)
 
-		// // 업데이트 된 정보를 돌려보내서 화면에서 데이터 갱산 하는데에 사용
-		// const updatedStore = await Store.findById(_id)
+		// 업데이트 된 정보를 돌려보내서 api 테스트에서 결과값 확인 하는데에 사용
+		const updatedStore = await StoreModel.findById(_id)
+
 
 		res
 			.status(201)

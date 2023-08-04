@@ -2,7 +2,7 @@ import { StoreModel } from "./../../../models/Store"
 import { NextApiRequest, NextApiResponse } from "next"
 
 import nextConnect from "next-connect"
-import mongooseConnect from "../../../lib/db/mongooseConnect"
+import mongooseConnect from "@/lib/db/mongooseConnect"
 
 const handler = nextConnect()
 

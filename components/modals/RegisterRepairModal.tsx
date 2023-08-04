@@ -1,8 +1,8 @@
-import useCheckSession from "@/hooks/useCheckSession"
 import useDate from "@/hooks/useDate"
 import useRegisterRepairModal from "@/hooks/useRegisterRepairModal"
 import { useAddRepairItemMutation } from "@/query/repairApi"
 import { Combobox } from "@headlessui/react"
+import { useSession } from "next-auth/react"
 import { useState } from "react"
 import { FieldValues, useForm } from "react-hook-form"
 import { toast } from "react-toastify"
@@ -26,7 +26,7 @@ function RegisterRepairModal({ products }: Props) {
 	const dateString = useDate("yyyy-MM-dd")
 	const [query, setQuery] = useState("")
 
-	const session = useCheckSession()
+	const { data: session } = useSession()
 	const registerRepairModal = useRegisterRepairModal()
 	const [addRepairItem] = useAddRepairItemMutation()
 

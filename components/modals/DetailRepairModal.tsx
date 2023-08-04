@@ -11,12 +11,12 @@ import Button from "../Button"
 import DetailListItem from "../ui/DetailListItem"
 import Loader from "../Loader"
 import Modal from "./Modal"
-import useCheckSession from "@/hooks/useCheckSession"
+import { useSession } from "next-auth/react"
 
 type IButtonValue = "수리접수" | "수리완료" | "원복완료" | "재고입고"
 
 function DetailRepairModal() {
-	const session = useCheckSession()
+	const { data: session } = useSession()
 	const replyToday = useDate("MM/dd")
 	const today = useDate("yyyy-MM-dd")
 	const detailRepairModal = useDetailRepairModal()

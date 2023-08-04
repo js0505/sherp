@@ -1,13 +1,4 @@
-import {
-	addModelToTypegoose,
-	buildSchema,
-	getModelForClass,
-	getName,
-	Prop,
-	PropType,
-	Severity,
-} from "@typegoose/typegoose"
-import mongoose from "mongoose"
+import { getModelForClass, Prop, Severity } from "@typegoose/typegoose"
 
 interface ProductType {
 	pos: boolean

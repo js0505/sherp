@@ -14,7 +14,7 @@ import useRegisterStoreModal from "@/hooks/useRegisterStoreModal"
 import Input from "../inputs/Input"
 import ListboxButton from "../Listbox"
 import Button from "../Button"
-import useCheckSession from "@/hooks/useCheckSession"
+import { useSession } from "next-auth/react"
 
 interface Props {
 	users: [
@@ -33,7 +33,7 @@ const RegisterStoreModal = (props: Props) => {
 	const registerStoreModal = useRegisterStoreModal()
 
 	const [addStore] = useAddStoreMutation()
-	const session = useCheckSession()
+	const { data: session } = useSession()
 
 	const {
 		register,

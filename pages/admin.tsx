@@ -15,7 +15,7 @@ import React, { useCallback, useEffect, useRef, useState } from "react"
 import { FieldValues, useForm } from "react-hook-form"
 import { toast } from "react-toastify"
 import { saveAs } from "file-saver"
-import useCheckSession from "@/hooks/useCheckSession"
+
 
 export async function getServerSideProps() {
 	const brands = await getBrands()
@@ -27,7 +27,6 @@ export async function getServerSideProps() {
 }
 
 function Admin({ brands, productCompanies }) {
-	useCheckSession()
 
 	const {
 		register,

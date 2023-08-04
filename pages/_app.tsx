@@ -5,6 +5,7 @@ import { ApiProvider } from "@reduxjs/toolkit/dist/query/react"
 import { api } from "../query/api"
 import Head from "next/head"
 import ToastMessageProvider from "../providers/ToastMessageProvider"
+import RequireAuth from "@/components/RequireAuth"
 
 const MyApp = ({ Component, pageProps }) => {
 	return (
@@ -16,7 +17,9 @@ const MyApp = ({ Component, pageProps }) => {
 					<link rel="icon" href="/favicon-96x96.png" />
 				</Head>
 				<Layout>
-					<Component {...pageProps} />
+					<RequireAuth>
+						<Component {...pageProps} />
+					</RequireAuth>
 				</Layout>
 			</SessionProvider>
 		</ApiProvider>

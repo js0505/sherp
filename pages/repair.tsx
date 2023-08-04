@@ -17,7 +17,6 @@ import {
 } from "@/query/repairApi"
 import React, { useEffect, useState } from "react"
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form"
-import useCheckSession from "@/hooks/useCheckSession"
 
 type IRepairState = "수리접수" | "수리완료" | "로그"
 
@@ -30,7 +29,6 @@ export async function getServerSideProps() {
 }
 
 function Repair({ products }) {
-	useCheckSession()
 	const [state, setState] = useState<IRepairState>("수리접수")
 	const [repairItems, setRepairItems] = useState<RepairType[]>([])
 	const [page, setPage] = useState(1) // 현재 페이지네이션 번호

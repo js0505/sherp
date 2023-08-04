@@ -17,10 +17,21 @@ import {
 } from "@/query/repairApi"
 import React, { useEffect, useState } from "react"
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form"
+import { getSession } from "next-auth/react"
 
 type IRepairState = "수리접수" | "수리완료" | "로그"
 
-export async function getServerSideProps() {
+export async function getServerSideProps(context) {
+	const session = await getSession({ req: context.req })
+
+	if (!session) {
+		return {
+			redirect: {
+				destination: "/auth",
+				permanent: false,
+			},
+		}
+	}
 	const products = await getProducts()
 
 	return {

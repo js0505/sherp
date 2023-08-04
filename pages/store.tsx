@@ -16,8 +16,19 @@ import useUpdateStoreModal from "@/hooks/useUpdateStoreModal"
 import UpdateStoreModal from "@/components/modals/UpdateStoreModal"
 import { useState } from "react"
 import Loader from "@/components/Loader"
+import { getSession } from "next-auth/react"
 
-export async function getServerSideProps() {
+export async function getServerSideProps(context) {
+	const session = await getSession({ req: context.req })
+
+	if (!session) {
+		return {
+			redirect: {
+				destination: "/auth",
+				permanent: false,
+			},
+		}
+	}
 	const users = await getUsersList()
 	return {
 		props: { users },

@@ -15,9 +15,19 @@ import React, { useCallback, useEffect, useRef, useState } from "react"
 import { FieldValues, useForm } from "react-hook-form"
 import { toast } from "react-toastify"
 import { saveAs } from "file-saver"
+import { getSession } from "next-auth/react"
 
+export async function getServerSideProps(context) {
+	const session = await getSession({ req: context.req })
 
-export async function getServerSideProps() {
+	if (!session) {
+		return {
+			redirect: {
+				destination: "/auth",
+				permanent: false,
+			},
+		}
+	}
 	const brands = await getBrands()
 	const productCompanies = await getProductCompanies()
 
@@ -27,7 +37,6 @@ export async function getServerSideProps() {
 }
 
 function Admin({ brands, productCompanies }) {
-
 	const {
 		register,
 		control,

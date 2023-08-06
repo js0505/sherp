@@ -14,7 +14,6 @@
 		"@reduxjs/toolkit": "^1.9.5",
 		"@tailwindui/react": "^0.1.1",
 		"@typegoose/typegoose": "^11.2.0",
-		"@types/mongoose": "^5.11.97",
 		"ag-grid-community": "^28.1.1",
 		"ag-grid-react": "^28.1.1",
 		"axios": "^1.2.1",

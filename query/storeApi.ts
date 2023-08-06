@@ -21,16 +21,6 @@ const storeApi = api.injectEndpoints({
 				}
 			},
 		}),
-		addStoreAs: builder.mutation({
-			query: (body) => {
-				return {
-					url: "store/as",
-					method: "POST",
-					body,
-				}
-			},
-			invalidatesTags: ["StoreDetail"],
-		}),
 		updateStore: builder.mutation({
 			query: (body) => {
 				return {
@@ -69,6 +59,5 @@ export const {
 	useUpdateStoreMutation,
 	useUpdateStoreCreditCountMutation,
 	useGetStoreByIdQuery,
-	useAddStoreAsMutation,
 	useDeleteStoreMutation,
 } = storeApi

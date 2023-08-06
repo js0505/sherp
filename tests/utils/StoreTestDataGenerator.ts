@@ -6,7 +6,7 @@ import Database from "./Database"
 
 type TestStoreType = typeof testStore
 
-export class StoreTestGenerator
+export class StoreTestDataGenerator
 	implements ITestDataGenerator<Store, TestStoreType>
 {
 	private db: Database

@@ -5,11 +5,11 @@
 import request from "supertest"
 import server from "nextjs-http-supertest"
 import { testStore } from "@/tests/variable/store"
-import { StoreTestGenerator } from "@/tests/utils/StoreTestGenerator"
+import { StoreTestDataGenerator } from "@/tests/utils/StoreTestDataGenerator"
 
-describe("/api/store[storeId]", () => {
+describe("/api/store/[storeId]", () => {
 	let testStoreId: Promise<string>
-	const data = new StoreTestGenerator()
+	const data = new StoreTestDataGenerator()
 	const baseUrl = "/api/store"
 
 	beforeAll(async () => {

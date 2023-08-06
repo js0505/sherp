@@ -10,6 +10,7 @@ export class StoreTestDataGenerator
 	implements ITestDataGenerator<Store, TestStoreType>
 {
 	private db: Database
+	private store: Store
 	mockData: TestStoreType
 
 	constructor() {
@@ -26,13 +27,19 @@ export class StoreTestDataGenerator
 	}
 
 	public async getId(): Promise<any> {
-		const store: Store = await StoreModel.findOne(this.mockData).lean()
+		const store: Store = await StoreModel.findOne({
+			businessNum: this.mockData.businessNum,
+		}).lean()
 		return store._id.toString()
 	}
 
 	public async getData(): Promise<Store> {
-		const store = await StoreModel.findOne(this.mockData)
-		return store
+		this.store = await StoreModel.findOne(this.mockData).lean()
+		return this.store
+	}
+
+	public getMockData(): TestStoreType {
+		return this.mockData
 	}
 
 	public async create() {

@@ -5,5 +5,6 @@ export interface ITestDataGenerator<T, U> {
 	create(data: any): Promise<void>
 	clear(): Promise<void>
 	getData(): Promise<T>
+	getMockData(): U
 	getId(): Promise<string>
 }

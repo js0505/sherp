@@ -11,7 +11,6 @@ handler.get(async function (req, res) {
 
 handler.post(async function (req, res) {
 	const data = req.body
-	let productCompany
 	const existingCompanyName = await ProductCompanyModel.findOne({
 		name: data.name,
 	})
@@ -22,12 +21,13 @@ handler.post(async function (req, res) {
 	}
 
 	try {
-		productCompany = new ProductCompanyModel(data)
+		const productCompany = new ProductCompanyModel(data)
 		productCompany.save()
 	} catch (e) {
 		res
 			.status(500)
 			.json({ message: "제조사 저장 중 오류", err: e, success: false })
+		return
 	}
 	res.status(201).json({
 		message: "제조사 저장 성공",

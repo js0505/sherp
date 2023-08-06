@@ -11,7 +11,7 @@ handler.get(async function (req, res) {
 
 handler.post(async function (req, res) {
 	const data = req.body
-	let brand
+
 	try {
 		const existingBrandName = await BrandModel.findOne({ name: data.name })
 
@@ -22,13 +22,14 @@ handler.post(async function (req, res) {
 			return
 		}
 
-		brand = new BrandModel(data)
+		const brand = new BrandModel(data)
 		brand.save()
 	} catch (e) {
 		console.log(e)
 		res
 			.status(500)
 			.json({ message: "법인명 저장 중 오류", err: e, success: false })
+		return
 	}
 	res
 		.status(201)

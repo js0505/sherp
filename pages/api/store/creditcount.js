@@ -27,7 +27,7 @@ handler.patch(async function (req, res) {
 
 		// 등록되지 않은 연, 월에 데이터 입력 시 새로운 값 입력 시키기
 		if (filterdStore.matchedCount === 0) {
-			await StoreModel.findByIdAndUpdate(
+			const store = await StoreModel.findByIdAndUpdate(
 				{ _id: storeId },
 				{
 					$push: {
@@ -40,18 +40,25 @@ handler.patch(async function (req, res) {
 						},
 					},
 				},
-			)
+				{ new: true },
+			).lean()
 
 			res.status(200).json({
 				success: true,
 				message: "새로운 연, 월 데이터 생성완료",
+				updatedStore: store,
 			})
-		} else {
-			res.status(200).json({
-				success: true,
-				message: "업데이트 성공",
-			})
+			return
 		}
+
+		// api 테스트에서 참고 하려고 새로 리턴.
+		const updatedStore = await StoreModel.findById(storeId).lean()
+
+		res.status(200).json({
+			success: true,
+			message: "업데이트 성공",
+			updatedStore,
+		})
 	} catch (e) {
 		console.log(e)
 		res.status(200).json({

@@ -1,15 +1,15 @@
+import { NextApiRequest, NextApiResponse } from "next"
 import nextConnect from "next-connect"
-
-import { Workbook } from "exceljs"
+import { FillPattern, Workbook, Worksheet } from "exceljs"
 import multer from "multer"
 import fs from "fs"
 import path from "path"
 import mongooseConnect from "../../../lib/db/mongooseConnect"
-import { StoreModel } from "../../../models/Store"
+import { CreditCountType, StoreModel } from "../../../models/Store"
 
 const handler = nextConnect()
 
-handler.get(async function (req, res) {
+handler.get(async function (req: NextApiRequest, res: NextApiResponse) {
 	const { type, year } = req.query
 	await mongooseConnect()
 
@@ -47,7 +47,7 @@ let storage = multer.diskStorage({
 		cb(null, dir)
 	},
 	filename: function (req, file, cb) {
-		cb(null, "countTest.xlsx")
+		cb((e) => console.log(e), "countTest.xlsx")
 	},
 })
 let upload = multer({
@@ -69,95 +69,101 @@ let uploadFile = upload.single("file")
  * 없으면 새로운 객체 입력. cms, inOperation은 기존 가맹점 값에 있는걸로
  *
  */
-handler.use(uploadFile).post(async function (req, res) {
-	console.log("건수입력 시작")
-	try {
-		await mongooseConnect()
-		// 요청 받으면서 업로드 된 파일을 처리할 연, 월 값
-		const { month, year } = req.query
-		const parseMonth = month.length === 1 ? `0${month}` : month
+handler
+	.use(uploadFile)
+	.post(async function (req: NextApiRequest, res: NextApiResponse) {
+		console.log("건수입력 시작")
+		try {
+			await mongooseConnect()
+			// 요청 받으면서 업로드 된 파일을 처리할 연, 월 값
+			const { month, year } = req.query
+			const parseMonth = month.length === 1 ? `0${month}` : month
 
-		const workbook = new Workbook()
+			const workbook = new Workbook()
 
-		await workbook.xlsx.readFile("public/upload/countTest.xlsx")
+			await workbook.xlsx.readFile("public/upload/countTest.xlsx")
 
-		// 시트별로 반복문 실행. -> van이 다른 사업자가 중복되어 있을 수 있어서
+			// 시트별로 반복문 실행. -> van이 다른 사업자가 중복되어 있을 수 있어서
 
-		workbook.eachSheet(function (worksheet) {
-			// 현재 작업하는 van
-			// 밴 이름 찾아서 검색할때 밴 이름도 같이 검색 해야됨.
-			const van = worksheet.name
+			workbook.eachSheet(function (worksheet) {
+				// 현재 작업하는 van
+				// 밴 이름 찾아서 검색할때 밴 이름도 같이 검색 해야됨.
+				const van = worksheet.name
 
-			// 현재 시트의 사업자, 건수 배열로 저장
-			let businessNumArr = []
-			let countArr = []
-			let storeNameArr = []
+				// 현재 시트의 사업자, 건수 배열로 저장
+				let businessNumArr = []
+				let countArr = []
+				let storeNameArr = []
 
-			worksheet.getColumn(1).eachCell(function (cell, rowNum) {
-				if (rowNum !== 1) {
-					businessNumArr.push(cell.value)
-				}
-			})
+				worksheet.getColumn(1).eachCell(function (cell, rowNum) {
+					if (rowNum !== 1) {
+						businessNumArr.push(cell.value)
+					}
+				})
 
-			worksheet.getColumn(2).eachCell(function (cell, rowNum) {
-				if (rowNum !== 1) {
-					storeNameArr.push(cell.value)
-				}
-			})
+				worksheet.getColumn(2).eachCell(function (cell, rowNum) {
+					if (rowNum !== 1) {
+						storeNameArr.push(cell.value)
+					}
+				})
 
-			worksheet.getColumn(3).eachCell(function (cell, rowNum) {
-				if (rowNum !== 1) {
-					countArr.push(cell.value === null ? 0 : cell.value)
-				}
-			})
+				worksheet.getColumn(3).eachCell(function (cell, rowNum) {
+					if (rowNum !== 1) {
+						countArr.push(cell.value === null ? 0 : cell.value)
+					}
+				})
 
-			// 저장된 사업자로 데이터 입력 시작
-			businessNumArr.forEach(async (businessNum, index) => {
-				const count = countArr[index]
-				const storeName = storeNameArr[index]
+				// 저장된 사업자로 데이터 입력 시작
+				businessNumArr.forEach(async (businessNum, index) => {
+					const count = countArr[index]
+					const storeName = storeNameArr[index]
 
-				const store = await StoreModel.findOne({ van, businessNum, storeName })
-
-				if (store) {
-					// 기존에 입력된 데이터가 있는지 확인
-					const findCreditCountIdx = store.creditCount.findIndex(function (
-						value,
-					) {
-						return value.year === year && value.month === parseMonth
+					const store = await StoreModel.findOne({
+						van,
+						businessNum,
+						storeName,
 					})
 
-					const newCount = {
-						year,
-						month: parseMonth,
-						count,
-						cms: store.cms === null ? 0 : store.cms,
-						inOperation: store.inOperation,
-					}
-					if (findCreditCountIdx === -1) {
-						// null값 있으면 바로잡기 위해 로직 생성
-						store.cms = store.cms === null ? 0 : store.cms
-						// 연, 월 데이터가 기록된 적 없는 경우. 새로운 객체 추가
-						store.creditCount.push(newCount)
-						store.save()
-					} else {
-						// null값 있으면 바로잡기 위해 로직 생성
-						store.cms = store.cms === null ? 0 : store.cms
-						// 기록된 데이터가 있는 경우, 전체 덮어쓰기
-						store.creditCount[findCreditCountIdx] = newCount
-						store.save()
-					}
-				}
-			})
-		})
+					if (store) {
+						// 기존에 입력된 데이터가 있는지 확인
+						const findCreditCountIdx = store.creditCount.findIndex(function (
+							value,
+						) {
+							return value.year === year && value.month === parseMonth
+						})
 
-		// 처리하고 남은 파일 삭제
-		fs.unlinkSync("public/upload/countTest.xlsx")
-		res.status(200).json({ success: true, message: "건수 입력 성공." })
-	} catch (e) {
-		console.log(e)
-		res.status(200).json({ success: false, message: "거래건수 입력 중 오류" })
-	}
-})
+						const newCount: CreditCountType = {
+							year: year as string,
+							month: parseMonth as string,
+							count,
+							cms: store.cms === null ? 0 : store.cms,
+							inOperation: store.inOperation,
+						}
+						if (findCreditCountIdx === -1) {
+							// null값 있으면 바로잡기 위해 로직 생성
+							store.cms = store.cms === null ? 0 : store.cms
+							// 연, 월 데이터가 기록된 적 없는 경우. 새로운 객체 추가
+							store.creditCount.push(newCount)
+							store.save()
+						} else {
+							// null값 있으면 바로잡기 위해 로직 생성
+							store.cms = store.cms === null ? 0 : store.cms
+							// 기록된 데이터가 있는 경우, 전체 덮어쓰기
+							store.creditCount[findCreditCountIdx] = newCount
+							store.save()
+						}
+					}
+				})
+			})
+
+			// 처리하고 남은 파일 삭제
+			fs.unlinkSync("public/upload/countTest.xlsx")
+			res.status(200).json({ success: true, message: "건수 입력 성공." })
+		} catch (e) {
+			console.log(e)
+			res.status(500).json({ success: false, message: "거래건수 입력 중 오류" })
+		}
+	})
 
 const makeStoreReport = async ({ year, res }) => {
 	const sheetColumns = [
@@ -407,38 +413,43 @@ const makeStoreReport = async ({ year, res }) => {
 				dec_count:
 					dec_valueIndex === -1 ? "" : yearFilteredCount[dec_valueIndex].count,
 			}
-
-			switch (van) {
-				case "KIS":
-					kisSheet.addRow(rowData)
-					break
-				case "NICE":
-					niceSheet.addRow(rowData)
-					break
-				case "FDIK":
-					fdikSheet.addRow(rowData)
-					break
-				case "DAOU":
-					daouSheet.addRow(rowData)
-					break
-				case "SMARTRO":
-					smartroSheet.addRow(rowData)
-					break
-				case "JTNET":
-					jtnetSheet.addRow(rowData)
-					break
-				case "KSNET":
-					ksnetSheet.addRow(rowData)
-					break
-				case "COMPOSE":
-					composeSheet.addRow(rowData)
-					break
-				case "KICC":
-					kiccSheet.addRow(rowData)
-					break
-				case "KCP":
-					kcpSheet.addRow(rowData)
-					break
+			try {
+				switch (van) {
+					case "KIS":
+						kisSheet.addRow(rowData)
+						break
+					case "NICE":
+						niceSheet.addRow(rowData)
+						break
+					case "FDIK":
+						fdikSheet.addRow(rowData)
+						break
+					case "DAOU":
+						daouSheet.addRow(rowData)
+						break
+					case "SMARTRO":
+						smartroSheet.addRow(rowData)
+						break
+					case "JTNET":
+						jtnetSheet.addRow(rowData)
+						break
+					case "KSNET":
+						ksnetSheet.addRow(rowData)
+						break
+					case "COMPOSE":
+						composeSheet.addRow(rowData)
+						break
+					case "KICC":
+						kiccSheet.addRow(rowData)
+						break
+					case "KCP":
+						kcpSheet.addRow(rowData)
+						break
+					case "SPC":
+						break
+				}
+			} catch (e) {
+				console.log(e)
 			}
 		})
 
@@ -459,7 +470,7 @@ const makeStoreReport = async ({ year, res }) => {
 		})
 	} catch (e) {
 		console.log(e)
-		res.status(200).json({
+		res.status(500).json({
 			message: "엑셀 파일 생성 중 에러 발생",
 			success: false,
 			error: e,
@@ -477,22 +488,20 @@ const makeStoreReport = async ({ year, res }) => {
  * van사별로 시트에 나눠서 입력.
  */
 const makeStoreCountUpSample = async ({ res }) => {
-	const firstRowFill = {
+	const firstRowFill: FillPattern = {
 		type: "pattern",
 		pattern: "solid",
 		fgColor: { argb: "deebf9" },
 	}
 
-	const firstRowAlign = { vertical: "middle", horizontal: "center" }
-
 	try {
 		const workbook = new Workbook()
 
-		const kisSheet = workbook.addWorksheet("KIS")
-		const jtnetSheet = workbook.addWorksheet("JTNET")
-		const fdikSheet = workbook.addWorksheet("FDIK")
-		const daouSheet = workbook.addWorksheet("DAOU")
-		const composeSheet = workbook.addWorksheet("COMPOSE")
+		const kisSheet = workbook.addWorksheet("KIS") as Worksheet
+		const jtnetSheet = workbook.addWorksheet("JTNET") as Worksheet
+		const fdikSheet = workbook.addWorksheet("FDIK") as Worksheet
+		const daouSheet = workbook.addWorksheet("DAOU") as Worksheet
+		const composeSheet = workbook.addWorksheet("COMPOSE") as Worksheet
 
 		const header = [
 			{ header: "사업자번호", key: "businessNum" },
@@ -502,7 +511,7 @@ const makeStoreCountUpSample = async ({ res }) => {
 		workbook.eachSheet((sheet) => {
 			sheet.columns = header
 			sheet.getRow(1).fill = firstRowFill
-			sheet.getRow(1).alignment = firstRowAlign
+			sheet.getRow(1).alignment = { vertical: "middle", horizontal: "center" }
 		})
 
 		const stores = await StoreModel.find({
@@ -539,7 +548,7 @@ const makeStoreCountUpSample = async ({ res }) => {
 		})
 	} catch (e) {
 		console.log(e)
-		res.status(200).json({ success: false })
+		res.status(500).json({ success: false })
 	}
 }
 

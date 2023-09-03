@@ -1,9 +1,26 @@
 import Button from "@/components/Button"
 import Input from "@/components/inputs/Input"
-import { signIn } from "next-auth/react"
+import { getSession, signIn } from "next-auth/react"
 import { useRouter } from "next/router"
 import { useState } from "react"
 import { FieldValues, useForm } from "react-hook-form"
+
+export async function getServerSideProps(context) {
+	const session = await getSession({ req: context.req })
+
+	if (session) {
+		return {
+			redirect: {
+				destination: "/store",
+				permanent: false,
+			},
+		}
+	}
+
+	return {
+		props: {},
+	}
+}
 
 async function createUserFetch(email, name, password) {
 	const response = await fetch("/api/auth/signup", {

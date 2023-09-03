@@ -1,10 +1,11 @@
+import { NextApiRequest, NextApiResponse } from "next"
 import nextConnect from "next-connect"
 import mongooseConnect from "../../../lib/db/mongooseConnect"
 import { StoreModel } from "../../../models/Store"
 
 const handler = nextConnect()
 
-handler.patch(async function (req, res) {
+handler.patch(async function (req: NextApiRequest, res: NextApiResponse) {
 	await mongooseConnect()
 
 	const { storeId, year, month, count, cms, inOperation } = req.body

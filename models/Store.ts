@@ -8,7 +8,7 @@ interface ProductType {
 	router: boolean
 }
 
-interface CreditCountType {
+export interface CreditCountType {
 	year: string
 	month: string
 	count: number

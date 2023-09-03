@@ -1,5 +1,9 @@
+import Database from "../Database"
+
 export interface ITestDataGenerator<T, U> {
 	mockData: U
+	createdTestData: T
+	db: Database
 	connectDb(): Promise<void>
 	disconnectDb(): Promise<void>
 	create(data: any): Promise<void>

@@ -47,7 +47,7 @@ let storage = multer.diskStorage({
 		cb(null, dir)
 	},
 	filename: function (req, file, cb) {
-		cb((e) => console.log(e), "countTest.xlsx")
+		cb(null,  "countTest.xlsx")
 	},
 })
 let upload = multer({

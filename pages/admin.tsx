@@ -226,19 +226,25 @@ function Admin({ brands, productCompanies }) {
 			formData.append("file", uploadFile)
 
 			setIsLoading(true)
-			const response = await axios.post(
-				`/api/store/excel?year=${year}&month=${month}`,
-				formData,
-				{
-					headers: {
-						"Content-Type": "multipart/form-data",
+			try{
+
+				const response = await axios.post(
+					`/api/store/excel?year=${year}&month=${month}`,
+					formData,
+					{
+						headers: {
+							"Content-Type": "multipart/form-data",
+						},
 					},
-				},
-			)
-			setIsLoading(false)
-			if (response.data) {
-				setUploadFile(null)
-				alert(response.data.message)
+				)
+				setIsLoading(false)
+				if (response.data) {
+					setUploadFile(null)
+					alert(response.data.message)
+				}
+			}catch(e){
+				console.log(e)
+				alert('업로드 중 에러 발생.')
 			}
 		}, [todayYear, todayMonth, uploadFile])
 
